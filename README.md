@@ -1,50 +1,123 @@
-# Welcome to your Expo app 👋
+# CashLens 💰
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Personal finance tracker built with React Native Expo. Features daily/monthly/yearly transaction recording, automatic receipt scanning via OCR, multi-currency support, custom categories, and budgeting.
 
-## Get started
+---
 
-1. Install dependencies
+## Tech Stack
 
-   ```bash
-   npm install
-   ```
+| Category       | Technology                                        |
+| -------------- | ------------------------------------------------- |
+| Framework      | Expo SDK 54 (Managed Workflow)                    |
+| Navigation     | Expo Router v6 (file-based)                       |
+| Language       | TypeScript (strict)                               |
+| Styling        | NativeWind v4 + Tailwind CSS                      |
+| State          | Zustand + AsyncStorage persist                    |
+| Local Storage  | AsyncStorage (data) + MMKV (preferences)          |
+| Backend        | Supabase (auth + cloud sync)                      |
+| OCR            | @react-native-ml-kit/text-recognition (on-device) |
+| Charts         | Victory Native XL                                 |
+| Icons          | Lucide React Native                               |
+| Bottom Sheet   | @gorhom/bottom-sheet                              |
+| Currency Rates | exchangerate.host                                 |
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## Features
 
-In the output, you'll find options to open the app in a
+- 📝 Record income & expense transactions
+- 📷 Scan receipts automatically with on-device OCR
+- 💱 Multi-currency with live exchange rates
+- 🗂️ Custom categories
+- 📊 Budget management with period tracking
+- ☁️ Cloud sync via Supabase
+- 📱 Android & iOS support
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Getting Started
 
-## Get a fresh project
+### Prerequisites
 
-When you're ready, run:
+- Node.js 18+
+- pnpm
+- Expo Go app or Android/iOS emulator
+
+### Installation
 
 ```bash
-npm run reset-project
+# Clone the repository
+git clone https://github.com/RifqiMalik29/cashlens.git
+cd cashlens
+
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Running on device
 
-## Learn more
+```bash
+pnpm android   # Android emulator
+pnpm ios       # iOS simulator
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
+```
+cashlens/
+├── app/
+│   ├── (auth)/          # Login, onboarding screens
+│   ├── (tabs)/          # Main tab screens (re-exports only)
+│   └── _layout.tsx      # Root layout
+└── src/
+    ├── components/
+    │   └── ui/          # Reusable UI components
+    ├── constants/        # Theme, categories, currencies
+    ├── hooks/           # Shared hooks (useHeader, etc.)
+    ├── screens/         # Screen components + co-located hooks
+    │   ├── Dashboard/
+    │   ├── Transactions/
+    │   ├── Scanner/
+    │   ├── Budget/
+    │   └── Settings/
+    ├── services/        # Supabase, OCR, currency API
+    ├── stores/          # Zustand stores
+    ├── types/           # TypeScript types
+    └── utils/           # Helper functions
+```
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Scripts
+
+```bash
+pnpm start          # Start Expo dev server
+pnpm android        # Run on Android
+pnpm ios            # Run on iOS
+pnpm typecheck      # TypeScript check
+pnpm lint           # ESLint check
+pnpm lint:fix       # ESLint auto-fix
+pnpm format         # Prettier format
+pnpm format:check   # Prettier check
+```
+
+---
+
+## Development Notes
+
+- All screen logic lives in `src/screens/<Name>/use<Name>.ts`
+- Route files in `app/` are thin re-exports only
+- Use `className` (NativeWind) for static styling, `style={}` for dynamic values
+- Max 200 lines per file — split into subcomponents or helpers if exceeded
+- Pre-commit hook runs: `prettier → eslint --fix → tsc --noEmit`
+
+---
+
+## License
+
+MIT
