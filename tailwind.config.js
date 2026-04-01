@@ -33,6 +33,13 @@ module.exports = {
         "2xl": ["24px", { lineHeight: "32px" }],
         "3xl": ["30px", { lineHeight: "38px" }],
         "4xl": ["36px", { lineHeight: "44px" }]
+      },
+      height: {
+        input: "48px",
+        "button-sm": "36px",
+        "button-md": "44px",
+        "button-lg": "52px",
+        "tab-bar": "60px"
       }
     }
   },

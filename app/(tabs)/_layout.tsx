@@ -1,5 +1,5 @@
 import { CustomHeader } from "@components/ui";
-import { colors } from "@constants/theme";
+import { colors, heights, spacing } from "@constants/theme";
 import { Tabs } from "expo-router";
 import {
   ArrowLeftRight,
@@ -18,8 +18,8 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,
-          height: 60,
-          paddingBottom: 8
+          height: heights.tabBar,
+          paddingBottom: spacing[2]
         },
         tabBarLabelStyle: {
           fontSize: 11,

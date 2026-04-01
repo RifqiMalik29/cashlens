@@ -71,12 +71,23 @@ export const shadows = {
   }
 };
 
+export const heights = {
+  input: 48,
+  buttonSm: 36,
+  buttonMd: 44,
+  buttonLg: 52,
+  tabBar: 60,
+  dotIndicator: 8,
+  dotIndicatorActive: 8
+};
+
 export const theme = {
   colors,
   fontSizes,
   spacing,
   borderRadius,
-  shadows
+  shadows,
+  heights
 };
 
 export default theme;

@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { colors, heights } from "@constants/theme";
 import React from "react";
 import {
   ActivityIndicator,
@@ -37,11 +37,11 @@ const variantConfig: Record<
 
 const sizeConfig: Record<
   ButtonSize,
-  { containerClass: string; fontSize: number }
+  { containerClass: string; fontSize: number; height: number }
 > = {
-  sm: { containerClass: "h-9 px-3", fontSize: 13 },
-  md: { containerClass: "h-11 px-4", fontSize: 15 },
-  lg: { containerClass: "h-[52px] px-6", fontSize: 17 }
+  sm: { containerClass: "px-3", fontSize: 13, height: heights.buttonSm },
+  md: { containerClass: "px-4", fontSize: 15, height: heights.buttonMd },
+  lg: { containerClass: "px-6", fontSize: 17, height: heights.buttonLg }
 };
 
 export function Button({
@@ -69,7 +69,7 @@ export function Button({
         fullWidth ? "w-full" : "",
         disabled ? "opacity-50" : ""
       ].join(" ")}
-      style={style}
+      style={{ height: sizeCfg.height, ...style }}
     >
       {loading ? (
         <ActivityIndicator size="small" color={varCfg.textColor} />

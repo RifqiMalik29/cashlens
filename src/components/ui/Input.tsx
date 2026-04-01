@@ -1,4 +1,4 @@
-import { colors, fontSizes } from "@constants/theme";
+import { colors, fontSizes, heights } from "@constants/theme";
 import React, { useState } from "react";
 import { TextInput, View, type ViewStyle } from "react-native";
 
@@ -11,6 +11,7 @@ interface InputProps {
   onChangeText: (text: string) => void;
   secureTextEntry?: boolean;
   keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
   multiline?: boolean;
   numberOfLines?: number;
   error?: string;
@@ -27,6 +28,7 @@ export function Input({
   onChangeText,
   secureTextEntry = false,
   keyboardType = "default",
+  autoCapitalize = "sentences",
   multiline = false,
   numberOfLines = 1,
   error,
@@ -55,9 +57,10 @@ export function Input({
         </Typography>
       )}
       <View
-        className={`flex-row items-center h-12 px-3 rounded-md bg-white border ${borderClass} ${
+        className={`flex-row items-center px-3 rounded-md bg-white border ${borderClass} ${
           !editable ? "bg-surface-secondary" : ""
         }`}
+        style={{ height: heights.input }}
       >
         {leftElement && <View className="mr-2">{leftElement}</View>}
         <TextInput
@@ -67,6 +70,7 @@ export function Input({
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
           keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
           multiline={multiline}
           numberOfLines={numberOfLines}
           onFocus={() => setFocused(true)}
