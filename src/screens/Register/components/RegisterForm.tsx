@@ -1,11 +1,9 @@
+import { Button } from "@components/ui/Button";
+import { Input } from "@components/ui/Input";
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
 import { Eye, EyeOff } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
-
-import { spacing } from "@/constants/theme";
-
-import { Button } from "../../../components/ui/Button";
-import { Input } from "../../../components/ui/Input";
-import { Typography } from "../../../components/ui/Typography";
 
 interface RegisterFormProps {
   email: string;

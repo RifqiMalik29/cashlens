@@ -1,7 +1,6 @@
+import { useAuthStore } from "@stores/useAuthStore";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-
-import { useAuthStore } from "@/stores/useAuthStore";
 
 export function useLogin() {
   const router = useRouter();

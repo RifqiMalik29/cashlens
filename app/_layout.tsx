@@ -1,12 +1,11 @@
 import "../global.css";
 
 import { CustomHeader } from "@components/ui";
+import { useAuthStore } from "@stores/useAuthStore";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
-import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function RootLayout() {
   const router = useRouter();

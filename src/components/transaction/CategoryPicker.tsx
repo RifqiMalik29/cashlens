@@ -1,3 +1,4 @@
+import { spacing } from "@constants/theme";
 import {
   BookOpen,
   Briefcase,
@@ -20,7 +21,6 @@ import {
 import { type ComponentType } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
-import { spacing } from "@/constants/theme";
 import { type Category, type TransactionType } from "@/types";
 
 import { Typography } from "../ui/Typography";

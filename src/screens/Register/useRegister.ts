@@ -1,7 +1,6 @@
+import { signUpWithEmail } from "@services/supabase";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-
-import { signUpWithEmail } from "@/services/supabase";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

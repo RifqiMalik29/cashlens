@@ -1,6 +1,5 @@
+import { heights, spacing } from "@constants/theme";
 import { View } from "react-native";
-
-import { heights, spacing } from "@/constants/theme";
 
 interface PaginationDotsProps {
   activeIndex: number;

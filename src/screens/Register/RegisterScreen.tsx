@@ -1,9 +1,8 @@
+import { AuthFooter } from "@components/auth/AuthFooter";
+import { AuthLogo } from "@components/auth/AuthLogo";
+import { spacing } from "@constants/theme";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { AuthFooter } from "@/components/auth/AuthFooter";
-import { AuthLogo } from "@/components/auth/AuthLogo";
-import { spacing } from "@/constants/theme";
 
 import { RegisterForm } from "./components/RegisterForm";
 import { useRegister } from "./useRegister";

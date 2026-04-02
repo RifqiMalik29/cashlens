@@ -1,9 +1,7 @@
+import { useAuthStore } from "@stores/useAuthStore";
+import { useCategoryStore } from "@stores/useCategoryStore";
+import { useTransactionStore } from "@stores/useTransactionStore";
 import { useRouter } from "expo-router";
-
-import { useHeader } from "@/hooks/useHeader";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useCategoryStore } from "@/stores/useCategoryStore";
-import { useTransactionStore } from "@/stores/useTransactionStore";
 
 export function useTransactionsScreen() {
   const router = useRouter();
@@ -18,10 +16,6 @@ export function useTransactionsScreen() {
   const handleTransactionPress = (transaction: (typeof transactions)[0]) => {
     router.push(`/(tabs)/transactions/edit?id=${transaction.id}`);
   };
-
-  useHeader({
-    title: "Transaksi"
-  });
 
   return {
     transactions,

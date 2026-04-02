@@ -1,8 +1,8 @@
+import { spacing } from "@constants/theme";
+import { formatCompactCurrency } from "@utils/formatCurrency";
 import { SectionList, Text, View } from "react-native";
 
-import { spacing } from "@/constants/theme";
 import { type Category, type Transaction } from "@/types";
-import { formatCompactCurrency } from "@/utils/formatCurrency";
 
 import { TransactionItem } from "./TransactionItem";
 

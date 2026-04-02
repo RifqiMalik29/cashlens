@@ -1,3 +1,3 @@
-import RegisterScreen from "@/screens/Register/RegisterScreen";
+import RegisterScreen from "@screens/Register/RegisterScreen";
 
 export default RegisterScreen;

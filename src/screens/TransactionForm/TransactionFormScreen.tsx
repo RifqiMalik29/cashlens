@@ -1,13 +1,13 @@
+import { AmountInput } from "@components/transaction/AmountInput";
+import { CategoryPicker } from "@components/transaction/CategoryPicker";
+import { DateInput } from "@components/transaction/DateInput";
+import { TypeSelector } from "@components/transaction/TypeSelector";
+import { Button } from "@components/ui/Button";
+import { Input } from "@components/ui/Input";
+import { spacing } from "@constants/theme";
+import { useHeader } from "@hooks/useHeader";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { AmountInput } from "@/components/transaction/AmountInput";
-import { CategoryPicker } from "@/components/transaction/CategoryPicker";
-import { DateInput } from "@/components/transaction/DateInput";
-import { TypeSelector } from "@/components/transaction/TypeSelector";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { spacing } from "@/constants/theme";
 
 import { useTransactionForm } from "./useTransactionForm";
 
@@ -32,11 +32,16 @@ export default function TransactionFormScreen() {
     handleDelete
   } = useTransactionForm();
 
+  useHeader({
+    title: isEditMode ? "Edit Transaksi" : "Tambah Transaksi"
+  });
+
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <ScrollView
           className="flex-1 px-6"
@@ -85,7 +90,7 @@ export default function TransactionFormScreen() {
               </View>
             )}
 
-            <View style={{ gap: spacing[3] }}>
+            <View style={{ gap: spacing[3] }} className="mt-2">
               <Button
                 onPress={handleSave}
                 loading={isLoading}

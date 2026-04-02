@@ -38,6 +38,7 @@ export function Input({
   editable = true
 }: InputProps) {
   const [focused, setFocused] = useState(false);
+  const [inputHeight, setInputHeight] = useState<number | undefined>(undefined);
 
   const borderClass = error
     ? "border-error"
@@ -60,7 +61,11 @@ export function Input({
         className={`flex-row items-center px-3 rounded-md bg-white border ${borderClass} ${
           !editable ? "bg-surface-secondary" : ""
         }`}
-        style={{ height: heights.input }}
+        style={{
+          minHeight: heights.input,
+          height: multiline ? inputHeight : heights.input,
+          paddingVertical: multiline ? 8 : 0
+        }}
       >
         {leftElement && <View className="mr-2">{leftElement}</View>}
         <TextInput
@@ -76,13 +81,17 @@ export function Input({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           editable={editable}
+          onContentSizeChange={(e) => {
+            if (multiline) {
+              setInputHeight(e.nativeEvent.contentSize.height + 16);
+            }
+          }}
           style={{
             flex: 1,
             fontSize: fontSizes.base,
             color: colors.textPrimary,
             paddingVertical: 0,
             ...(multiline && {
-              height: numberOfLines * 24,
               textAlignVertical: "top"
             })
           }}

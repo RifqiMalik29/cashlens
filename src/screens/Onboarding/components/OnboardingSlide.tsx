@@ -1,7 +1,6 @@
+import { spacing } from "@constants/theme";
 import { ScanLine, Target, Wallet } from "lucide-react-native";
 import { ScrollView, Text, View } from "react-native";
-
-import { spacing } from "@/constants/theme";
 
 type IconComponent = typeof Wallet | typeof ScanLine | typeof Target;
 

@@ -9,8 +9,6 @@ interface AmountInputProps {
   baseCurrency: string;
 }
 
-const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
-
 export function AmountInput({
   amount,
   setAmount,
@@ -38,7 +36,7 @@ export function AmountInput({
 
   return (
     <View className="items-center mb-6">
-      <View className="flex-row items-baseline mb-2">
+      <View className="flex-row items-baseline mb-6">
         <Typography variant="h4" weight="medium" color="#6B7280">
           {baseCurrency === "IDR" ? "Rp" : baseCurrency}{" "}
         </Typography>
@@ -52,23 +50,32 @@ export function AmountInput({
         </Typography>
       </View>
 
-      <View className="flex-row flex-wrap justify-center gap-2">
-        {KEYS.map((key) => (
-          <TouchableOpacity
-            key={key}
-            onPress={() => handlePress(key)}
-            className="items-center justify-center bg-white rounded-lg border border-border"
-            style={{ width: 64, height: 52 }}
-            activeOpacity={0.7}
-          >
-            <Typography
-              variant="h3"
-              weight="medium"
-              color={key === "⌫" ? "#EF4444" : "#1A1A2E"}
-            >
-              {key}
-            </Typography>
-          </TouchableOpacity>
+      <View className="w-full px-4">
+        {[
+          ["1", "2", "3"],
+          ["4", "5", "6"],
+          ["7", "8", "9"],
+          [".", "0", "⌫"]
+        ].map((row, rowIndex) => (
+          <View key={rowIndex} className="flex-row justify-between mb-3 gap-3">
+            {row.map((key) => (
+              <TouchableOpacity
+                key={key}
+                onPress={() => handlePress(key)}
+                className="flex-1 items-center justify-center bg-white rounded-xl border border-border"
+                style={{ height: 60 }}
+                activeOpacity={0.7}
+              >
+                <Typography
+                  variant="h3"
+                  weight="medium"
+                  color={key === "⌫" ? "#EF4444" : "#1A1A2E"}
+                >
+                  {key}
+                </Typography>
+              </TouchableOpacity>
+            ))}
+          </View>
         ))}
       </View>
     </View>

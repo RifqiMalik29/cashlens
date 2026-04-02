@@ -1,3 +1,4 @@
+import { formatCurrency } from "@utils/formatCurrency";
 import {
   BookOpen,
   Briefcase,
@@ -21,7 +22,6 @@ import { type ComponentType } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { type Category, type Transaction } from "@/types";
-import { formatCurrency } from "@/utils/formatCurrency";
 
 import { Typography } from "../ui/Typography";
 

@@ -1,3 +1,4 @@
+import { useAuthStore } from "@stores/useAuthStore";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import type {
@@ -5,8 +6,6 @@ import type {
   NativeScrollEvent,
   NativeSyntheticEvent
 } from "react-native";
-
-import { useAuthStore } from "@/stores/useAuthStore";
 
 import { ONBOARDING_SLIDES } from "./onboardingSlides";
 

@@ -1,1 +1,1 @@
-export { default } from "@/screens/TransactionForm/TransactionFormScreen";
+export { default } from "@screens/TransactionForm/TransactionFormScreen";

@@ -1,6 +1,5 @@
+import { spacing } from "@constants/theme";
 import { View } from "react-native";
-
-import { spacing } from "@/constants/theme";
 
 import { Button } from "../ui/Button";
 import { Typography } from "../ui/Typography";

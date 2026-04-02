@@ -1,8 +1,6 @@
+import { Typography } from "@components/ui/Typography";
+import { heights, spacing } from "@constants/theme";
 import { TouchableOpacity, View } from "react-native";
-
-import { heights, spacing } from "@/constants/theme";
-
-import { Typography } from "../../../components/ui/Typography";
 
 interface BottomControlsProps {
   activeIndex: number;

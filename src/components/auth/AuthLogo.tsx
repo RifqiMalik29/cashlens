@@ -1,7 +1,6 @@
+import { spacing } from "@constants/theme";
 import { Wallet } from "lucide-react-native";
 import { View } from "react-native";
-
-import { spacing } from "@/constants/theme";
 
 import { Typography } from "../ui/Typography";
 

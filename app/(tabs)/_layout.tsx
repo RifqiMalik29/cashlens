@@ -45,6 +45,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="transactions"
         options={{
+          headerShown: false,
           tabBarLabel: "Transactions",
           tabBarIcon: ({ color, size }) => (
             <ArrowLeftRight size={size} color={color} />
