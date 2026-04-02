@@ -1,33 +1,24 @@
-import { useCallback, useState } from "react";
-
 import { DatePickerModal } from "./DatePickerModal";
 
 interface DatePickerProps {
+  visible: boolean;
   selectedDate: Date;
   onDateSelect: (date: Date) => void;
+  onClose: () => void;
 }
 
-export function DatePicker({ selectedDate, onDateSelect }: DatePickerProps) {
-  const [visible, setVisible] = useState(false);
-
-  const handleClose = useCallback(() => {
-    setVisible(false);
-  }, []);
-
-  const handleDateSelect = useCallback(
-    (date: Date) => {
-      onDateSelect(date);
-      handleClose();
-    },
-    [onDateSelect, handleClose]
-  );
-
+export function DatePicker({
+  visible,
+  selectedDate,
+  onDateSelect,
+  onClose
+}: DatePickerProps) {
   return (
     <DatePickerModal
       visible={visible}
       selectedDate={selectedDate}
-      onDateSelect={handleDateSelect}
-      onClose={handleClose}
+      onDateSelect={onDateSelect}
+      onClose={onClose}
     />
   );
 }

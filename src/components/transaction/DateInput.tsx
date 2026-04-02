@@ -1,4 +1,5 @@
 import { Calendar } from "lucide-react-native";
+import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import { spacing } from "@/constants/theme";
@@ -12,6 +13,8 @@ interface DateInputProps {
 }
 
 export function DateInput({ date, setDate }: DateInputProps) {
+  const [showPicker, setShowPicker] = useState(false);
+
   const dateObj = new Date(date);
   const displayDate = dateObj.toLocaleDateString("id-ID", {
     weekday: "long",
@@ -20,17 +23,32 @@ export function DateInput({ date, setDate }: DateInputProps) {
     day: "numeric"
   });
 
+  const handleOpenPicker = () => {
+    setShowPicker(true);
+  };
+
+  const handleClosePicker = () => {
+    setShowPicker(false);
+  };
+
   const handleDateSelect = (newDate: Date) => {
     const timeStr = dateObj.toTimeString().split(" ")[0].slice(0, 5);
     setDate(newDate.toISOString().split("T")[0] + "T" + timeStr);
+    setShowPicker(false);
   };
 
   return (
     <View>
-      <DatePicker selectedDate={dateObj} onDateSelect={handleDateSelect} />
+      <DatePicker
+        visible={showPicker}
+        selectedDate={dateObj}
+        onDateSelect={handleDateSelect}
+        onClose={handleClosePicker}
+      />
       <TouchableOpacity
         className="flex-row items-center justify-between bg-white border border-border rounded-lg px-4 py-3"
         activeOpacity={0.7}
+        onPress={handleOpenPicker}
       >
         <View className="flex-row items-center">
           <Calendar

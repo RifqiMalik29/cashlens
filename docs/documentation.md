@@ -93,7 +93,7 @@ cashlens/
 - [✅] Thread #0 — Planning & Architecture
 - [✅] Thread #1 — Project Setup + Design System
 - [✅] Thread #2 — Auth + Onboarding (Login, Register, Onboarding screens implemented)
-- [ ] Thread #3 — Transaction CRUD
+- [✅] Thread #3 — Transaction CRUD (Listing, Add/Edit Form, Custom DatePicker)
 - [ ] Thread #4 — Receipt Scanner (ML Kit)
 - [ ] Thread #5 — Dashboard + Analytics
 - [ ] Thread #6 — Budget Management
@@ -102,7 +102,7 @@ cashlens/
 
 ### Current Thread
 
-Thread #3 — Transaction CRUD (next)
+Thread #4 — Receipt Scanner (ML Kit) (next)
 
 ### Additional Rules
 

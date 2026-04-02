@@ -15,7 +15,7 @@ export default function TransactionsScreen() {
     handleAddTransaction
   } = useTransactionsScreen();
   useHeader({
-    title: "Transaksi",
+    title: "Transactions",
     rightElement: (
       <Plus
         size={24}
