@@ -2,40 +2,40 @@ Act as a Senior React Native Developer.
 
 ### Objective
 
-Implement the **Budget Management** feature (Thread #6). This feature allows users to set spending limits for specific categories or overall, and track their progress in real-time.
+Implement the **Settings & Polish** feature (Thread #8). This final thread focuses on user preferences, customization, and refining the overall user experience.
 
 ### Requirements:
 
-1.  **Budget Overview (`src/screens/Budget/BudgetScreen.tsx`)**:
-    - Display a list of active budgets using a `FlatList` or `SectionList`.
-    - Use a `BudgetCard` subcomponent to show:
-      - Category name and icon.
-      - Progress bar (e.g., green for < 70%, yellow for 70-90%, red for > 90%).
-      - Amount spent vs. Total budget (e.g., "Rp 700.000 / Rp 1.000.000").
-      - Remaining balance (e.g., "Sisa Rp 300.000").
-    - Add an "Add Budget" button in the header.
+1.  **Settings Overview (`src/screens/Settings/SettingsScreen.tsx`)**:
+    - Display sections: **Profile**, **Finance**, **Preferences**, **Support**, and **Account**.
+    - **Profile**: Show user email and a "Logout" button.
+    - **Finance**:
+      - "Base Currency": Navigate to a selector to change the primary currency.
+      - "Manage Categories": Navigate to a screen to add/edit/delete categories.
+    - **Preferences**:
+      - "Language": Toggle between Indonesian and English.
+      - "Theme": Toggle between Light, Dark, and System.
 
-2.  **Add/Edit Budget Screen (`src/screens/BudgetForm/`)**:
-    - Fields:
-      - **Amount**: Budget limit.
-      - **Category**: Select category (from `useCategoryStore`).
-      - **Period**: Select period (Weekly, Monthly, Yearly).
-      - **Start/End Dates**: When the budget is active.
-    - Integration with `useBudgetStore`.
+2.  **Currency Selector (`src/screens/CurrencySelector/`)**:
+    - List all available currencies from `src/constants/currencies.ts`.
+    - Search bar to filter currencies.
+    - Update `useAuthStore` or `useCurrencyStore` when a new base currency is selected.
 
-3.  **Logic (`src/screens/Budget/useBudgetScreen.ts`)**:
-    - Fetch budgets from `useBudgetStore`.
-    - Fetch transactions from `useTransactionStore` and filter them based on budget category and date range.
-    - Calculate the percentage of budget consumed.
+3.  **Category Management (`src/screens/CategoryManagement/`)**:
+    - List all categories from `useCategoryStore`.
+    - Allow adding a new custom category (Name, Icon, Color, Type).
+    - Allow editing or deleting custom categories (Default categories cannot be deleted).
 
-4.  **UI Feedback**:
-    - Provide empty states for when no budgets are set.
-    - Clearly highlight budgets that have been exceeded.
+4.  **UI/UX Polish**:
+    - **Animations**: Ensure smooth screen transitions and button interactions.
+    - **Feedback**: Use `Haptics` (expo-haptics) for key actions like adding a transaction or deleting a budget.
+    - **Error Handling**: Improve visual feedback for API/Sync errors.
+    - **Empty States**: Refine empty states across the app with consistent illustrations or icons.
 
 ### Guidelines:
 
-- **Styling**: Use NativeWind v4 `className`.
-- **Performance**: Optimize heavy filtering logic using `useMemo`.
-- **Components**: Use `ProgressBar` and `Card` from `src/components/ui/` or create them in `src/components/budget/`.
+- **Styling**: Continue with NativeWind v4 `className`.
+- **Consistency**: Use the `useHeader` hook for all new screens.
+- **Icons**: Use `lucide-react-native`.
 
-Please provide the implementation for the Budget screen, Budget form, and the tracking logic.
+Please provide the implementation for the Settings screen, its sub-screens, and the overall UX refinements.
