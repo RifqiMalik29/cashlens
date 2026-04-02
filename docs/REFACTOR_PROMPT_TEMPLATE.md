@@ -1,23 +1,48 @@
 Act as a Senior React Native Developer working on the CashLens app.
 
-I need you to refactor the screen files inside the `src/screens/` folder. Currently, the `Budget`, `Dashboard`, `Scanner`, `Settings`, and `Transactions` screens are empty wrappers, so please focus specifically on refactoring `LoginScreen.tsx`, `RegisterScreen.tsx`, and `OnboardingScreen.tsx`.
-
 ### Objective
 
-Refactor these screens to be strictly component-based by breaking them down into smaller, cohesive subcomponents, and migrate their styling to NativeWind v4.
+Implement the Transaction CRUD feature (Thread #3). This includes listing transactions on the `TransactionsScreen` and providing a form to add/edit transactions.
 
-### Key Guidelines & Rules:
+### Requirements:
 
-1. **Component Extraction**: Break down the large screen files into smaller parts.
-   - For Login & Register: Extract sections like `AuthLogo`, `LoginForm`, `RegisterForm`, and `AuthFooter`. If components are shared between Login and Register (like the Logo or Footer), place them in `src/components/auth/`. If they are specific to the screen, place them in `src/screens/<ScreenName>/components/`.
-   - For Onboarding: Extract sections like `OnboardingSlide`, `PaginationDots`, and `BottomControls` into `src/screens/Onboarding/components/`.
-2. **Styling Migration (Crucial)**: The current screens heavily rely on `StyleSheet`. You must refactor all styling to use NativeWind v4 via the `className` prop. Only use `style={}` or `StyleSheet` for dynamic values, `SafeAreaView` insets, or complex layout calculations (such as dynamic widths from `useWindowDimensions`).
-3. **Separation of Concerns**: Main screen UI must remain in `src/screens/<ScreenName>/<ScreenName>.tsx`. Keep all state and business logic untouched inside their respective `use<ScreenName>.ts` files.
-4. **Code Standards**:
-   - Maximum 200 lines per file.
-   - NO comments inside the generated code.
-   - Use semicolons, double quotes, and no trailing commas.
-   - Do not alter the existing app behavior, types, or functionality.
-5. **Output Requirement**: Provide the complete refactored code for all new and updated files. Do not use placeholders like "..." or omit any existing code.
+1. **Transactions Listing (`src/screens/Transactions/TransactionsScreen.tsx`)**:
+   - Use `SectionList` to group transactions by date (descending).
+   - Each section header should display the date (e.g., "Today", "Yesterday", "25 Mar 2026") and the net balance for that day.
+   - Use a `TransactionItem` subcomponent to display each record:
+     - Show category icon (with circular background using category color).
+     - Show category name and note (if exists).
+     - Show amount formatted with currency (e.g., "-Rp 50.000" for expense in red/dark, "Rp 100.000" for income in green).
+   - Implement an "Add" button in the header (using `headerRight`) that navigates to the transaction form.
+   - Show an `EmptyState` component when there are no transactions.
 
-Please start by providing the refactored code for the newly extracted components and the updated `LoginScreen.tsx`, `RegisterScreen.tsx`, and `OnboardingScreen.tsx`.
+2. **Transaction Form (`src/screens/TransactionForm/`)**:
+   - Create a new screen `TransactionFormScreen.tsx` and its logic hook `useTransactionForm.ts`.
+   - The form should handle both "Add" and "Edit" modes (based on an optional `id` parameter).
+   - **Fields**:
+     - **Amount**: Numeric keyboard, large typography.
+     - **Type**: Toggle/Segmented control for "Expense" vs "Income".
+     - **Category Selector**: A grid or list of categories fetched from `useCategoryStore`. Active category should be highlighted.
+     - **Date Picker**: Use a standard date picker to select the transaction date.
+     - **Note**: Multiline input for optional notes.
+     - **Currency**: Default to base currency from `useCurrencyStore`.
+   - **Actions**:
+     - "Save" button to persist the transaction to `useTransactionStore`.
+     - "Delete" button (only in Edit mode) with confirmation.
+   - Navigate back after successful save/delete.
+
+3. **Shared Components (`src/components/transaction/`)**:
+   - `TransactionItem.tsx`: Individual row in the list.
+   - `TransactionList.tsx`: Wrapper for the SectionList.
+   - `CategoryPicker.tsx`: Component for selecting a category.
+
+### Guidelines:
+
+- **Styling**: Use NativeWind v4 `className` exclusively. Refer to `src/constants/theme.ts` for spacing, colors, and shadows.
+- **Logic**: All screen state and handlers MUST be in the `use<ScreenName>.ts` hook. The screen file should be purely UI.
+- **Types**: Use the `Transaction` and `Category` types from `src/types/index.ts`.
+- **Formatting**: Use a utility to format currency based on the transaction's currency code.
+- **Navigation**: Use `expo-router` for navigation between screens.
+- **Code Quality**: Maximum 200 lines per file. Break complex components into smaller sub-components.
+
+Please provide the implementation for the new screen, updated components, and the logic hooks. Ensure everything is wired up to `useTransactionStore`, `useCategoryStore`, and `useCurrencyStore`.
