@@ -1,3 +1,4 @@
+import { colors, spacing } from "@constants/theme";
 import { useCallback, useEffect } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -6,8 +7,6 @@ import Animated, {
   useSharedValue,
   withTiming
 } from "react-native-reanimated";
-
-import { colors, spacing } from "@/constants/theme";
 
 import { DatePickerContent } from "./DatePickerContent";
 

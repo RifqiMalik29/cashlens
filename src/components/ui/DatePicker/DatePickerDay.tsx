@@ -1,11 +1,10 @@
+import { colors } from "@constants/theme";
 import { TouchableOpacity } from "react-native";
 import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming
 } from "react-native-reanimated";
-
-import { colors } from "@/constants/theme";
 
 import { Typography } from "../Typography";
 

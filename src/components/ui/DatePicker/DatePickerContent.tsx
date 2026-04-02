@@ -1,8 +1,7 @@
+import { colors, spacing } from "@constants/theme";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-
-import { colors, spacing } from "@/constants/theme";
 
 import { Typography } from "../Typography";
 import { DatePickerGrid } from "./DatePickerGrid";

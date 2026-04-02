@@ -1,8 +1,7 @@
+import { spacing } from "@constants/theme";
 import { Calendar } from "lucide-react-native";
 import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
-
-import { spacing } from "@/constants/theme";
 
 import { DatePicker } from "../ui/DatePicker";
 import { Typography } from "../ui/Typography";
