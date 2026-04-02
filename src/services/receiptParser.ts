@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable max-lines */
-import { type Transaction } from "@/types";
+// import { type Transaction } from "@/types";
+
+import { type Transaction } from "../types";
 
 const LOG_PREFIX = "[ReceiptParser]";
 
