@@ -1,17 +1,22 @@
 import "../global.css";
 
 import { CustomHeader } from "@components/ui";
-import { useAuthStore } from "@stores/useAuthStore";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import { useCloudSync } from "@/hooks/useCloudSync";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
   const { isAuthenticated, isOnboarded } = useAuthStore();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+
+  // Initialize cloud sync
+  useCloudSync();
 
   useEffect(() => {
     setIsLayoutReady(true);
