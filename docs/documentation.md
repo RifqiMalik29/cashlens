@@ -9,7 +9,7 @@ CashLens adalah aplikasi keuangan personal berbasis React Native Expo untuk menc
 ### Tech Stack
 
 - Framework: Expo SDK 54+ (Managed Workflow), Expo Router v6 (file-based)
-- Language: TypeScript (strict mode), path alias @/ → src/
+- Language: TypeScript (strict mode), path alias @ → src/
 - State Management: Zustand + persist middleware (AsyncStorage)
 - Local DB: AsyncStorage (data) + MMKV (preferences)
 - Backend: Supabase (auth + cloud sync, free tier)
@@ -52,7 +52,7 @@ cashlens/
 
 ### Path Aliases (tsconfig.json)
 
-- @/_ → src/_
+- @_ → src/_
 - @components/_ → src/components/_
 - @constants/_ → src/constants/_
 - @hooks/_ → src/hooks/_
@@ -94,15 +94,15 @@ cashlens/
 - [✅] Thread #1 — Project Setup + Design System
 - [✅] Thread #2 — Auth + Onboarding (Login, Register, Onboarding screens implemented)
 - [✅] Thread #3 — Transaction CRUD (Listing, Add/Edit Form, Custom DatePicker)
-- [ ] Thread #4 — Receipt Scanner (ML Kit)
-- [ ] Thread #5 — Dashboard + Analytics
-- [ ] Thread #6 — Budget Management
+- [✅] Thread #4 — Receipt Scanner (ML Kit + Locale-aware Parsing)
+- [✅] Thread #5 — Dashboard + Analytics (Balance Summary, Spending Charts)
+- [ ] Thread #6 — Budget Management (Budget Planning, Progress Tracking)
 - [ ] Thread #7 — Cloud Sync (Supabase)
 - [ ] Thread #8 — Settings + Polish
 
 ### Current Thread
 
-Thread #4 — Receipt Scanner (ML Kit) (next)
+Thread #6 — Budget Management (next)
 
 ### Additional Rules
 

@@ -2,33 +2,40 @@ Act as a Senior React Native Developer.
 
 ### Objective
 
-Fix the persistent **Camera Black Screen** issue in the `ScannerScreen` for the CashLens app.
-
-### Analysis of the Issue:
-
-The UI (overlay, buttons) is visible, but the `CameraView` is rendering as a black screen. This typically happens in Tab-based navigation because the camera session doesn't automatically restart when navigating back to the tab, or the component isn't layout-ready.
+Implement the **Budget Management** feature (Thread #6). This feature allows users to set spending limits for specific categories or overall, and track their progress in real-time.
 
 ### Requirements:
 
-1.  **Tab Focus Management (`ScannerScreen.tsx`)**:
-    - Import `useIsFocused` from `@react-navigation/native` (or check if available in `expo-router`).
-    - **Conditional Rendering**: Only render the `CameraView` when `isFocused` is true. This ensures the camera session starts/stops correctly when switching tabs.
-    - Add a `key` prop to `CameraView` that changes when the screen is focused (e.g., `<CameraView key={isFocused ? 'active' : 'inactive'} ... />`) to force a clean mount.
+1.  **Budget Overview (`src/screens/Budget/BudgetScreen.tsx`)**:
+    - Display a list of active budgets using a `FlatList` or `SectionList`.
+    - Use a `BudgetCard` subcomponent to show:
+      - Category name and icon.
+      - Progress bar (e.g., green for < 70%, yellow for 70-90%, red for > 90%).
+      - Amount spent vs. Total budget (e.g., "Rp 700.000 / Rp 1.000.000").
+      - Remaining balance (e.g., "Sisa Rp 300.000").
+    - Add an "Add Budget" button in the header.
 
-2.  **Layout Fixes**:
-    - Use `StyleSheet.absoluteFill` from `react-native` instead of just NativeWind classes for the `CameraView` to ensure it captures the full layout dimensions immediately.
-    - Ensure the `CameraView` is the first child of the root `View`.
+2.  **Add/Edit Budget Screen (`src/screens/BudgetForm/`)**:
+    - Fields:
+      - **Amount**: Budget limit.
+      - **Category**: Select category (from `useCategoryStore`).
+      - **Period**: Select period (Weekly, Monthly, Yearly).
+      - **Start/End Dates**: When the budget is active.
+    - Integration with `useBudgetStore`.
 
-3.  **Camera Configuration**:
-    - Explicitly set `active={true}` if supported by the version, or ensure `facing="back"` is correctly handled.
-    - Add an `onCameraReady` callback to log/verify the camera is actually ready.
+3.  **Logic (`src/screens/Budget/useBudgetScreen.ts`)**:
+    - Fetch budgets from `useBudgetStore`.
+    - Fetch transactions from `useTransactionStore` and filter them based on budget category and date range.
+    - Calculate the percentage of budget consumed.
 
-4.  **Error Handling**:
-    - If the camera fails to start after a few seconds, provide a "Refresh Camera" button to the user.
+4.  **UI Feedback**:
+    - Provide empty states for when no budgets are set.
+    - Clearly highlight budgets that have been exceeded.
 
 ### Guidelines:
 
-- **Performance**: Avoid unnecessary re-renders.
-- **Reliability**: Focus on the lifecycle of the camera session within Expo Router tabs.
+- **Styling**: Use NativeWind v4 `className`.
+- **Performance**: Optimize heavy filtering logic using `useMemo`.
+- **Components**: Use `ProgressBar` and `Card` from `src/components/ui/` or create them in `src/components/budget/`.
 
-Please provide the updated `ScannerScreen.tsx` and any necessary adjustments to `useScannerScreen.ts`.
+Please provide the implementation for the Budget screen, Budget form, and the tracking logic.
