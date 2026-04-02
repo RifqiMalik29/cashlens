@@ -1,4 +1,4 @@
-import { spacing } from "@constants/theme";
+import { colors, spacing } from "@constants/theme";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { SectionList, Text, View } from "react-native";
 
@@ -100,7 +100,10 @@ export function TransactionList({
     const balancePrefix = section.netBalance >= 0 ? "+" : "-";
 
     return (
-      <View className="px-4 py-2 bg-background">
+      <View
+        className="px-4 py-2"
+        style={{ backgroundColor: colors.background }}
+      >
         <View className="flex-row items-center justify-between">
           <Text className="text-xs font-semibold" style={{ color: "#6B7280" }}>
             {section.title}
