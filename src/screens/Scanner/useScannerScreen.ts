@@ -1,12 +1,11 @@
 /* eslint-disable no-console */
 import { useIsFocused } from "@react-navigation/native";
+import { recognizeText } from "@services/ocr";
+import { parseReceipt } from "@services/receiptParser";
 import { useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-
-import { recognizeText } from "@/services/ocr";
-import { parseReceipt } from "@/services/receiptParser";
 
 const LOG_PREFIX = "[ScannerScreen]";
 

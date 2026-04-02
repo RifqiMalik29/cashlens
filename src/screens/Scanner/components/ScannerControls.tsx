@@ -1,7 +1,6 @@
+import { Typography } from "@components/ui/Typography";
 import { Camera, Image, Zap } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
 
 interface ScannerControlsProps {
   isScanning: boolean;

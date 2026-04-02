@@ -1,6 +1,5 @@
+import { Typography } from "@components/ui/Typography";
 import { TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
 
 interface CameraErrorViewProps {
   onRefresh: () => void;

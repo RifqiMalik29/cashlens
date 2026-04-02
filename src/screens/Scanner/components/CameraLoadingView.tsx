@@ -1,6 +1,5 @@
+import { Typography } from "@components/ui/Typography";
 import { View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
 
 export function CameraLoadingView() {
   return (

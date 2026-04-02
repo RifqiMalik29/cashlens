@@ -1,6 +1,5 @@
+import { Typography } from "@components/ui/Typography";
 import { StyleSheet, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
 
 export function CameraInactiveView() {
   return (

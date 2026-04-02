@@ -1,9 +1,8 @@
+import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
+import { ScanningProgress } from "@components/scanner/ScanningProgress";
 import { CameraView } from "expo-camera";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { ScannerOverlay } from "@/components/scanner/ScannerOverlay";
-import { ScanningProgress } from "@/components/scanner/ScanningProgress";
 
 import {
   CameraErrorView,
