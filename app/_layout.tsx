@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { CustomHeader } from "@components/ui";
+import { CustomHeader, SyncOverlay } from "@components/ui";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
@@ -9,6 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCloudSync } from "@/hooks/useCloudSync";
 import { useEmailConfirmation } from "@/hooks/useEmailConfirmation";
+import { useSessionRestore } from "@/hooks/useSessionRestore";
+import { useSyncStatus } from "@/hooks/useSyncStatus";
 import i18n, { initI18n } from "@/services/i18n";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -19,7 +21,11 @@ export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
   const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
+  const { isInitialPull } = useSyncStatus();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+
+  // Restore Supabase session on app startup
+  useSessionRestore();
 
   // Initialize cloud sync
   useCloudSync();
@@ -71,6 +77,8 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         </Stack>
       </SafeAreaView>
+
+      <SyncOverlay isVisible={isAuthenticated && isInitialPull} />
     </GestureHandlerRootView>
   );
 }

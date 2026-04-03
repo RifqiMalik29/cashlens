@@ -1,13 +1,17 @@
 import { signInWithEmail } from "@services/supabase";
-import { useAuthStore } from "@stores/useAuthStore";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useBudgetStore } from "@/stores/useBudgetStore";
+import { useCategoryStore } from "@/stores/useCategoryStore";
+import { useTransactionStore } from "@/stores/useTransactionStore";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useLogin() {
   const router = useRouter();
-  const { setAuthenticated, setUserId } = useAuthStore();
+  const { setAuthenticated, setUserId, reset } = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +48,12 @@ export function useLogin() {
         setError(signInError.message);
         return;
       }
+
+      // Clear all stores before setting new user to prevent data leakage
+      reset();
+      useTransactionStore.getState().clearTransactions();
+      useBudgetStore.getState().clearBudgets();
+      useCategoryStore.getState().resetToDefault();
 
       setAuthenticated(true);
       setUserId(data.user?.id ?? null, data.user?.email ?? null);

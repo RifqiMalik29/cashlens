@@ -1,7 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { Alert } from "react-native";
 
 import { currencies } from "@/constants/currencies";
 import { colors } from "@/constants/theme";
@@ -9,6 +11,9 @@ import { useCloudSync } from "@/hooks/useCloudSync";
 import { useHeader } from "@/hooks/useHeader";
 import { signOut } from "@/services/supabase";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useBudgetStore } from "@/stores/useBudgetStore";
+import { useCategoryStore } from "@/stores/useCategoryStore";
+import { useTransactionStore } from "@/stores/useTransactionStore";
 
 export function useSettingsScreen() {
   const router = useRouter();
@@ -41,7 +46,13 @@ export function useSettingsScreen() {
   const handleSignOut = async () => {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     await signOut();
-    reset();
+
+    // Clear all stores to prevent data leakage between users
+    reset(); // auth store
+    useTransactionStore.getState().clearTransactions();
+    useBudgetStore.getState().clearBudgets();
+    useCategoryStore.getState().resetToDefault();
+
     router.replace("/(auth)/login");
   };
 
@@ -75,6 +86,45 @@ export function useSettingsScreen() {
     router.push("/(tabs)/settings/help");
   };
 
+  const handleClearAllData = async () => {
+    await Haptics.selectionAsync();
+
+    Alert.alert(
+      "Hapus Semua Data Lokal",
+      "Ini akan menghapus semua data lokal (transaksi, anggaran, kategori, dll). Data di Supabase tidak akan terpengaruh. Anda harus login ulang setelah ini.",
+      [
+        { text: "Batal", style: "cancel" },
+        {
+          text: "Hapus",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await AsyncStorage.clear();
+              await Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success
+              );
+              Alert.alert(
+                "Berhasil",
+                "Data lokal berhasil dihapus. Aplikasi akan restart.",
+                [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      // Force app to restart by navigating to root
+                      router.replace("/(auth)/login");
+                    }
+                  }
+                ]
+              );
+            } catch {
+              Alert.alert("Error", "Gagal menghapus data lokal");
+            }
+          }
+        }
+      ]
+    );
+  };
+
   return {
     t,
     userEmail,
@@ -87,6 +137,7 @@ export function useSettingsScreen() {
     handleCategoriesPress,
     handleLanguagePress,
     handleThemePress,
-    handleHelpPress
+    handleHelpPress,
+    handleClearAllData
   };
 }

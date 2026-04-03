@@ -5,7 +5,8 @@ import {
   LayoutGrid,
   LogOut,
   Mail,
-  Palette
+  Palette,
+  Trash2
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -34,7 +35,8 @@ export default function SettingsScreen() {
     handleCategoriesPress,
     handleLanguagePress,
     handleThemePress,
-    handleHelpPress
+    handleHelpPress,
+    handleClearAllData
   } = useSettingsScreen();
 
   return (
@@ -104,6 +106,22 @@ export default function SettingsScreen() {
             label={t("settings.helpCenter")}
             onPress={handleHelpPress}
           />
+        </SettingsSection>
+
+        <SettingsSection title="Developer">
+          <SettingsItem
+            icon={<Trash2 size={20} color="#EF4444" />}
+            label="Hapus Semua Data Lokal"
+            danger
+            onPress={handleClearAllData}
+          />
+          <View className="bg-surface-secondary rounded-lg p-4 mt-3">
+            <Typography variant="caption" color="#6B7280">
+              ⚠️ PERINGATAN: Ini akan menghapus semua data lokal (transaksi,
+              anggaran, kategori). Gunakan ini untuk memperbaiki masalah sync
+              UUID. Data di Supabase tidak terpengaruh.
+            </Typography>
+          </View>
         </SettingsSection>
 
         <SettingsSection title={t("settings.account")}>
