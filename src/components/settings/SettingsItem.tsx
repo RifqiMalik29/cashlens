@@ -6,7 +6,7 @@ import { TouchableOpacity, View } from "react-native";
 interface SettingsItemProps {
   icon: ReactNode;
   label: string;
-  value?: string;
+  value?: ReactNode;
   onPress?: () => void;
   danger?: boolean;
 }

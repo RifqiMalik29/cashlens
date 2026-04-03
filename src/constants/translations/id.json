@@ -121,6 +121,21 @@
     "dark": "Gelap",
     "support": "Bantuan",
     "helpCenter": "Pusat Bantuan",
+    "help": {
+      "title": "Pusat Bantuan",
+      "subtitle": "Dukungan dan FAQ",
+      "faq": "Pertanyaan Umum",
+      "howToScan": "Bagaimana cara scan struk?",
+      "howToScanDesc": "Buka tab Scan dan ambil foto struk belanja Anda.",
+      "howToBudget": "Bagaimana cara membuat anggaran?",
+      "howToBudgetDesc": "Buka tab Anggaran dan klik tombol + untuk membuat anggaran baru.",
+      "contactSupport": "Hubungi Dukungan",
+      "contactSupportDesc": "Jika ada kendala, hubungi kami di support@cashlens.app"
+    },
+    "themeScreen": {
+      "title": "Tema",
+      "subtitle": "Preferensi tampilan"
+    },
     "account": "Akun",
     "logout": "Keluar dari Akun",
     "logoutDesc": "Anda akan keluar dari akun dan kembali ke layar login.",

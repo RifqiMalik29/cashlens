@@ -121,6 +121,21 @@
     "dark": "Dark",
     "support": "Support",
     "helpCenter": "Help Center",
+    "help": {
+      "title": "Help Center",
+      "subtitle": "Support and FAQ",
+      "faq": "Frequently Asked Questions",
+      "howToScan": "How to scan receipts?",
+      "howToScanDesc": "Go to the Scan tab and take a photo of your receipt.",
+      "howToBudget": "How to set a budget?",
+      "howToBudgetDesc": "Go to the Budget tab and click the + button to create a new budget.",
+      "contactSupport": "Contact Support",
+      "contactSupportDesc": "If you have issues, contact us at support@cashlens.app"
+    },
+    "themeScreen": {
+      "title": "Theme",
+      "subtitle": "Appearance preferences"
+    },
     "account": "Account",
     "logout": "Logout",
     "logoutDesc": "You will be logged out and return to the login screen.",
