@@ -35,5 +35,38 @@ module.exports = defineConfig([
       "import/no-unresolved": "off"
     }
   },
+  {
+    files: ["src/screens/*/*.tsx"],
+    rules: {
+      "no-restricted-imports": ["error", {
+        paths: [
+          {
+            name: "react",
+            importNames: ["useState", "useEffect", "useMemo", "useCallback", "useRef", "useContext", "useReducer"],
+            message: "React hooks must be used in custom hooks (.ts files), not directly in .tsx components. Create a use<ComponentName> hook instead."
+          }
+        ]
+      }],
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "FunctionDeclaration:not(Program > ExportDefaultDeclaration > FunctionDeclaration)",
+          message: "Function declarations are not allowed in .tsx files. Move all functions to a custom hook (.ts file) and import them."
+        },
+        {
+          selector: "FunctionDeclaration > BlockStatement > VariableDeclaration[kind='const'] > VariableDeclarator:not([init.type='CallExpression']):not([init.type='ArrowFunctionExpression'])",
+          message: "Variable initialization is not allowed in .tsx files. Move all data initialization to a custom hook (.ts file) and import it. Exception: hook destructuring (const { data } = useHook()) is allowed."
+        },
+        {
+          selector: "FunctionDeclaration > BlockStatement > VariableDeclaration[kind='const'] > VariableDeclarator[init.type='ArrowFunctionExpression']:not([init.params.0.type='ObjectPattern'])",
+          message: "Arrow function assignments are not allowed in .tsx files. Move all functions to a custom hook (.ts file) and import them. Exception: render functions with object destructuring params are allowed."
+        },
+        {
+          selector: "FunctionDeclaration > BlockStatement > VariableDeclaration[kind='const'] > VariableDeclarator[init.type='FunctionExpression']",
+          message: "Function expressions are not allowed in .tsx files. Move all functions to a custom hook (.ts file) and import them."
+        }
+      ]
+    }
+  },
   prettierConfig
 ]);
