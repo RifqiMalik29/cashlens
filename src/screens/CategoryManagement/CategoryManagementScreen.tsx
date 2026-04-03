@@ -2,12 +2,12 @@ import * as Haptics from "expo-haptics";
 import { Plus, Trash2 } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Typography } from "@/components/ui/Typography";
 import { spacing } from "@/constants/theme";
 import { useCategoryStore } from "@/stores/useCategoryStore";
 import { type Category } from "@/types";
+import { generateId } from "@/utils/generateId";
 
 export default function CategoryManagementScreen() {
   const categories = useCategoryStore((state) => state.categories);
@@ -45,7 +45,7 @@ export default function CategoryManagementScreen() {
   const handleAddCategory = async () => {
     await Haptics.selectionAsync();
     const newCategory = {
-      id: `custom_${Date.now()}`,
+      id: generateId(),
       name: "Kategori Baru",
       icon: "MoreHorizontal",
       color: "#9CA3AF",
@@ -57,7 +57,7 @@ export default function CategoryManagementScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background">
       <View className="px-6 pt-4 pb-4">
         <View className="flex-row rounded-lg bg-surface-secondary p-1">
           {[
@@ -148,7 +148,7 @@ export default function CategoryManagementScreen() {
           </Typography>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

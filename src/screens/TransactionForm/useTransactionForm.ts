@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
 import { type TransactionType } from "@/types";
+import { generateId } from "@/utils/generateId";
 
 const DEFAULT_AMOUNT = "";
 const DEFAULT_NOTE = "";
@@ -118,7 +119,7 @@ export function useTransactionForm() {
     try {
       const numericAmount = parseFloat(amount);
       const transactionData = {
-        id: existingTransaction?.id ?? `txn_${Date.now()}`,
+        id: existingTransaction?.id ?? generateId(),
         amount: numericAmount,
         currency: baseCurrency,
         amountInBaseCurrency: numericAmount,

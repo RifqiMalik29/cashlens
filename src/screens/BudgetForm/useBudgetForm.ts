@@ -5,6 +5,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useBudgetStore } from "@/stores/useBudgetStore";
 import { useCategoryStore } from "@/stores/useCategoryStore";
 import { type BudgetPeriod } from "@/types";
+import { generateId } from "@/utils/generateId";
 
 export function useBudgetForm() {
   const router = useRouter();
@@ -58,7 +59,7 @@ export function useBudgetForm() {
 
     try {
       const budgetData = {
-        id: existingBudget?.id ?? `budget_${Date.now()}`,
+        id: existingBudget?.id ?? generateId(),
         categoryId: selectedCategoryId,
         amount: parseFloat(amount),
         currency: baseCurrency,

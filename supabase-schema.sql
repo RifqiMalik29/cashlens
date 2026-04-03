@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS budgets (
 
 -- Categories table
 CREATE TABLE IF NOT EXISTS categories (
-  id VARCHAR(50) PRIMARY KEY,
+  id VARCHAR(50),
   user_id UUID REFERENCES auth.users NOT NULL,
   name VARCHAR(100) NOT NULL,
   icon VARCHAR(50) NOT NULL,
@@ -46,7 +46,8 @@ CREATE TABLE IF NOT EXISTS categories (
   is_default BOOLEAN DEFAULT false,
   is_custom BOOLEAN DEFAULT true,
   type VARCHAR(10) NOT NULL CHECK (type IN ('income', 'expense', 'both')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  PRIMARY KEY (id, user_id)
 );
 
 -- Create indexes for better query performance
