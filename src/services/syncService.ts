@@ -7,6 +7,11 @@ import { supabase } from "./supabase";
 
 const LOG_PREFIX = "[SyncService]";
 
+function isTableNotFoundError(error: any): boolean {
+  const message = (error as Error).message.toLowerCase();
+  return message.includes("relation") || message.includes("does not exist");
+}
+
 export interface SyncResult {
   success: boolean;
   error?: string;
@@ -59,7 +64,15 @@ export async function pullTransactions(userId: string): Promise<Transaction[]> {
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      if (isTableNotFoundError(error)) {
+        console.log(
+          `${LOG_PREFIX} ⚠ Table not created yet. Run supabase-schema.sql in Supabase SQL Editor.`
+        );
+        return [];
+      }
+      throw error;
+    }
 
     const transactions: Transaction[] = (data || []).map((item: any) => ({
       id: item.id,
@@ -134,7 +147,15 @@ export async function pullBudgets(userId: string): Promise<Budget[]> {
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      if (isTableNotFoundError(error)) {
+        console.log(
+          `${LOG_PREFIX} ⚠ Table not created yet. Run supabase-schema.sql in Supabase SQL Editor.`
+        );
+        return [];
+      }
+      throw error;
+    }
 
     const budgets: Budget[] = (data || []).map((item: any) => ({
       id: item.id,
@@ -203,7 +224,15 @@ export async function pullCategories(userId: string): Promise<Category[]> {
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      if (isTableNotFoundError(error)) {
+        console.log(
+          `${LOG_PREFIX} ⚠ Table not created yet. Run supabase-schema.sql in Supabase SQL Editor.`
+        );
+        return [];
+      }
+      throw error;
+    }
 
     const categories: Category[] = (data || []).map((item: any) => ({
       id: item.id,
