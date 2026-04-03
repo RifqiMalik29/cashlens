@@ -7,12 +7,14 @@ const SYNC_STORAGE_KEY = "sync-status";
 
 interface SyncStatus {
   isSyncing: boolean;
+  isInitialPull: boolean;
   lastSyncedAt: string | null;
   error: string | null;
 }
 
 const defaultSyncStatus: SyncStatus = {
   isSyncing: false,
+  isInitialPull: false,
   lastSyncedAt: null,
   error: null
 };
@@ -52,9 +54,17 @@ export function useSyncStatus() {
     [updateSyncStatus]
   );
 
+  const setInitialPulling = useCallback(
+    async (isInitialPull: boolean) => {
+      await updateSyncStatus({ isInitialPull, error: null });
+    },
+    [updateSyncStatus]
+  );
+
   const setSynced = useCallback(async () => {
     await updateSyncStatus({
       isSyncing: false,
+      isInitialPull: false,
       lastSyncedAt: new Date().toISOString(),
       error: null
     });
@@ -62,7 +72,7 @@ export function useSyncStatus() {
 
   const setError = useCallback(
     async (error: string) => {
-      await updateSyncStatus({ isSyncing: false, error });
+      await updateSyncStatus({ isSyncing: false, isInitialPull: false, error });
     },
     [updateSyncStatus]
   );
@@ -102,6 +112,7 @@ export function useSyncStatus() {
   return {
     ...status,
     setSyncing,
+    setInitialPulling,
     setSynced,
     setError,
     loadSyncStatus,

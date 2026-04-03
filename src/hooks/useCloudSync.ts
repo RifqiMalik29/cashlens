@@ -33,7 +33,8 @@ function sleep(ms: number): Promise<void> {
 export function useCloudSync() {
   const { userId, isAuthenticated, preferences, setPreferences } =
     useAuthStore();
-  const { setSyncing, setSynced, setError, lastSyncedAt } = useSyncStatus();
+  const { setSyncing, setSynced, setError, setInitialPulling, lastSyncedAt } =
+    useSyncStatus();
 
   const transactions = useTransactionStore((state) => state.transactions);
   const setTransactions = useTransactionStore((state) => state.setTransactions);
@@ -136,8 +137,14 @@ export function useCloudSync() {
   const pullData = useCallback(async () => {
     if (!userId || !isAuthenticated || isSyncingRef.current) return;
 
+    const isFirstTime = lastSyncedAt === null;
+
     isSyncingRef.current = true;
-    await setSyncing(true);
+    if (isFirstTime) {
+      await setInitialPulling(true);
+    } else {
+      await setSyncing(true);
+    }
 
     try {
       const data = await performSyncWithRetry<PullDataResult>(() =>
@@ -145,15 +152,16 @@ export function useCloudSync() {
       );
 
       if (data) {
-        if (data.transactions.length > 0) {
-          setTransactions(data.transactions);
-        }
-        if (data.budgets.length > 0) {
-          setBudgets(data.budgets);
-        }
+        // Always update transactions and budgets even if empty
+        setTransactions(data.transactions);
+        setBudgets(data.budgets);
+
+        // For categories, only update if we pulled something from cloud
+        // otherwise we might lose local defaults on first pull
         if (data.categories.length > 0) {
           setCategories(data.categories);
         }
+
         if (data.preferences) {
           setPreferences(data.preferences);
         }
@@ -166,15 +174,20 @@ export function useCloudSync() {
       await setError((error as Error).message);
     } finally {
       isSyncingRef.current = false;
+      if (isFirstTime) {
+        await setInitialPulling(false);
+      }
     }
   }, [
     userId,
     isAuthenticated,
+    lastSyncedAt,
+    setInitialPulling,
+    setSyncing,
     setTransactions,
     setBudgets,
     setCategories,
     setPreferences,
-    setSyncing,
     setSynced,
     setError,
     performSyncWithRetry

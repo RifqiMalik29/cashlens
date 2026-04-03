@@ -273,7 +273,7 @@ export async function pushCategories(
         user_id: userId
       })),
       {
-        onConflict: "id"
+        onConflict: "id,user_id"
       }
     );
 
