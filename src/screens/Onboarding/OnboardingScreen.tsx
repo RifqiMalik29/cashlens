@@ -1,4 +1,4 @@
-import { FlatList, useWindowDimensions, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { BottomControls } from "./components/BottomControls";
@@ -14,11 +14,10 @@ export default function OnboardingScreen() {
     handleNext,
     handleSkip,
     handleScroll,
-    slides
+    slides,
+    iconSize,
+    screenWidth
   } = useOnboarding();
-
-  const { height, width } = useWindowDimensions();
-  const iconSize = height * 0.11;
 
   const renderSlide = ({ item }: { item: (typeof slides)[0] }) => (
     <OnboardingSlide
@@ -26,7 +25,7 @@ export default function OnboardingScreen() {
       subtitle={item.subtitle}
       iconName={item.iconName}
       iconSize={iconSize}
-      screenWidth={width}
+      screenWidth={screenWidth}
     />
   );
 

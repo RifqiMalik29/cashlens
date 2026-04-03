@@ -4,30 +4,22 @@ import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import { formatCurrency } from "@utils/formatCurrency";
-import { useRouter } from "expo-router";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useBudgetScreen } from "./useBudgetScreen";
 
 export default function BudgetScreen() {
-  const router = useRouter();
   const {
     activeBudgets,
     exceededBudgets,
     totalBudget,
     totalSpent,
     baseCurrency,
-    hasBudgets
+    hasBudgets,
+    handleAddBudget,
+    handleEditBudget
   } = useBudgetScreen();
-
-  const handleAddBudget = () => {
-    router.push("/(tabs)/budget/add");
-  };
-
-  const handleEditBudget = (budgetId: string) => {
-    router.push(`/(tabs)/budget/edit?id=${budgetId}`);
-  };
 
   if (!hasBudgets) {
     return (

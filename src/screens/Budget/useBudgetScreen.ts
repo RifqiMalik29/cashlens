@@ -3,7 +3,8 @@ import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { type Budget, type Category } from "@types";
-import { useMemo } from "react";
+import { useRouter } from "expo-router";
+import { useCallback, useMemo } from "react";
 
 interface BudgetWithProgress extends Budget {
   category: Category;
@@ -73,6 +74,7 @@ function getBudgetPeriodDates(budget: Budget) {
 }
 
 export function useBudgetScreen() {
+  const router = useRouter();
   const { baseCurrency } = useAuthStore((state) => state.preferences);
   const budgets = useBudgetStore((state) => state.budgets);
   const categories = useCategoryStore((state) => state.categories);
@@ -135,6 +137,17 @@ export function useBudgetScreen() {
     return budgetsWithProgress.reduce((sum, b) => sum + b.spentAmount, 0);
   }, [budgetsWithProgress]);
 
+  const handleAddBudget = useCallback(() => {
+    router.push("/(tabs)/budget/add");
+  }, [router]);
+
+  const handleEditBudget = useCallback(
+    (budgetId: string) => {
+      router.push(`/(tabs)/budget/edit?id=${budgetId}`);
+    },
+    [router]
+  );
+
   return {
     budgetsWithProgress,
     activeBudgets,
@@ -142,6 +155,8 @@ export function useBudgetScreen() {
     totalBudget,
     totalSpent,
     baseCurrency,
-    hasBudgets: budgets.length > 0
+    hasBudgets: budgets.length > 0,
+    handleAddBudget,
+    handleEditBudget
   };
 }

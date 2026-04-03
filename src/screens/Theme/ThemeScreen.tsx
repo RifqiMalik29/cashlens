@@ -6,26 +6,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useThemeScreen } from "./useThemeScreen";
 
-export default function ThemeScreen() {
-  const { t, currentTheme, handleThemeSelect } = useThemeScreen();
+const themeIcons: Record<string, React.ReactNode> = {
+  light: <Sun size={20} color={colors.primary} />,
+  dark: <Moon size={20} color={colors.primary} />,
+  system: <Monitor size={20} color={colors.primary} />
+};
 
-  const themes = [
-    {
-      id: "light",
-      label: t("settings.light"),
-      icon: <Sun size={20} color={colors.primary} />
-    },
-    {
-      id: "dark",
-      label: t("settings.dark"),
-      icon: <Moon size={20} color={colors.primary} />
-    },
-    {
-      id: "system",
-      label: t("settings.system"),
-      icon: <Monitor size={20} color={colors.primary} />
-    }
-  ] as const;
+export default function ThemeScreen() {
+  const { t, themes, currentTheme, handleThemeSelect } = useThemeScreen();
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
@@ -40,7 +28,7 @@ export default function ThemeScreen() {
               style={{ marginTop: index > 0 ? spacing[3] : 0 }}
             >
               <SettingsItem
-                icon={theme.icon}
+                icon={themeIcons[theme.id]}
                 label={theme.label}
                 onPress={() => handleThemeSelect(theme.id)}
                 value={

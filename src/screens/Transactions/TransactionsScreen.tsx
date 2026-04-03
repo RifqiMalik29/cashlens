@@ -14,6 +14,7 @@ export default function TransactionsScreen() {
     transactions,
     categories,
     baseCurrency,
+    hasTransactions,
     handleTransactionPress,
     handleAddTransaction
   } = useTransactionsScreen();
@@ -23,8 +24,6 @@ export default function TransactionsScreen() {
     statusBarColor: colors.primary,
     statusBarStyle: "light"
   });
-
-  const hasTransactions = transactions.length > 0;
 
   return (
     <SafeAreaView

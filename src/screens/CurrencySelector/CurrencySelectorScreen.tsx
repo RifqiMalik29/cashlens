@@ -1,34 +1,18 @@
 import { Typography } from "@components/ui/Typography";
-import { currencies } from "@constants/currencies";
 import { spacing } from "@constants/theme";
-import { useAuthStore } from "@stores/useAuthStore";
-import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
-import { useMemo, useState } from "react";
 import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 
+import { useCurrencySelectorScreen } from "./useCurrencySelectorScreen";
+
 export default function CurrencySelectorScreen() {
-  const router = useRouter();
-  const { preferences, updatePreferences } = useAuthStore();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredCurrencies = useMemo(() => {
-    if (!searchQuery.trim()) return currencies;
-    const query = searchQuery.toLowerCase();
-    return currencies.filter(
-      (c) =>
-        c.code.toLowerCase().includes(query) ||
-        c.name.toLowerCase().includes(query) ||
-        c.symbol.toLowerCase().includes(query)
-    );
-  }, [searchQuery]);
-
-  const handleSelectCurrency = async (code: string) => {
-    await Haptics.selectionAsync();
-    updatePreferences({ baseCurrency: code });
-    router.back();
-  };
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredCurrencies,
+    currentCurrency,
+    handleSelectCurrency
+  } = useCurrencySelectorScreen();
 
   return (
     <View className="flex-1 bg-background">
@@ -70,7 +54,7 @@ export default function CurrencySelectorScreen() {
               <Typography variant="body" weight="medium" color="#4CAF82">
                 {currency.symbol}
               </Typography>
-              {preferences.baseCurrency === currency.code && (
+              {currentCurrency === currency.code && (
                 <View className="w-2 h-2 rounded-full bg-primary mt-1" />
               )}
             </View>
