@@ -88,6 +88,43 @@ cashlens/
 - Buat prompt dalam bahasa inggris
 - Setiap prompt akan dibuat dalam format single fenced code block lengkap
 
+### Infrastructure & External Setup
+
+#### 1. Supabase Setup (Cloud Sync & Auth)
+
+CashLens uses Supabase for authentication and cloud data synchronization.
+
+- **Project URL & Anon Key**: Obtain these from your Supabase Project Settings.
+- **Authentication**: Enable "Email Auth" in the Authentication dashboard.
+- **Database**: Run the provided `supabase-schema.sql` in the **SQL Editor** of your Supabase dashboard. This will create:
+  - `transactions` table with RLS enabled.
+  - `budgets` table with RLS enabled.
+  - `categories` table with RLS enabled.
+  - Necessary indexes and policies to ensure users can only access their own data.
+
+#### 2. Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+#### 3. Native Dependencies (OCR & Camera)
+
+The app relies on native modules that require proper installation:
+
+- **OCR**: Powered by `@react-native-ml-kit/text-recognition`. This is an on-device OCR that works offline.
+- **Camera**: Powered by `expo-camera` for real-time receipt capture.
+- **Image Picker**: Powered by `expo-image-picker` for gallery selection.
+- **Haptics**: Powered by `expo-haptics` for tactile feedback on user actions.
+
+#### 4. Android/iOS Configuration
+
+- **Package Name**: `com.rifqi2173.cashlens` (Android) / `cashlens` (iOS).
+- **Permissions**: Ensure permissions for Camera and Media Library are requested in `app.json` or handled at runtime.
+
 ### Thread Progress
 
 - [✅] Thread #0 — Planning & Architecture
@@ -99,20 +136,13 @@ cashlens/
 - [✅] Thread #6 — Budget Management (Budget Planning, Progress Tracking)
 - [✅] Thread #7 — Cloud Sync (Supabase)
 - [✅] Thread #8 — Settings + Polish (Currency, Category, Preferences, UX)
-
-### Final Review & Maintenance
-
-All core threads have been successfully implemented. The application is now fully functional with:
-
-- Native OCR Receipt Scanning
-- Cloud Sync via Supabase
-- Multi-currency & Category Support
-- Detailed Analytics & Budget Tracking
-- Secure Authentication & Onboarding
+- [✅] Thread #9 — Branding & Launch Prep (Icon, Splash, App Name configured in app.json)
+- [ ] Thread #10 — Localization (i18n implementation)
+- [✅] Thread #11 — Business Plan & Strategy (Drafted in docs/BUSINESS_PLAN.md)
 
 ### Current Thread
 
-None (Project roadmap complete)
+Thread #10 — Localization (i18n implementation) (next)
 
 ### Additional Rules
 

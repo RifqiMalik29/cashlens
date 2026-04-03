@@ -2,40 +2,36 @@ Act as a Senior React Native Developer.
 
 ### Objective
 
-Implement the **Settings & Polish** feature (Thread #8). This final thread focuses on user preferences, customization, and refining the overall user experience.
+Implement **Localization (i18n)** for the CashLens app (Thread #10). This will allow the app to support both Indonesian (id) and English (en) languages seamlessly.
 
 ### Requirements:
 
-1.  **Settings Overview (`src/screens/Settings/SettingsScreen.tsx`)**:
-    - Display sections: **Profile**, **Finance**, **Preferences**, **Support**, and **Account**.
-    - **Profile**: Show user email and a "Logout" button.
-    - **Finance**:
-      - "Base Currency": Navigate to a selector to change the primary currency.
-      - "Manage Categories": Navigate to a screen to add/edit/delete categories.
-    - **Preferences**:
-      - "Language": Toggle between Indonesian and English.
-      - "Theme": Toggle between Light, Dark, and System.
+1.  **Setup i18next**:
+    - Install (or assume usage of) `i18next` and `react-i18next`.
+    - Create a configuration file at `src/services/i18n.ts`.
+    - Initialize with `en` and `id` resources.
+    - Detect system language or fallback to the language stored in `useAuthStore`.
 
-2.  **Currency Selector (`src/screens/CurrencySelector/`)**:
-    - List all available currencies from `src/constants/currencies.ts`.
-    - Search bar to filter currencies.
-    - Update `useAuthStore` or `useCurrencyStore` when a new base currency is selected.
+2.  **Resource Files**:
+    - Create `src/constants/translations/en.json`.
+    - Create `src/constants/translations/id.json`.
+    - Translate key UI strings:
+      - **Auth**: Login, Register, Email, Password, etc.
+      - **Tabs**: Home, Transactions, Scan, Budget, Settings.
+      - **Dashboard**: Total Balance, Recent Transactions, etc.
+      - **Form**: Amount, Category, Date, Note, Save, Delete.
 
-3.  **Category Management (`src/screens/CategoryManagement/`)**:
-    - List all categories from `useCategoryStore`.
-    - Allow adding a new custom category (Name, Icon, Color, Type).
-    - Allow editing or deleting custom categories (Default categories cannot be deleted).
+3.  **App Integration**:
+    - Import `src/services/i18n.ts` in `app/_layout.tsx`.
+    - Replace hardcoded strings in screens and components with the `t()` function from `useTranslation()`.
+    - Update the language toggle in `SettingsScreen.tsx` to actually change the app language using `i18n.changeLanguage()`.
 
-4.  **UI/UX Polish**:
-    - **Animations**: Ensure smooth screen transitions and button interactions.
-    - **Feedback**: Use `Haptics` (expo-haptics) for key actions like adding a transaction or deleting a budget.
-    - **Error Handling**: Improve visual feedback for API/Sync errors.
-    - **Empty States**: Refine empty states across the app with consistent illustrations or icons.
+4.  **Zustand Sync**:
+    - Ensure the language preference in `useAuthStore` is updated and persisted when the language is changed.
 
 ### Guidelines:
 
-- **Styling**: Continue with NativeWind v4 `className`.
-- **Consistency**: Use the `useHeader` hook for all new screens.
-- **Icons**: Use `lucide-react-native`.
+- **Consistency**: Use a hierarchical structure in JSON files (e.g., `auth.login`, `dashboard.balance`).
+- **Ease of Use**: All new strings added in the future should follow this i18n pattern.
 
-Please provide the implementation for the Settings screen, its sub-screens, and the overall UX refinements.
+Please provide the implementation for the i18n service, translation files, and examples of how to update a screen (e.g., `LoginScreen.tsx`) to use translations.
