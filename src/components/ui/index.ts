@@ -1,8 +1,10 @@
 export { Badge } from "./Badge";
+export { BaseDialog } from "./BaseDialog";
 export { Button } from "./Button";
 export { Card } from "./Card";
 export { CustomHeader } from "./CustomHeader";
 export { Input } from "./Input";
 export { SyncIndicator } from "./SyncIndicator";
 export { SyncOverlay } from "./SyncOverlay";
+export { SyncProgressBar } from "./SyncProgressBar";
 export { Typography } from "./Typography";
