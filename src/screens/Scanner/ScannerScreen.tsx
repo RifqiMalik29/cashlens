@@ -1,5 +1,6 @@
 import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
 import { ScanningProgress } from "@components/scanner/ScanningProgress";
+import { useHeader } from "@hooks/useHeader";
 import { CameraView } from "expo-camera";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -32,6 +33,12 @@ export default function ScannerScreen() {
     handleCameraReady,
     handleRefreshCamera
   } = useScannerScreen();
+
+  useHeader({
+    showHeader: false,
+    statusBarColor: "#000000",
+    statusBarStyle: "light"
+  });
 
   if (!permission?.granted) {
     return (

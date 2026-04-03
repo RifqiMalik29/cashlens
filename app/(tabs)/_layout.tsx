@@ -8,84 +8,79 @@ import {
   ScanLine,
   Settings
 } from "lucide-react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabsLayout() {
   return (
-    <SafeAreaView
-      className="flex-1"
-      style={{ backgroundColor: "#FFFFFF" }}
-      edges={["bottom"]}
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarStyle: {
+          backgroundColor: colors.white,
+          borderTopColor: colors.border,
+          height: heights.tabBar,
+          paddingBottom: spacing[2]
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "500"
+        },
+        header: ({ options, navigation }) => (
+          <CustomHeader
+            title={options.title}
+            showBack={false}
+            onBack={navigation.goBack}
+            rightElement={options.headerRight?.({ canGoBack: false })}
+          />
+        )
+      }}
     >
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.textSecondary,
-          tabBarStyle: {
-            backgroundColor: colors.white,
-            borderTopColor: colors.border,
-            height: heights.tabBar,
-            paddingBottom: spacing[2]
-          },
-          tabBarLabelStyle: {
-            fontSize: 11,
-            fontWeight: "500"
-          },
-          header: ({ options, navigation }) => (
-            <CustomHeader
-              title={options.title}
-              showBack={false}
-              onBack={navigation.goBack}
-              rightElement={options.headerRight?.({ canGoBack: false })}
-            />
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => <Home size={size} color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Transactions",
+          tabBarIcon: ({ color, size }) => (
+            <ArrowLeftRight size={size} color={color} />
           )
         }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            tabBarLabel: "Home",
-            tabBarIcon: ({ color, size }) => <Home size={size} color={color} />
-          }}
-        />
-        <Tabs.Screen
-          name="transactions"
-          options={{
-            headerShown: false,
-            tabBarLabel: "Transactions",
-            tabBarIcon: ({ color, size }) => (
-              <ArrowLeftRight size={size} color={color} />
-            )
-          }}
-        />
-        <Tabs.Screen
-          name="scanner"
-          options={{
-            tabBarLabel: "Scan",
-            tabBarIcon: ({ color, size }) => (
-              <ScanLine size={size} color={color} />
-            )
-          }}
-        />
-        <Tabs.Screen
-          name="budget"
-          options={{
-            tabBarLabel: "Budget",
-            tabBarIcon: ({ color, size }) => (
-              <PieChart size={size} color={color} />
-            )
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            tabBarLabel: "Settings",
-            tabBarIcon: ({ color, size }) => (
-              <Settings size={size} color={color} />
-            )
-          }}
-        />
-      </Tabs>
-    </SafeAreaView>
+      />
+      <Tabs.Screen
+        name="scanner"
+        options={{
+          tabBarLabel: "Scan",
+          tabBarIcon: ({ color, size }) => (
+            <ScanLine size={size} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="budget"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Budget",
+          tabBarIcon: ({ color, size }) => (
+            <PieChart size={size} color={color} />
+          )
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          headerShown: false,
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ color, size }) => (
+            <Settings size={size} color={color} />
+          )
+        }}
+      />
+    </Tabs>
   );
 }

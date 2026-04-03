@@ -6,7 +6,7 @@ import { BudgetCard } from "@/components/budget/BudgetCard";
 import { EmptyState } from "@/components/transaction/EmptyState";
 import { Card } from "@/components/ui/Card";
 import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
+import { colors, spacing } from "@/constants/theme";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 import { useBudgetScreen } from "./useBudgetScreen";
@@ -32,47 +32,64 @@ export default function BudgetScreen() {
 
   if (!hasBudgets) {
     return (
-      <SafeAreaView className="flex-1 bg-background">
-        <View className="px-6 pt-6 pb-4">
-          <Typography variant="h2" weight="bold">
-            Anggaran
-          </Typography>
-          <Typography variant="body" color="#6B7280">
-            Kelola batas pengeluaran per kategori
-          </Typography>
+      <SafeAreaView
+        className="flex-1"
+        edges={["top"]}
+        style={{ backgroundColor: colors.primary }}
+      >
+        <View className="flex-1 bg-background">
+          <View
+            className="px-6 pt-6 pb-4"
+            style={{ backgroundColor: colors.primary }}
+          >
+            <Typography variant="h2" weight="bold" color="#FFFFFF">
+              Anggaran
+            </Typography>
+            <Typography variant="body" color="#FFFFFF">
+              Kelola batas pengeluaran per kategori
+            </Typography>
+          </View>
+          <EmptyState
+            title="Belum Ada Anggaran"
+            description="Buat anggaran untuk membatasi pengeluaran per kategori dan track progresnya."
+            actionLabel="Tambah Anggaran"
+            onAction={handleAddBudget}
+          />
         </View>
-        <EmptyState
-          title="Belum Ada Anggaran"
-          description="Buat anggaran untuk membatasi pengeluaran per kategori dan track progresnya."
-          actionLabel="Tambah Anggaran"
-          onAction={handleAddBudget}
-        />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      edges={["top"]}
+      style={{ backgroundColor: colors.primary }}
+    >
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: spacing[8] }}
+        style={{ backgroundColor: colors.background }}
       >
-        <View className="px-6 pt-6 pb-4">
+        <View
+          className="px-6 pt-6 pb-4 mb-4"
+          style={{ backgroundColor: colors.primary }}
+        >
           <View className="flex-row items-center justify-between">
             <View>
-              <Typography variant="h2" weight="bold">
+              <Typography variant="h2" weight="bold" color="#FFFFFF">
                 Anggaran
               </Typography>
-              <Typography variant="body" color="#6B7280">
+              <Typography variant="body" color="#FFFFFF">
                 Kelola batas pengeluaran per kategori
               </Typography>
             </View>
             <TouchableOpacity
               onPress={handleAddBudget}
-              className="bg-primary-light px-4 py-2 rounded-lg"
+              className="bg-white/20 px-4 py-2 rounded-lg"
             >
-              <Typography variant="body" weight="semibold" color="#4CAF82">
+              <Typography variant="body" weight="semibold" color="#FFFFFF">
                 + Baru
               </Typography>
             </TouchableOpacity>

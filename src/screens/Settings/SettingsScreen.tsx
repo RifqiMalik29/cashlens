@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 
+import { useHeader } from "@hooks/useHeader";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import {
@@ -19,7 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { SyncStatusButton } from "@/components/ui/SyncIndicator";
 import { Typography } from "@/components/ui/Typography";
 import { currencies } from "@/constants/currencies";
-import { spacing } from "@/constants/theme";
+import { colors, spacing } from "@/constants/theme";
 import { useCloudSync } from "@/hooks/useCloudSync";
 import { signOut } from "@/services/supabase";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -70,6 +71,12 @@ export default function SettingsScreen() {
   const { reset, preferences } = useAuthStore();
   const { pullData } = useCloudSync();
 
+  useHeader({
+    showHeader: false,
+    statusBarColor: colors.primary,
+    statusBarStyle: "light"
+  });
+
   const handleSignOut = async () => {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     await signOut();
@@ -111,21 +118,29 @@ export default function SettingsScreen() {
   const currency = currencies.find((c) => c.code === preferences.baseCurrency);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      edges={["top"]}
+      style={{ backgroundColor: colors.primary }}
+    >
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: spacing[8] }}
+        style={{ backgroundColor: colors.background }}
       >
-        <View className="px-6 pt-6 pb-4">
-          <Typography variant="h2" weight="bold">
+        <View
+          className="px-6 pt-6 pb-4"
+          style={{ backgroundColor: colors.primary }}
+        >
+          <Typography variant="h2" weight="bold" color="#FFFFFF">
             Pengaturan
           </Typography>
-          <Typography variant="body" color="#6B7280">
+          <Typography variant="body" color="#FFFFFF">
             Kelola preferensi aplikasi
           </Typography>
         </View>
 
-        <View className="px-6">
+        <View className="px-6 mt-4">
           <Typography
             variant="label"
             weight="medium"
