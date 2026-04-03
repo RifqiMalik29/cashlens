@@ -3,7 +3,6 @@ import { useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Typography } from "@/components/ui/Typography";
 import { currencies } from "@/constants/currencies";
@@ -33,7 +32,7 @@ export default function CurrencySelectorScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background">
       <View className="px-6 pt-4 pb-4">
         <View className="flex-row items-center bg-white border border-border rounded-lg px-4 py-3">
           <Search size={20} color="#9CA3AF" />
@@ -93,6 +92,6 @@ export default function CurrencySelectorScreen() {
 
         <View style={{ height: spacing[8] }} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

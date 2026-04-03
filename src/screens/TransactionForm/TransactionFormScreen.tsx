@@ -7,7 +7,6 @@ import { Input } from "@components/ui/Input";
 import { spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTransactionForm } from "./useTransactionForm";
 
@@ -37,7 +36,7 @@ export default function TransactionFormScreen() {
   });
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+    <View className="flex-1 bg-background">
       <KeyboardAvoidingView
         className="flex-1"
         behavior="padding"
@@ -118,6 +117,6 @@ export default function TransactionFormScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
