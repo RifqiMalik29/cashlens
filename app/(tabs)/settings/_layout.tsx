@@ -35,6 +35,12 @@ export default function SettingsStack() {
         }}
       />
       <Stack.Screen
+        name="language"
+        options={{
+          title: "Bahasa"
+        }}
+      />
+      <Stack.Screen
         name="theme"
         options={{
           title: "Tema Aplikasi"
