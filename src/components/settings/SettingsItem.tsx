@@ -1,8 +1,7 @@
+import { Typography } from "@components/ui/Typography";
 import { ChevronRight } from "lucide-react-native";
 import type { ReactNode } from "react";
 import { TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
 
 interface SettingsItemProps {
   icon: ReactNode;

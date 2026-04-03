@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { type Transaction } from "@types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-import { type Transaction } from "@/types";
 
 interface TransactionState {
   transactions: Transaction[];

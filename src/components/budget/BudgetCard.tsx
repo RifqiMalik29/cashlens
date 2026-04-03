@@ -1,7 +1,6 @@
+import { type Category } from "@types";
+import { formatCurrency } from "@utils/formatCurrency";
 import { TouchableOpacity, View } from "react-native";
-
-import { type Category } from "@/types";
-import { formatCurrency } from "@/utils/formatCurrency";
 
 import { Card } from "../ui/Card";
 import { Typography } from "../ui/Typography";

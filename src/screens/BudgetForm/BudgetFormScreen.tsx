@@ -1,15 +1,14 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import {
   BudgetFormActions,
   BudgetFormHeader,
   CategorySelector,
   PeriodSelector
-} from "@/components/budget";
-import { Input } from "@/components/ui/Input";
-import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
+} from "@components/budget";
+import { Input } from "@components/ui/Input";
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useBudgetForm } from "./useBudgetForm";
 

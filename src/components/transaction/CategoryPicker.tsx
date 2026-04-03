@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { type Category, type TransactionType } from "@types";
 import {
   BookOpen,
   Briefcase,
@@ -20,8 +21,6 @@ import {
 } from "lucide-react-native";
 import { type ComponentType } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-
-import { type Category, type TransactionType } from "@/types";
 
 import { Typography } from "../ui/Typography";
 

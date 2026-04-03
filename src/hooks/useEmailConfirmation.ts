@@ -1,9 +1,8 @@
 /* eslint-disable no-console */
+import { supabase } from "@services/supabase";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
-
-import { supabase } from "@/services/supabase";
 
 export function useEmailConfirmation() {
   const router = useRouter();

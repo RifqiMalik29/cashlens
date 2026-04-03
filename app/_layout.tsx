@@ -1,18 +1,17 @@
 import "../global.css";
 
 import { CustomHeader, SyncOverlay, SyncProgressBar } from "@components/ui";
+import { useCloudSync } from "@hooks/useCloudSync";
+import { useEmailConfirmation } from "@hooks/useEmailConfirmation";
+import { useSessionRestore } from "@hooks/useSessionRestore";
+import { useSyncStatus } from "@hooks/useSyncStatus";
+import i18n, { initI18n } from "@services/i18n";
+import { useAuthStore } from "@stores/useAuthStore";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { useCloudSync } from "@/hooks/useCloudSync";
-import { useEmailConfirmation } from "@/hooks/useEmailConfirmation";
-import { useSessionRestore } from "@/hooks/useSessionRestore";
-import { useSyncStatus } from "@/hooks/useSyncStatus";
-import i18n, { initI18n } from "@/services/i18n";
-import { useAuthStore } from "@/stores/useAuthStore";
 
 // Initialize i18n
 initI18n();

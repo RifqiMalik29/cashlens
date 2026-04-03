@@ -1,4 +1,4 @@
-import { type Currency } from "@/types";
+import { type Currency } from "@types";
 
 export const currencies: Currency[] = [
   { code: "IDR", name: "Indonesian Rupiah", symbol: "Rp", flag: "🇮🇩" },

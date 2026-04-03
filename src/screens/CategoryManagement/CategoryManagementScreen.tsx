@@ -1,13 +1,12 @@
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
+import { useCategoryStore } from "@stores/useCategoryStore";
+import { type Category } from "@types";
+import { generateId } from "@utils/generateId";
 import * as Haptics from "expo-haptics";
 import { Plus, Trash2 } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
-import { useCategoryStore } from "@/stores/useCategoryStore";
-import { type Category } from "@/types";
-import { generateId } from "@/utils/generateId";
 
 export default function CategoryManagementScreen() {
   const categories = useCategoryStore((state) => state.categories);

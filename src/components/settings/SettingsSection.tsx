@@ -1,8 +1,7 @@
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
 import type { ReactNode } from "react";
 import { View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
 
 interface SettingsSectionProps {
   title: string;

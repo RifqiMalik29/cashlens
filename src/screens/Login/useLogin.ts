@@ -1,11 +1,10 @@
 import { signInWithEmail } from "@services/supabase";
+import { useAuthStore } from "@stores/useAuthStore";
+import { useBudgetStore } from "@stores/useBudgetStore";
+import { useCategoryStore } from "@stores/useCategoryStore";
+import { useTransactionStore } from "@stores/useTransactionStore";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useBudgetStore } from "@/stores/useBudgetStore";
-import { useCategoryStore } from "@/stores/useCategoryStore";
-import { useTransactionStore } from "@/stores/useTransactionStore";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

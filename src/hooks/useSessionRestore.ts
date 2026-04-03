@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
+import { supabase } from "@services/supabase";
+import { useAuthStore } from "@stores/useAuthStore";
 import { useEffect } from "react";
-
-import { supabase } from "@/services/supabase";
-import { useAuthStore } from "@/stores/useAuthStore";
 
 export function useSessionRestore() {
   const { setUserId, setAuthenticated, setUserEmail } = useAuthStore();

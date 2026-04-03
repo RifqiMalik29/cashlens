@@ -1,9 +1,8 @@
+import { Typography } from "@components/ui/Typography";
+import { colors, spacing } from "@constants/theme";
 import { Check } from "lucide-react-native";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { Typography } from "@/components/ui/Typography";
-import { colors, spacing } from "@/constants/theme";
 
 import { useLanguageSelector } from "./useLanguageSelector";
 

@@ -1,8 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { type UserPreferences } from "@types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-import { type UserPreferences } from "@/types";
 
 interface AuthState {
   isAuthenticated: boolean;

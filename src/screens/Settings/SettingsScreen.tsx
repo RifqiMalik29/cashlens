@@ -1,4 +1,12 @@
 import {
+  SettingsHeader,
+  SettingsItem,
+  SettingsSection
+} from "@components/settings";
+import { SyncStatusButton } from "@components/ui/SyncIndicator";
+import { Typography } from "@components/ui/Typography";
+import { colors, spacing } from "@constants/theme";
+import {
   CreditCard,
   Globe,
   HelpCircle,
@@ -10,15 +18,6 @@ import {
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import {
-  SettingsHeader,
-  SettingsItem,
-  SettingsSection
-} from "@/components/settings";
-import { SyncStatusButton } from "@/components/ui/SyncIndicator";
-import { Typography } from "@/components/ui/Typography";
-import { colors, spacing } from "@/constants/theme";
 
 import { useSettingsScreen } from "./useSettingsScreen";
 

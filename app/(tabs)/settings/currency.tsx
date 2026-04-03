@@ -1,1 +1,1 @@
-export { default } from "@/screens/CurrencySelector/CurrencySelectorScreen";
+export { default } from "@screens/CurrencySelector/CurrencySelectorScreen";

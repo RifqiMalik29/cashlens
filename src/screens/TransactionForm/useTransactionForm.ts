@@ -1,11 +1,10 @@
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
+import { type TransactionType } from "@types";
+import { generateId } from "@utils/generateId";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-
-import { type TransactionType } from "@/types";
-import { generateId } from "@/utils/generateId";
 
 const DEFAULT_AMOUNT = "";
 const DEFAULT_NOTE = "";

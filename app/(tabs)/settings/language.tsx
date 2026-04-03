@@ -1,1 +1,1 @@
-export { default } from "@/screens/LanguageSelector/LanguageSelectorScreen";
+export { default } from "@screens/LanguageSelector/LanguageSelectorScreen";

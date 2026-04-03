@@ -1,8 +1,7 @@
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
+import { type Category } from "@types";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
-import { type Category } from "@/types";
 
 interface CategorySelectorProps {
   categories: Category[];

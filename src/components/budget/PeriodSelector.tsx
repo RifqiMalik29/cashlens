@@ -1,7 +1,6 @@
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
 import { TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
 
 type Period = "weekly" | "monthly" | "yearly";
 

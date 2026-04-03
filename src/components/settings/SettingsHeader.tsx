@@ -1,7 +1,6 @@
+import { Typography } from "@components/ui/Typography";
+import { colors } from "@constants/theme";
 import { View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
-import { colors } from "@/constants/theme";
 
 interface SettingsHeaderProps {
   title: string;

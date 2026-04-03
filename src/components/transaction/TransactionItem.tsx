@@ -1,3 +1,4 @@
+import { type Category, type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import {
   BookOpen,
@@ -20,8 +21,6 @@ import {
 } from "lucide-react-native";
 import { type ComponentType } from "react";
 import { TouchableOpacity, View } from "react-native";
-
-import { type Category, type Transaction } from "@/types";
 
 import { Typography } from "../ui/Typography";
 

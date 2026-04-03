@@ -1,8 +1,7 @@
+import { Typography } from "@components/ui/Typography";
+import { spacing } from "@constants/theme";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { Typography } from "@/components/ui/Typography";
-import { spacing } from "@/constants/theme";
 
 export default function ThemeScreen() {
   return (

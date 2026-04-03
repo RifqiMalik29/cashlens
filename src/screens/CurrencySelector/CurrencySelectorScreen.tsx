@@ -1,13 +1,12 @@
+import { Typography } from "@components/ui/Typography";
+import { currencies } from "@constants/currencies";
+import { spacing } from "@constants/theme";
+import { useAuthStore } from "@stores/useAuthStore";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { Search } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
-
-import { Typography } from "@/components/ui/Typography";
-import { currencies } from "@/constants/currencies";
-import { spacing } from "@/constants/theme";
-import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function CurrencySelectorScreen() {
   const router = useRouter();

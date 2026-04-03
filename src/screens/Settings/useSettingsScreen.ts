@@ -1,21 +1,20 @@
+import { currencies } from "@constants/currencies";
+import { colors } from "@constants/theme";
+import { useCloudSync } from "@hooks/useCloudSync";
+import { useHeader } from "@hooks/useHeader";
+import { useSyncStatus } from "@hooks/useSyncStatus";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { signOut } from "@services/supabase";
+import { useAuthStore } from "@stores/useAuthStore";
+import { useBudgetStore } from "@stores/useBudgetStore";
+import { useCategoryStore } from "@stores/useCategoryStore";
+import { useSyncStore } from "@stores/useSyncStore";
+import { useTransactionStore } from "@stores/useTransactionStore";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
-
-import { currencies } from "@/constants/currencies";
-import { colors } from "@/constants/theme";
-import { useCloudSync } from "@/hooks/useCloudSync";
-import { useHeader } from "@/hooks/useHeader";
-import { useSyncStatus } from "@/hooks/useSyncStatus";
-import { signOut } from "@/services/supabase";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useBudgetStore } from "@/stores/useBudgetStore";
-import { useCategoryStore } from "@/stores/useCategoryStore";
-import { useSyncStore } from "@/stores/useSyncStore";
-import { useTransactionStore } from "@/stores/useTransactionStore";
 
 export function useSettingsScreen() {
   const router = useRouter();

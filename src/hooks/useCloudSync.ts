@@ -1,19 +1,18 @@
 /* eslint-disable no-console */
 /* eslint-disable max-lines */
-import { useCallback, useEffect, useRef } from "react";
-
-import { useSyncStatus } from "@/hooks/useSyncStatus";
-import { pullAll, syncAll, type SyncResult } from "@/services/syncService";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useBudgetStore } from "@/stores/useBudgetStore";
-import { useCategoryStore } from "@/stores/useCategoryStore";
-import { useTransactionStore } from "@/stores/useTransactionStore";
+import { useSyncStatus } from "@hooks/useSyncStatus";
+import { pullAll, syncAll, type SyncResult } from "@services/syncService";
+import { useAuthStore } from "@stores/useAuthStore";
+import { useBudgetStore } from "@stores/useBudgetStore";
+import { useCategoryStore } from "@stores/useCategoryStore";
+import { useTransactionStore } from "@stores/useTransactionStore";
 import {
   type Budget,
   type Category,
   type Transaction,
   type UserPreferences
-} from "@/types";
+} from "@types";
+import { useCallback, useEffect, useRef } from "react";
 
 const SYNC_DEBOUNCE_MS = 2000;
 const MAX_RETRIES = 3;

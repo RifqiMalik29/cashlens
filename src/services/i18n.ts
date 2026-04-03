@@ -1,10 +1,9 @@
 /* eslint-disable import/no-named-as-default-member */
+import en from "@constants/translations/en.json";
+import id from "@constants/translations/id.json";
 import { getLocales } from "expo-localization";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-
-import en from "@/constants/translations/en.json";
-import id from "@/constants/translations/id.json";
 
 const resources = {
   en: { translation: en },

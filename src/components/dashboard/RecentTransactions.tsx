@@ -1,8 +1,7 @@
+import { type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useRouter } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
-
-import { type Transaction } from "@/types";
 
 import { Typography } from "../ui/Typography";
 

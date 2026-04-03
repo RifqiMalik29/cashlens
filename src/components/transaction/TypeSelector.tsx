@@ -1,6 +1,5 @@
+import { type TransactionType } from "@types";
 import { TouchableOpacity, View } from "react-native";
-
-import { type TransactionType } from "@/types";
 
 import { Typography } from "../ui/Typography";
 

@@ -1,6 +1,5 @@
+import { useSyncStore } from "@stores/useSyncStore";
 import { useCallback } from "react";
-
-import { useSyncStore } from "@/stores/useSyncStore";
 
 export function useSyncStatus() {
   const status = useSyncStore();

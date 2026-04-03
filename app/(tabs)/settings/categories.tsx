@@ -1,1 +1,1 @@
-export { default } from "@/screens/CategoryManagement/CategoryManagementScreen";
+export { default } from "@screens/CategoryManagement/CategoryManagementScreen";

@@ -6,7 +6,7 @@ import {
   type Category,
   type Transaction,
   type UserPreferences
-} from "@/types";
+} from "@types";
 
 import { supabase } from "./supabase";
 

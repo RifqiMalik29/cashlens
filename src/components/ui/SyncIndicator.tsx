@@ -1,7 +1,6 @@
+import { useSyncStatus } from "@hooks/useSyncStatus";
 import { Cloud, CloudOff } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
-
-import { useSyncStatus } from "@/hooks/useSyncStatus";
 
 import { Typography } from "./Typography";
 

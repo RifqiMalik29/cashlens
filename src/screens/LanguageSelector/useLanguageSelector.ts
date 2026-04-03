@@ -1,11 +1,10 @@
+import { useHeader } from "@hooks/useHeader";
+import i18n from "@services/i18n";
+import { useAuthStore } from "@stores/useAuthStore";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-
-import { useHeader } from "@/hooks/useHeader";
-import i18n from "@/services/i18n";
-import { useAuthStore } from "@/stores/useAuthStore";
 
 interface LanguageOption {
   code: string;

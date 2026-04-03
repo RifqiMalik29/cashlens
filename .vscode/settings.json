@@ -5,6 +5,7 @@
     "source.sortMembers": "explicit"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.preferences.useAliasesForRenames": true
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.useAliasesForRenames": true,
+  "typescript.preferences.importModuleSpecifierEnding": "minimal"
 }

@@ -1,1 +1,1 @@
-export { default } from "@/screens/BudgetForm/BudgetFormScreen";
+export { default } from "@screens/BudgetForm/BudgetFormScreen";
