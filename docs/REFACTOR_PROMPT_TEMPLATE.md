@@ -1,32 +1,46 @@
-Act as a Senior React Native Developer.
+# Fix: Standardize Path Aliases & Auto-Imports
 
-### Objective
+## Role
 
-Implement a dedicated **Language Selection** screen in the Settings flow, replacing the current inline toggle for a better user experience.
+Senior React Native / TypeScript Developer
 
-### Requirements:
+## Issue
 
-1.  **New Route (`app/(tabs)/settings/language.tsx`)**:
-    - Create a new route file that re-exports the `LanguageSelectorScreen`.
+1.  **Alias Conflict:** The `@/*` catch-all alias in `tsconfig.json` is overriding more specific aliases (like `@components/*`), causing VS Code to struggle with resolving the correct path alias for auto-imports.
+2.  **Relative Path Preference:** The `.vscode/settings.json` is configured to prefer relative imports, leading to `../../ui/Typography` instead of `@components/ui/Typography`.
 
-2.  **New Screen (`src/screens/LanguageSelector/LanguageSelectorScreen.tsx`)**:
-    - Create a clean list of supported languages (Indonesian, English).
-    - Display each language with its name and a radio-button or checkmark indicating the current selection.
-    - Follow the project's design system: card-based or list-item layout with proper spacing.
-    - Use the `useHeader` hook to set the title (e.g., "Pilih Bahasa" / "Select Language").
+## Goal
 
-3.  **Hook Logic (`src/screens/LanguageSelector/useLanguageSelector.ts`)**:
-    - Handle language selection logic.
-    - Update the `useAuthStore` preferences when a language is selected.
-    - Call `i18n.changeLanguage()` to apply the change immediately across the app.
-    - Navigate back to the Settings screen after selection.
+Standardize the alias configuration and editor settings to ensure auto-imports always use the most specific alias available.
 
-4.  **Update Settings Screen**:
-    - Update `useSettingsScreen.ts` to navigate to `/(tabs)/settings/language` instead of toggling the state inline.
-    - Update `app/(tabs)/settings/_layout.tsx` to include the new `language` screen in the Stack.
+## Instructions
 
-5.  **Styling**:
-    - Use NativeWind v4 `className` for all layout and UI components.
-    - Align colors and typography with the existing `CurrencySelector` screen for consistency.
+1.  **Refactor TSConfig Aliases:**
+    - Open `tsconfig.json`.
+    - **Remove** or **Comment out** the catch-all `@/*`: `["./src/*"]` alias.
+    - This ensures that when an import matches `@components/*`, TypeScript uses that specific mapping instead of falling back to the generic `@/*` mapping (which would result in `@/components/...`).
 
-Please provide the implementation for the new screen, its hook, and the necessary updates to navigation and existing settings logic.
+2.  **Update VS Code Settings:**
+    - Open `.vscode/settings.json`.
+    - Change `"typescript.preferences.importModuleSpecifier"` from `"relative"` to `"non-relative"`.
+    - Set `"typescript.preferences.importModuleSpecifierEnding"` to `"minimal"` to ensure clean imports.
+
+3.  **Sync Babel Configuration:**
+    - Ensure `babel.config.js` matches the `tsconfig.json` changes.
+    - Remove the `@` alias if you removed it from `tsconfig.json` to maintain consistency across the build pipeline.
+
+4.  **Bulk Fix Imports (Surgical):**
+    - Search for all instances of `@/components/`, `@/hooks/`, etc., and replace them with `@components/`, `@hooks/`.
+    - Ensure no imports are left using the `@/` prefix for folders that have their own dedicated alias.
+
+## Expected Output
+
+- `tsconfig.json` and `babel.config.js` are clean and synchronized.
+- `.vscode/settings.json` correctly prioritizes non-relative alias imports.
+- Auto-imports in the editor suggest `@components/` correctly.
+
+## Step-by-Step Testing
+
+1.  **Component Test:** Open a screen and try to auto-import `Typography` or `Button`. Confirm the suggestion is `@components/ui/...`.
+2.  **Type Check:** Run `tsc --noEmit` to verify all paths resolve correctly.
+3.  **Clean Cache:** Run `npx expo start --clear` to ensure the Babel changes are picked up by the packager.
