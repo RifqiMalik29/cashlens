@@ -1,6 +1,6 @@
 import "../global.css";
 
-import { CustomHeader, SyncOverlay } from "@components/ui";
+import { CustomHeader, SyncOverlay, SyncProgressBar } from "@components/ui";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
@@ -21,7 +21,8 @@ export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
   const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
-  const { isInitialPull } = useSyncStatus();
+  const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
+    useSyncStatus();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   // Restore Supabase session on app startup
@@ -56,9 +57,15 @@ export default function RootLayout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLayoutReady, isAuthenticated, isOnboarded, segments]);
 
+  const showOverlay = isInitialPull || isLogoutSyncing || isManualSyncing;
+  const showProgressBar = isSyncing && !showOverlay;
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView className="flex-1" edges={["bottom"]}>
+        {isAuthenticated && showProgressBar && (
+          <SyncProgressBar isVisible={true} />
+        )}
         <Stack
           screenOptions={{
             header: ({ options, navigation, back }) => (
@@ -78,7 +85,16 @@ export default function RootLayout() {
         </Stack>
       </SafeAreaView>
 
-      <SyncOverlay isVisible={isAuthenticated && isInitialPull} />
+      <SyncOverlay
+        isVisible={showOverlay}
+        message={
+          isLogoutSyncing
+            ? "Menyimpan perubahan terakhir..."
+            : isManualSyncing
+              ? "Menyinkronkan data..."
+              : undefined
+        }
+      />
     </GestureHandlerRootView>
   );
 }

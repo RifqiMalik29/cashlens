@@ -227,6 +227,18 @@ export function useCloudSync() {
   ]);
 
   useEffect(() => {
+    if (!userId) {
+      hasInitialPullRef.current = false;
+      lastSyncedVersion.current = {
+        transactions: 0,
+        budgets: 0,
+        categories: 0,
+        preferences: 0
+      };
+    }
+  }, [userId]);
+
+  useEffect(() => {
     if (
       isAuthenticated &&
       userId &&
@@ -242,6 +254,11 @@ export function useCloudSync() {
     isSyncing: isSyncingRef.current,
     lastSyncedAt,
     performSync,
-    pullData
+    pullData,
+    hasUnsyncedChanges:
+      transactionVersion !== lastSyncedVersion.current.transactions ||
+      budgetVersion !== lastSyncedVersion.current.budgets ||
+      categoryVersion !== lastSyncedVersion.current.categories ||
+      preferencesVersion !== lastSyncedVersion.current.preferences
   };
 }
