@@ -13,7 +13,8 @@
     "lint:fix": "eslint --fix .",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "android:dev": "npx expo run:android"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",

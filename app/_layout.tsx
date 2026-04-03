@@ -5,6 +5,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCloudSync } from "@/hooks/useCloudSync";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -36,23 +37,25 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Stack
-        screenOptions={{
-          header: ({ options, navigation, back }) => (
-            <CustomHeader
-              title={options.title}
-              showBack={!!back}
-              onBack={navigation.goBack}
-              rightElement={options.headerRight?.({
-                canGoBack: !!back
-              })}
-            />
-          )
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      </Stack>
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
+        <Stack
+          screenOptions={{
+            header: ({ options, navigation, back }) => (
+              <CustomHeader
+                title={options.title}
+                showBack={!!back}
+                onBack={navigation.goBack}
+                rightElement={options.headerRight?.({
+                  canGoBack: !!back
+                })}
+              />
+            )
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        </Stack>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 }
