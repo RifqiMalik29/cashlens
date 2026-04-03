@@ -55,7 +55,7 @@ export function useRegister() {
 
       if (data?.user) {
         setAuthenticated(true);
-        setUserId(data.user.id);
+        setUserId(data.user.id, data.user.email);
         router.replace("/(tabs)");
       } else {
         router.push("/(auth)/login");

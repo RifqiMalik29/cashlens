@@ -46,7 +46,7 @@ export function useLogin() {
       }
 
       setAuthenticated(true);
-      setUserId(data.user?.id ?? null);
+      setUserId(data.user?.id ?? null, data.user?.email ?? null);
       router.replace("/(tabs)");
     } catch (err) {
       setError((err as Error).message || "Terjadi kesalahan");

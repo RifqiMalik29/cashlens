@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCloudSync } from "@/hooks/useCloudSync";
+import { useEmailConfirmation } from "@/hooks/useEmailConfirmation";
 import i18n, { initI18n } from "@/services/i18n";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -22,6 +23,9 @@ export default function RootLayout() {
 
   // Initialize cloud sync
   useCloudSync();
+
+  // Handle email confirmation deep links
+  useEmailConfirmation();
 
   // Sync language preference from store
   useEffect(() => {

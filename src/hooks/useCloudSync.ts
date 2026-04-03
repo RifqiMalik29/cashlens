@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* eslint-disable max-lines */
 import { useCallback, useEffect, useRef } from "react";
 
 import { useSyncStatus } from "@/hooks/useSyncStatus";
@@ -7,7 +8,12 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useBudgetStore } from "@/stores/useBudgetStore";
 import { useCategoryStore } from "@/stores/useCategoryStore";
 import { useTransactionStore } from "@/stores/useTransactionStore";
-import { type Budget, type Category, type Transaction } from "@/types";
+import {
+  type Budget,
+  type Category,
+  type Transaction,
+  type UserPreferences
+} from "@/types";
 
 const SYNC_DEBOUNCE_MS = 2000;
 const MAX_RETRIES = 3;
@@ -17,6 +23,7 @@ interface PullDataResult {
   transactions: Transaction[];
   budgets: Budget[];
   categories: Category[];
+  preferences: UserPreferences | null;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -24,7 +31,8 @@ function sleep(ms: number): Promise<void> {
 }
 
 export function useCloudSync() {
-  const { userId, isAuthenticated } = useAuthStore();
+  const { userId, isAuthenticated, preferences, setPreferences } =
+    useAuthStore();
   const { setSyncing, setSynced, setError, lastSyncedAt } = useSyncStatus();
 
   const transactions = useTransactionStore((state) => state.transactions);
@@ -38,6 +46,7 @@ export function useCloudSync() {
   const categories = useCategoryStore((state) => state.categories);
   const setCategories = useCategoryStore((state) => state.setCategories);
   const categoryVersion = useCategoryStore((state) => state._syncVersion);
+  const preferencesVersion = useAuthStore((state) => state._syncVersion);
 
   const syncTimeoutRef = useRef<number | null>(null);
   const isSyncingRef = useRef(false);
@@ -45,7 +54,8 @@ export function useCloudSync() {
   const lastSyncedVersion = useRef({
     transactions: 0,
     budgets: 0,
-    categories: 0
+    categories: 0,
+    preferences: 0
   });
 
   const performSyncWithRetry = useCallback(
@@ -79,17 +89,13 @@ export function useCloudSync() {
 
   const performSync = useCallback(async () => {
     if (!userId || !isAuthenticated || isSyncingRef.current) return;
-    if (userId === "bypass-user-id") {
-      console.log("[CloudSync] ⚠ Skipping sync - using bypass auth mode");
-      return;
-    }
 
     isSyncingRef.current = true;
     await setSyncing(true);
 
     try {
       const result = await performSyncWithRetry<SyncResult>(() =>
-        syncAll(userId, transactions, budgets, categories)
+        syncAll(userId, transactions, budgets, categories, preferences)
       );
 
       if (result?.success) {
@@ -97,7 +103,8 @@ export function useCloudSync() {
         lastSyncedVersion.current = {
           transactions: transactionVersion,
           budgets: budgetVersion,
-          categories: categoryVersion
+          categories: categoryVersion,
+          preferences: preferencesVersion
         };
         console.log("[CloudSync] ✓ Sync completed successfully");
       } else {
@@ -115,9 +122,11 @@ export function useCloudSync() {
     transactions,
     budgets,
     categories,
+    preferences,
     transactionVersion,
     budgetVersion,
     categoryVersion,
+    preferencesVersion,
     setSyncing,
     setSynced,
     setError,
@@ -126,10 +135,6 @@ export function useCloudSync() {
 
   const pullData = useCallback(async () => {
     if (!userId || !isAuthenticated || isSyncingRef.current) return;
-    if (userId === "bypass-user-id") {
-      console.log("[CloudSync] ⚠ Skipping pull - using bypass auth mode");
-      return;
-    }
 
     isSyncingRef.current = true;
     await setSyncing(true);
@@ -149,6 +154,9 @@ export function useCloudSync() {
         if (data.categories.length > 0) {
           setCategories(data.categories);
         }
+        if (data.preferences) {
+          setPreferences(data.preferences);
+        }
       }
 
       await setSynced();
@@ -165,6 +173,7 @@ export function useCloudSync() {
     setTransactions,
     setBudgets,
     setCategories,
+    setPreferences,
     setSyncing,
     setSynced,
     setError,
@@ -177,7 +186,8 @@ export function useCloudSync() {
     if (
       transactionVersion !== lastSyncedVersion.current.transactions ||
       budgetVersion !== lastSyncedVersion.current.budgets ||
-      categoryVersion !== lastSyncedVersion.current.categories
+      categoryVersion !== lastSyncedVersion.current.categories ||
+      preferencesVersion !== lastSyncedVersion.current.preferences
     ) {
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
@@ -199,6 +209,7 @@ export function useCloudSync() {
     transactionVersion,
     budgetVersion,
     categoryVersion,
+    preferencesVersion,
     performSync
   ]);
 
