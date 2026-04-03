@@ -101,10 +101,11 @@ CashLens uses Supabase for authentication and cloud data synchronization.
 
 **Database Tables Created:**
 
-- `transactions` table with RLS enabled
-- `budgets` table with RLS enabled
-- `categories` table with RLS enabled
-- Indexes and policies ensuring users can only access their own data
+- `profiles` table for user preferences and email ✅
+- `transactions` table with RLS enabled ✅
+- `budgets` table with RLS enabled ✅
+- `categories` table with RLS enabled ✅
+- Indexes and policies ensuring users can only access their own data ✅
 
 **Next Steps (Optional Enhancements):**
 
@@ -156,7 +157,7 @@ For complete instructions on deploying CashLens to Google Play Store and Apple A
 - [✅] Thread #7 — Cloud Sync (Supabase - Client configured, schema created, sync service implemented)
 - [✅] Thread #8 — Settings + Polish (Currency, Category, Preferences, UX)
 - [✅] Thread #9 — Branding & Launch Prep (Icon, Splash, App Name configured in app.json)
-- [ ] Thread #10 — Localization (i18n implementation)
+- [✅] Thread #10 — Localization (i18n implementation - Indonesian & English)
 - [✅] Thread #11 — Business Plan & Strategy (Drafted in docs/BUSINESS_PLAN.md)
 - [✅] Thread #12 — Store Deployment Preparation (Guide created in docs/STORE_DEPLOYMENT.md)
 
@@ -171,15 +172,18 @@ Thread #13 — Infrastructure & Polish (Current)
 - ✅ Environment variables secured
 - ✅ Store deployment guide created
 - ✅ Status bar color issue fixed
+- ✅ Cloud Sync stabilized with retry logic and UUID validation
+- ✅ Auto-login after registration implemented
+- ✅ Localization (i18n) implemented for Indonesian and English
+- ✅ Language toggle in Settings working with Zustand sync
 
 **Upcoming Tasks:**
 
-- [ ] Add sync UI with status indicators and manual sync button
-- [ ] Implement complete auth flow (login/signup screens integration)
 - [ ] Test sync functionality end-to-end with real Supabase data
 - [ ] Add real-time subscriptions for live data updates
-- [ ] Localization (i18n implementation)
 - [ ] Final testing and bug fixes before store deployment
+- [ ] Prepare app icons and splash screens for production
+- [ ] Configure app signing and build production bundles
 
 ### Additional Rules
 

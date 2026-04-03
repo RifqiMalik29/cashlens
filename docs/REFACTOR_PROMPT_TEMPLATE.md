@@ -2,26 +2,31 @@ Act as a Senior React Native Developer.
 
 ### Objective
 
-Fix the layout warning in `app/(tabs)/_layout.tsx` and stabilize the redundant/failing sync calls in the `CloudSync` logic.
+Implement a dedicated **Language Selection** screen in the Settings flow, replacing the current inline toggle for a better user experience.
 
 ### Requirements:
 
-1.  **Fix Layout Warning (`app/(tabs)/_layout.tsx`)**:
-    - The warning "Layout children must be of type Screen" is occurring because `Tabs` is wrapped in another component (like `SafeAreaView` or a fragment) or contains logic between the tags.
-    - Ensure the `Tabs` component is the **direct return** of the layout function.
-    - Move any styling or SafeArea logic into the `screenOptions` of the `Tabs` component (using `tabBarStyle`).
+1.  **New Route (`app/(tabs)/settings/language.tsx`)**:
+    - Create a new route file that re-exports the `LanguageSelectorScreen`.
 
-2.  **Stabilize Cloud Sync (`src/hooks/useCloudSync.ts` & `src/services/syncService.ts`)**:
-    - **Redundant Calls**: The logs show "Pulling all data..." triggering multiple times simultaneously. Implement a **lock** or a check to prevent `pullData` from running if a sync is already in progress.
-    - **Network Errors**: The "TypeError: Network request failed" suggests the app is trying to sync before the connection is stable or hitting Supabase too aggressively. Add a simple **retry logic with exponential backoff** for network failures.
-    - **Initialization**: Ensure `useCloudSync` only triggers the initial pull once when the app mounts and the user is authenticated. Use a `ref` or a state to track initialization.
+2.  **New Screen (`src/screens/LanguageSelector/LanguageSelectorScreen.tsx`)**:
+    - Create a clean list of supported languages (Indonesian, English).
+    - Display each language with its name and a radio-button or checkmark indicating the current selection.
+    - Follow the project's design system: card-based or list-item layout with proper spacing.
+    - Use the `useHeader` hook to set the title (e.g., "Pilih Bahasa" / "Select Language").
 
-3.  **Refine Error Logging**:
-    - Instead of flood-logging `console.error` for every failed request, group them or only log once per sync attempt to keep the console clean.
+3.  **Hook Logic (`src/screens/LanguageSelector/useLanguageSelector.ts`)**:
+    - Handle language selection logic.
+    - Update the `useAuthStore` preferences when a language is selected.
+    - Call `i18n.changeLanguage()` to apply the change immediately across the app.
+    - Navigate back to the Settings screen after selection.
 
-### Guidelines:
+4.  **Update Settings Screen**:
+    - Update `useSettingsScreen.ts` to navigate to `/(tabs)/settings/language` instead of toggling the state inline.
+    - Update `app/(tabs)/settings/_layout.tsx` to include the new `language` screen in the Stack.
 
-- **Expo Router**: Follow the strict rule that `<Tabs />` must only contain `<Tabs.Screen />` children.
-- **Performance**: Use `useCallback` and `useEffect` dependencies correctly to avoid infinite sync loops.
+5.  **Styling**:
+    - Use NativeWind v4 `className` for all layout and UI components.
+    - Align colors and typography with the existing `CurrencySelector` screen for consistency.
 
-Please provide the corrected `app/(tabs)/_layout.tsx` and the stabilized `useCloudSync` hook logic.
+Please provide the implementation for the new screen, its hook, and the necessary updates to navigation and existing settings logic.
