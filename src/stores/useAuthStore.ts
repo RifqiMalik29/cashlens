@@ -8,11 +8,15 @@ interface AuthState {
   isAuthenticated: boolean;
   isOnboarded: boolean;
   userId: string | null;
+  userEmail: string | null;
   preferences: UserPreferences;
+  _syncVersion: number;
   setAuthenticated: (value: boolean) => void;
   setOnboarded: (value: boolean) => void;
-  setUserId: (id: string | null) => void;
+  setUserId: (id: string | null, email?: string | null) => void;
+  setUserEmail: (email: string | null) => void;
   updatePreferences: (data: Partial<UserPreferences>) => void;
+  setPreferences: (preferences: UserPreferences) => void;
   reset: () => void;
 }
 
@@ -29,13 +33,27 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isOnboarded: false,
       userId: null,
+      userEmail: null,
       preferences: defaultPreferences,
+      _syncVersion: 0,
       setAuthenticated: (value) => set({ isAuthenticated: value }),
       setOnboarded: (value) => set({ isOnboarded: value }),
-      setUserId: (id) => set({ userId: id }),
+      setUserId: (id, email) => set({ userId: id, userEmail: email ?? null }),
+      setUserEmail: (email) => set({ userEmail: email }),
       updatePreferences: (data) =>
-        set((state) => ({ preferences: { ...state.preferences, ...data } })),
-      reset: () => set({ isAuthenticated: false, userId: null })
+        set((state) => ({
+          preferences: { ...state.preferences, ...data },
+          _syncVersion: state._syncVersion + 1
+        })),
+      setPreferences: (preferences) => set({ preferences, _syncVersion: 0 }),
+      reset: () =>
+        set({
+          isAuthenticated: false,
+          userId: null,
+          userEmail: null,
+          preferences: defaultPreferences,
+          _syncVersion: 0
+        })
     }),
     {
       name: "auth-storage",

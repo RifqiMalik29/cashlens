@@ -94,3 +94,24 @@ SELECT
   false,
   'expense'
 WHERE NOT EXISTS (SELECT 1 FROM categories WHERE id = 'cat_food');
+
+-- Profiles table (User Preferences)
+-- Note: id is the user's ID from auth.users (cleaner design - no separate user_id column)
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
+  base_currency VARCHAR(3) DEFAULT 'IDR',
+  theme VARCHAR(10) DEFAULT 'system' CHECK (theme IN ('light', 'dark', 'system')),
+  language VARCHAR(2) DEFAULT 'id' CHECK (language IN ('id', 'en')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS for profiles
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policy for profiles
+DROP POLICY IF EXISTS "Users can only see their own profile" ON profiles;
+CREATE POLICY "Users can only see their own profile"
+  ON profiles FOR ALL
+  USING (id = auth.uid())
+  WITH CHECK (id = auth.uid());
