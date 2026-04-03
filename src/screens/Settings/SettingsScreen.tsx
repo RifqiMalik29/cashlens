@@ -14,6 +14,7 @@ import {
   Palette
 } from "lucide-react-native";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -22,6 +23,7 @@ import { Typography } from "@/components/ui/Typography";
 import { currencies } from "@/constants/currencies";
 import { colors, spacing } from "@/constants/theme";
 import { useCloudSync } from "@/hooks/useCloudSync";
+import i18n from "@/services/i18n";
 import { signOut } from "@/services/supabase";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -68,8 +70,9 @@ function SettingsItem({
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { reset, preferences } = useAuthStore();
+  const { reset, preferences, updatePreferences } = useAuthStore();
   const { pullData } = useCloudSync();
+  const { t } = useTranslation();
 
   useHeader({
     showHeader: false,
@@ -101,8 +104,9 @@ export default function SettingsScreen() {
 
   const handleLanguagePress = async () => {
     await Haptics.selectionAsync();
-    const newLang = preferences.language === "id" ? "en" : "en";
-    useAuthStore.getState().updatePreferences({ language: newLang });
+    const newLang = preferences.language === "id" ? "en" : "id";
+    updatePreferences({ language: newLang });
+    i18n.changeLanguage(newLang);
   };
 
   const handleThemePress = async () => {
@@ -133,10 +137,10 @@ export default function SettingsScreen() {
           style={{ backgroundColor: colors.primary }}
         >
           <Typography variant="h2" weight="bold" color="#FFFFFF">
-            Pengaturan
+            {t("settings.title")}
           </Typography>
           <Typography variant="body" color="#FFFFFF">
-            Kelola preferensi aplikasi
+            {t("settings.subtitle")}
           </Typography>
         </View>
 
@@ -147,7 +151,7 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Cloud Sync
+            {t("settings.cloudSync")}
           </Typography>
           <SyncStatusButton onPress={handleForceSync} />
         </View>
@@ -159,11 +163,11 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Profil
+            {t("settings.profile")}
           </Typography>
           <SettingsItem
             icon={<Mail size={20} color="#4CAF82" />}
-            label="Email"
+            label={t("settings.email")}
             value="user@example.com"
           />
         </View>
@@ -175,18 +179,18 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Keuangan
+            {t("settings.finance")}
           </Typography>
           <SettingsItem
             icon={<CreditCard size={20} color="#4CAF82" />}
-            label="Mata Uang Dasar"
+            label={t("settings.baseCurrency")}
             value={currency?.code || "IDR"}
             onPress={handleCurrencyPress}
           />
           <View style={{ marginTop: spacing[3] }}>
             <SettingsItem
               icon={<LayoutGrid size={20} color="#4CAF82" />}
-              label="Kelola Kategori"
+              label={t("settings.manageCategories")}
               onPress={handleCategoriesPress}
             />
           </View>
@@ -199,18 +203,18 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Preferensi
+            {t("settings.preferences")}
           </Typography>
           <SettingsItem
             icon={<Globe size={20} color="#4CAF82" />}
-            label="Bahasa"
+            label={t("settings.language")}
             value={preferences.language === "id" ? "Indonesia" : "English"}
             onPress={handleLanguagePress}
           />
           <View style={{ marginTop: spacing[3] }}>
             <SettingsItem
               icon={<Palette size={20} color="#4CAF82" />}
-              label="Tema"
+              label={t("settings.theme")}
               value={
                 preferences.theme === "system"
                   ? "Sistem"
@@ -230,11 +234,11 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Bantuan
+            {t("settings.support")}
           </Typography>
           <SettingsItem
             icon={<HelpCircle size={20} color="#4CAF82" />}
-            label="Pusat Bantuan"
+            label={t("settings.helpCenter")}
             onPress={handleHelpPress}
           />
         </View>
@@ -246,17 +250,17 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Akun
+            {t("settings.account")}
           </Typography>
           <SettingsItem
             icon={<LogOut size={20} color="#EF4444" />}
-            label="Keluar dari Akun"
+            label={t("settings.logout")}
             danger
             onPress={handleSignOut}
           />
           <View className="bg-surface-secondary rounded-lg p-4 mt-3">
             <Typography variant="caption" color="#6B7280">
-              Anda akan keluar dari akun dan kembali ke layar login.
+              {t("auth.logoutConfirm")}
             </Typography>
           </View>
         </View>
@@ -268,14 +272,14 @@ export default function SettingsScreen() {
             color="#6B7280"
             style={{ marginBottom: spacing[2] }}
           >
-            Tentang
+            {t("settings.about")}
           </Typography>
           <View className="bg-white border border-border rounded-lg px-4 py-3">
             <Typography variant="body" weight="medium" color="#1A1A2E">
-              CashLens
+              {t("common.appName")}
             </Typography>
             <Typography variant="caption" color="#6B7280">
-              Versi 1.0.0
+              {t("settings.version")} 1.0.0
             </Typography>
           </View>
         </View>

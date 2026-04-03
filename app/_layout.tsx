@@ -8,16 +8,27 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useCloudSync } from "@/hooks/useCloudSync";
+import i18n, { initI18n } from "@/services/i18n";
 import { useAuthStore } from "@/stores/useAuthStore";
+
+// Initialize i18n
+initI18n();
 
 export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { isAuthenticated, isOnboarded } = useAuthStore();
+  const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   // Initialize cloud sync
   useCloudSync();
+
+  // Sync language preference from store
+  useEffect(() => {
+    if (preferences.language && preferences.language !== i18n.language) {
+      i18n.changeLanguage(preferences.language);
+    }
+  }, [preferences.language]);
 
   useEffect(() => {
     setIsLayoutReady(true);
