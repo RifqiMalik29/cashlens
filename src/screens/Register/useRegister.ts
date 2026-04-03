@@ -2,10 +2,13 @@ import { signUpWithEmail } from "@services/supabase";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
+import { useAuthStore } from "@/stores/useAuthStore";
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useRegister() {
   const router = useRouter();
+  const { setAuthenticated, setUserId } = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,14 +43,23 @@ export function useRegister() {
     setError(null);
 
     try {
-      const { error: signUpError } = await signUpWithEmail(email, password);
+      const { data, error: signUpError } = await signUpWithEmail(
+        email,
+        password
+      );
 
       if (signUpError) {
         setError(signUpError.message);
         return;
       }
 
-      router.push("/(auth)/login");
+      if (data?.user) {
+        setAuthenticated(true);
+        setUserId(data.user.id);
+        router.replace("/(tabs)");
+      } else {
+        router.push("/(auth)/login");
+      }
     } catch (err) {
       setError((err as Error).message || "Terjadi kesalahan");
     } finally {
