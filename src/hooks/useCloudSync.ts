@@ -2,13 +2,26 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { useSyncStatus } from "@/hooks/useSyncStatus";
-import { pullAll, syncAll } from "@/services/syncService";
+import { pullAll, syncAll, type SyncResult } from "@/services/syncService";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useBudgetStore } from "@/stores/useBudgetStore";
 import { useCategoryStore } from "@/stores/useCategoryStore";
 import { useTransactionStore } from "@/stores/useTransactionStore";
+import { type Budget, type Category, type Transaction } from "@/types";
 
 const SYNC_DEBOUNCE_MS = 2000;
+const MAX_RETRIES = 3;
+const INITIAL_RETRY_DELAY_MS = 1000;
+
+interface PullDataResult {
+  transactions: Transaction[];
+  budgets: Budget[];
+  categories: Category[];
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export function useCloudSync() {
   const { userId, isAuthenticated } = useAuthStore();
@@ -27,21 +40,59 @@ export function useCloudSync() {
   const categoryVersion = useCategoryStore((state) => state._syncVersion);
 
   const syncTimeoutRef = useRef<number | null>(null);
+  const isSyncingRef = useRef(false);
+  const hasInitialPullRef = useRef(false);
   const lastSyncedVersion = useRef({
     transactions: 0,
     budgets: 0,
     categories: 0
   });
 
-  const performSync = useCallback(async () => {
-    if (!userId || !isAuthenticated) return;
+  const performSyncWithRetry = useCallback(
+    async <T>(
+      syncFn: () => Promise<T>,
+      retries = MAX_RETRIES
+    ): Promise<T | undefined> => {
+      for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+          return await syncFn();
+        } catch (error) {
+          const isNetworkError =
+            (error as Error).message.includes("Network request failed") ||
+            (error as Error).message.includes("fetch");
 
+          if (isNetworkError && attempt < retries - 1) {
+            const delay = INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt);
+            console.log(
+              `[CloudSync] ⚠ Network error, retrying in ${delay}ms (attempt ${attempt + 1}/${retries})`
+            );
+            await sleep(delay);
+          } else {
+            throw error;
+          }
+        }
+      }
+      return undefined;
+    },
+    []
+  );
+
+  const performSync = useCallback(async () => {
+    if (!userId || !isAuthenticated || isSyncingRef.current) return;
+    if (userId === "bypass-user-id") {
+      console.log("[CloudSync] ⚠ Skipping sync - using bypass auth mode");
+      return;
+    }
+
+    isSyncingRef.current = true;
     await setSyncing(true);
 
     try {
-      const result = await syncAll(userId, transactions, budgets, categories);
+      const result = await performSyncWithRetry<SyncResult>(() =>
+        syncAll(userId, transactions, budgets, categories)
+      );
 
-      if (result.success) {
+      if (result?.success) {
         await setSynced();
         lastSyncedVersion.current = {
           transactions: transactionVersion,
@@ -50,10 +101,13 @@ export function useCloudSync() {
         };
         console.log("[CloudSync] ✓ Sync completed successfully");
       } else {
-        await setError(result.error || "Sync failed");
+        await setError(result?.error || "Sync failed");
       }
     } catch (error) {
+      console.error("[CloudSync] ✗ Sync failed:", (error as Error).message);
       await setError((error as Error).message);
+    } finally {
+      isSyncingRef.current = false;
     }
   }, [
     userId,
@@ -66,31 +120,44 @@ export function useCloudSync() {
     categoryVersion,
     setSyncing,
     setSynced,
-    setError
+    setError,
+    performSyncWithRetry
   ]);
 
   const pullData = useCallback(async () => {
-    if (!userId || !isAuthenticated) return;
+    if (!userId || !isAuthenticated || isSyncingRef.current) return;
+    if (userId === "bypass-user-id") {
+      console.log("[CloudSync] ⚠ Skipping pull - using bypass auth mode");
+      return;
+    }
 
+    isSyncingRef.current = true;
     await setSyncing(true);
 
     try {
-      const data = await pullAll(userId);
+      const data = await performSyncWithRetry<PullDataResult>(() =>
+        pullAll(userId)
+      );
 
-      if (data.transactions.length > 0) {
-        setTransactions(data.transactions);
-      }
-      if (data.budgets.length > 0) {
-        setBudgets(data.budgets);
-      }
-      if (data.categories.length > 0) {
-        setCategories(data.categories);
+      if (data) {
+        if (data.transactions.length > 0) {
+          setTransactions(data.transactions);
+        }
+        if (data.budgets.length > 0) {
+          setBudgets(data.budgets);
+        }
+        if (data.categories.length > 0) {
+          setCategories(data.categories);
+        }
       }
 
       await setSynced();
       console.log("[CloudSync] ✓ Pull completed successfully");
     } catch (error) {
+      console.error("[CloudSync] ✗ Pull failed:", (error as Error).message);
       await setError((error as Error).message);
+    } finally {
+      isSyncingRef.current = false;
     }
   }, [
     userId,
@@ -100,7 +167,8 @@ export function useCloudSync() {
     setCategories,
     setSyncing,
     setSynced,
-    setError
+    setError,
+    performSyncWithRetry
   ]);
 
   useEffect(() => {
@@ -135,13 +203,19 @@ export function useCloudSync() {
   ]);
 
   useEffect(() => {
-    if (isAuthenticated && userId && lastSyncedAt === null) {
+    if (
+      isAuthenticated &&
+      userId &&
+      lastSyncedAt === null &&
+      !hasInitialPullRef.current
+    ) {
+      hasInitialPullRef.current = true;
       pullData();
     }
   }, [isAuthenticated, userId, lastSyncedAt, pullData]);
 
   return {
-    isSyncing: false,
+    isSyncing: isSyncingRef.current,
     lastSyncedAt,
     performSync,
     pullData

@@ -12,6 +12,15 @@ function isTableNotFoundError(error: any): boolean {
   return message.includes("relation") || message.includes("does not exist");
 }
 
+function isValidUserId(userId: string): boolean {
+  // Check if it's a valid UUID format or at least not a placeholder
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return (
+    uuidRegex.test(userId) || (!userId.includes("bypass") && userId.length > 10)
+  );
+}
+
 export interface SyncResult {
   success: boolean;
   error?: string;
@@ -22,6 +31,11 @@ export async function pushTransactions(
   userId: string,
   transactions: Transaction[]
 ): Promise<SyncResult> {
+  if (!isValidUserId(userId)) {
+    console.log(`${LOG_PREFIX} ⚠ Skipping sync: invalid user ID`);
+    return { success: false, error: "Invalid user ID" };
+  }
+
   console.log(`${LOG_PREFIX} Pushing ${transactions.length} transactions...`);
 
   try {
@@ -55,6 +69,11 @@ export async function pushTransactions(
 }
 
 export async function pullTransactions(userId: string): Promise<Transaction[]> {
+  if (!isValidUserId(userId)) {
+    console.log(`${LOG_PREFIX} ⚠ Skipping pull: invalid user ID`);
+    return [];
+  }
+
   console.log(`${LOG_PREFIX} Pulling transactions...`);
 
   try {
@@ -105,6 +124,11 @@ export async function pushBudgets(
   userId: string,
   budgets: Budget[]
 ): Promise<SyncResult> {
+  if (!isValidUserId(userId)) {
+    console.log(`${LOG_PREFIX} ⚠ Skipping sync: invalid user ID`);
+    return { success: false, error: "Invalid user ID" };
+  }
+
   console.log(`${LOG_PREFIX} Pushing ${budgets.length} budgets...`);
 
   try {
@@ -138,6 +162,11 @@ export async function pushBudgets(
 }
 
 export async function pullBudgets(userId: string): Promise<Budget[]> {
+  if (!isValidUserId(userId)) {
+    console.log(`${LOG_PREFIX} ⚠ Skipping pull: invalid user ID`);
+    return [];
+  }
+
   console.log(`${LOG_PREFIX} Pulling budgets...`);
 
   try {
@@ -182,6 +211,11 @@ export async function pushCategories(
   userId: string,
   categories: Category[]
 ): Promise<SyncResult> {
+  if (!isValidUserId(userId)) {
+    console.log(`${LOG_PREFIX} ⚠ Skipping sync: invalid user ID`);
+    return { success: false, error: "Invalid user ID" };
+  }
+
   console.log(`${LOG_PREFIX} Pushing ${categories.length} categories...`);
 
   try {
@@ -215,6 +249,11 @@ export async function pushCategories(
 }
 
 export async function pullCategories(userId: string): Promise<Category[]> {
+  if (!isValidUserId(userId)) {
+    console.log(`${LOG_PREFIX} ⚠ Skipping pull: invalid user ID`);
+    return [];
+  }
+
   console.log(`${LOG_PREFIX} Pulling categories...`);
 
   try {
