@@ -31,20 +31,25 @@ export default function DashboardScreen() {
 
   if (!hasTransactions) {
     return (
-      <View className="flex-1 bg-background">
+      <SafeAreaView
+        edges={["top"]}
+        className="flex-1"
+        style={{ backgroundColor: colors.primary }}
+      >
         <View className="px-6 pt-6 pb-4">
-          <Typography variant="h2" weight="bold">
+          <Typography variant="h2" weight="bold" color="#FFFFFF">
             CashLens
           </Typography>
-          <Typography variant="body" color="#6B7280">
+          <Typography variant="body" color="#FFFFFF">
             Kelola keuanganmu dengan cerdas
           </Typography>
         </View>
         <EmptyState
           title="Belum Ada Transaksi"
           description="Mulai catat transaksi keuanganmu untuk melihat ringkasan dan analisis pengeluaran di dashboard."
+          customContainerStyle={{ backgroundColor: colors.background }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 

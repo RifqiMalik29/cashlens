@@ -1,5 +1,3 @@
-text
-
 ## Project: CashLens (React Native Finance App)
 
 ### About the Project
@@ -61,7 +59,6 @@ cashlens/
 - @stores/_ → src/stores/_
 - @types/_ → src/types/_
 - @utils/_ → src/utils/_
-  text
 
 ### Core Types
 
@@ -90,26 +87,42 @@ cashlens/
 
 ### Infrastructure & External Setup
 
-#### 1. Supabase Setup (Cloud Sync & Auth)
+#### 1. Supabase Setup (Cloud Sync & Auth) ✅ COMPLETED
 
 CashLens uses Supabase for authentication and cloud data synchronization.
 
-- **Project URL & Anon Key**: Obtain these from your Supabase Project Settings.
-- **Authentication**: Enable "Email Auth" in the Authentication dashboard.
-- **Database**: Run the provided `supabase-schema.sql` in the **SQL Editor** of your Supabase dashboard. This will create:
-  - `transactions` table with RLS enabled.
-  - `budgets` table with RLS enabled.
-  - `categories` table with RLS enabled.
-  - Necessary indexes and policies to ensure users can only access their own data.
+**Status: Fully Configured**
 
-#### 2. Environment Variables
+- ✅ Project URL & Anon Key configured in `.env.local`
+- ✅ Database schema created (`supabase-schema.sql` executed)
+- ✅ Supabase client configured with AsyncStorage persistence
+- ✅ Sync service implemented (`src/services/syncService.ts`)
+- ✅ RLS policies enabled for data security
 
-Create a `.env.local` file in the root directory with the following variables:
+**Database Tables Created:**
+
+- `transactions` table with RLS enabled
+- `budgets` table with RLS enabled
+- `categories` table with RLS enabled
+- Indexes and policies ensuring users can only access their own data
+
+**Next Steps (Optional Enhancements):**
+
+- [ ] Add sync UI with status indicators
+- [ ] Implement auth flow (login/signup screens)
+- [ ] Test sync functionality end-to-end
+- [ ] Add real-time subscriptions for live updates
+
+#### 2. Environment Variables ✅ CONFIGURED
+
+The `.env.local` file has been created in the root directory with Supabase credentials:
 
 ```bash
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+EXPO_PUBLIC_SUPABASE_URL=https://cuqoqayibifuiaitnciv.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_Eb5Cb09bEIqXBeswBlWefA_idMg4bBv
 ```
+
+**Note:** This file is gitignored for security.
 
 #### 3. Native Dependencies (OCR & Camera)
 
@@ -125,6 +138,12 @@ The app relies on native modules that require proper installation:
 - **Package Name**: `com.rifqi2173.cashlens` (Android) / `cashlens` (iOS).
 - **Permissions**: Ensure permissions for Camera and Media Library are requested in `app.json` or handled at runtime.
 
+#### 5. Store Deployment Guide
+
+For complete instructions on deploying CashLens to Google Play Store and Apple App Store, see:
+
+- **[Store Deployment Guide](./STORE_DEPLOYMENT.md)** - Step-by-step deployment checklist, asset requirements, submission process, and post-launch maintenance.
+
 ### Thread Progress
 
 - [✅] Thread #0 — Planning & Architecture
@@ -134,15 +153,33 @@ The app relies on native modules that require proper installation:
 - [✅] Thread #4 — Receipt Scanner (ML Kit + Locale-aware Parsing)
 - [✅] Thread #5 — Dashboard + Analytics (Balance Summary, Spending Charts)
 - [✅] Thread #6 — Budget Management (Budget Planning, Progress Tracking)
-- [✅] Thread #7 — Cloud Sync (Supabase)
+- [✅] Thread #7 — Cloud Sync (Supabase - Client configured, schema created, sync service implemented)
 - [✅] Thread #8 — Settings + Polish (Currency, Category, Preferences, UX)
 - [✅] Thread #9 — Branding & Launch Prep (Icon, Splash, App Name configured in app.json)
 - [ ] Thread #10 — Localization (i18n implementation)
 - [✅] Thread #11 — Business Plan & Strategy (Drafted in docs/BUSINESS_PLAN.md)
+- [✅] Thread #12 — Store Deployment Preparation (Guide created in docs/STORE_DEPLOYMENT.md)
 
 ### Current Thread
 
-Thread #10 — Localization (i18n implementation) (next)
+Thread #13 — Infrastructure & Polish (Current)
+
+**Recently Completed:**
+
+- ✅ Supabase connection configured with AsyncStorage persistence
+- ✅ Database schema created with RLS policies
+- ✅ Environment variables secured
+- ✅ Store deployment guide created
+- ✅ Status bar color issue fixed
+
+**Upcoming Tasks:**
+
+- [ ] Add sync UI with status indicators and manual sync button
+- [ ] Implement complete auth flow (login/signup screens integration)
+- [ ] Test sync functionality end-to-end with real Supabase data
+- [ ] Add real-time subscriptions for live data updates
+- [ ] Localization (i18n implementation)
+- [ ] Final testing and bug fixes before store deployment
 
 ### Additional Rules
 

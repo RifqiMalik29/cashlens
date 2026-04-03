@@ -1,6 +1,6 @@
 import { Button } from "@components/ui/Button";
 import { Typography } from "@components/ui/Typography";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface PermissionDeniedViewProps {
   onRequestPermission: () => void;
