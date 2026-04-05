@@ -66,7 +66,7 @@ export default function DashboardScreen() {
         style={{ backgroundColor: colors.background }}
       >
         <View
-          className="px-6 pt-6 pb-4 mb-4 bg-background"
+          className="px-6 pt-6 pb-12"
           style={{ backgroundColor: colors.primary }}
         >
           <Typography variant="h1" weight="bold" color="#FFFFFF">
@@ -77,12 +77,14 @@ export default function DashboardScreen() {
           </Typography>
         </View>
 
-        <SummaryCard
-          balance={summary.balance}
-          income={summary.income}
-          expense={summary.expense}
-          currency={baseCurrency}
-        />
+        <View style={{ marginTop: -40 }}>
+          <SummaryCard
+            balance={summary.balance}
+            income={summary.income}
+            expense={summary.expense}
+            currency={baseCurrency}
+          />
+        </View>
 
         {hasCurrentMonthData && (
           <SpendingChart
