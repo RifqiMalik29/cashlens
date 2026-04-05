@@ -1,6 +1,6 @@
 # CashLens 💰
 
-Personal finance tracker built with React Native Expo. Features daily/monthly/yearly transaction recording, automatic receipt scanning via OCR, multi-currency support, custom categories, and budgeting.
+Personal finance tracker built with React Native Expo. Features daily/monthly/yearly transaction recording, AI-powered receipt scanning with offline fallback, multi-currency support, custom categories, and budgeting.
 
 ---
 
@@ -15,10 +15,12 @@ Personal finance tracker built with React Native Expo. Features daily/monthly/ye
 | State          | Zustand + AsyncStorage persist                    |
 | Local Storage  | AsyncStorage (data) + MMKV (preferences)          |
 | Backend        | Supabase (auth + cloud sync)                      |
+| AI             | Google Gemini 3.1 Flash-Lite                      |
 | OCR            | @react-native-ml-kit/text-recognition (on-device) |
 | Charts         | Victory Native XL                                 |
 | Icons          | Lucide React Native                               |
 | Bottom Sheet   | @gorhom/bottom-sheet                              |
+| i18n           | react-i18next (Indonesian & English)              |
 | Currency Rates | exchangerate.host                                 |
 
 ---
@@ -26,10 +28,15 @@ Personal finance tracker built with React Native Expo. Features daily/monthly/ye
 ## Features
 
 - 📝 Record income & expense transactions
-- 📷 Scan receipts automatically with on-device OCR
+- 🤖 AI-powered receipt scanning with Advanced Hybrid pipeline
+  - Local OCR → Gemini AI text parsing → Regex fallback
+  - MD5 caching for duplicate scans (zero API cost on repeats)
+  - 100% offline fallback when AI rate limit exceeded
 - 💱 Multi-currency with live exchange rates
-- 🗂️ Custom categories
+- 🗂️ Custom categories with filtering
 - 📊 Budget management with period tracking
+- 🌐 Bilingual support (Indonesian & English)
+- 🎨 Customizable themes
 - ☁️ Cloud sync via Supabase
 - 📱 Android & iOS support
 
@@ -53,15 +60,27 @@ cd cashlens
 # Install dependencies
 pnpm install
 
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Supabase and Gemini API keys
+
 # Start development server
 pnpm start
+```
+
+### Environment Variables
+
+```bash
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ### Running on device
 
 ```bash
-pnpm android   # Android emulator
-pnpm ios       # iOS simulator
+pnpm android   # Android emulator/device
+pnpm ios       # iOS simulator/device
 ```
 
 ---
@@ -76,18 +95,23 @@ cashlens/
 │   └── _layout.tsx      # Root layout
 └── src/
     ├── components/
-    │   └── ui/          # Reusable UI components
-    ├── constants/        # Theme, categories, currencies
-    ├── hooks/           # Shared hooks (useHeader, etc.)
+    │   ├── ui/          # Reusable UI components
+    │   ├── scanner/     # Scanner-specific components
+    │   └── ...          # transaction/, budget/, dashboard/, settings/
+    ├── constants/       # Theme, categories, currencies, translations/
+    ├── hooks/           # Shared hooks (useHeader, useSyncStatus, etc.)
     ├── screens/         # Screen components + co-located hooks
     │   ├── Dashboard/
     │   ├── Transactions/
     │   ├── Scanner/
+    │   │   ├── hooks/   # useScannerCamera, useScannerProcessor
+    │   │   └── ...
     │   ├── Budget/
-    │   └── Settings/
-    ├── services/        # Supabase, OCR, currency API
+    │   ├── Settings/
+    │   └── ...
+    ├── services/        # Supabase, OCR, Gemini AI, currency, sync, i18n
     ├── stores/          # Zustand stores
-    ├── types/           # TypeScript types
+    ├── types/           # TypeScript types (AI, transactions, etc.)
     └── utils/           # Helper functions
 ```
 
@@ -110,11 +134,24 @@ pnpm format:check   # Prettier check
 
 ## Development Notes
 
-- All screen logic lives in `src/screens/<Name>/use<Name>.ts`
+- All screen logic lives in `src/screens/<Name>/use<Name>.ts` hooks
 - Route files in `app/` are thin re-exports only
 - Use `className` (NativeWind) for static styling, `style={}` for dynamic values
 - Max 200 lines per file — split into subcomponents or helpers if exceeded
 - Pre-commit hook runs: `prettier → eslint --fix → tsc --noEmit`
+
+### Path Aliases
+
+Standardized to specific aliases (no catch-all `@/*`):
+
+- `@components/*` → `src/components/*`
+- `@constants/*` → `src/constants/*`
+- `@hooks/*` → `src/hooks/*`
+- `@screens/*` → `src/screens/*`
+- `@services/*` → `src/services/*`
+- `@stores/*` → `src/stores/*`
+- `@types/*` → `src/types/*`
+- `@utils/*` → `src/utils/*`
 
 ---
 
