@@ -1,46 +1,79 @@
-# Fix: Standardize Path Aliases & Auto-Imports
+# Fix: Migrate to Gemini 3.1 Flash-Lite & Fix 404 Model Error
 
 ## Role
 
-Senior React Native / TypeScript Developer
+Senior AI Engineer / React Native Developer
 
 ## Issue
 
-1.  **Alias Conflict:** The `@/*` catch-all alias in `tsconfig.json` is overriding more specific aliases (like `@components/*`), causing VS Code to struggle with resolving the correct path alias for auto-imports.
-2.  **Relative Path Preference:** The `.vscode/settings.json` is configured to prefer relative imports, leading to `../../ui/Typography` instead of `@components/ui/Typography`.
+The application is currently trying to use an outdated or non-existent model ID `gemini-2.0-flash-lite-preview-02-05`, resulting in a 404 error from the Google Generative AI API:
+`[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent: [404 ] models/gemini-2.0-flash-lite-preview-02-05 is not found for API version v1beta`
 
 ## Goal
 
-Standardize the alias configuration and editor settings to ensure auto-imports always use the most specific alias available.
+Upgrade the application to use the latest **Gemini 3.1 Flash-Lite** model, which offers better performance, "Thinking Levels," and a reliable 500 RPD (Requests Per Day) limit on the free tier.
 
 ## Instructions
 
-1.  **Refactor TSConfig Aliases:**
-    - Open `tsconfig.json`.
-    - **Remove** or **Comment out** the catch-all `@/*`: `["./src/*"]` alias.
-    - This ensures that when an import matches `@components/*`, TypeScript uses that specific mapping instead of falling back to the generic `@/*` mapping (which would result in `@/components/...`).
+1.  **Update `src/services/gemini.ts`:**
+    - Change the model initialization to use the Gemini 3.1 Flash-Lite model ID.
+    - **From:**
+      ```typescript
+      const model = genAI.getGenerativeModel(
+        {
+          model: "gemini-2.0-flash-lite-preview-02-05",
+          generationConfig: {
+            temperature: 0.1,
+            topP: 0.8,
+            topK: 40,
+            maxOutputTokens: 1024
+          }
+        },
+        { apiVersion: "v1beta" }
+      );
+      ```
+    - **To:**
+      ```typescript
+      const model = genAI.getGenerativeModel(
+        {
+          model: "gemini-3.1-flash-lite-preview",
+          generationConfig: {
+            temperature: 0.1,
+            responseMimeType: "application/json"
+          }
+        },
+        { apiVersion: "v1beta" }
+      );
+      ```
+      _(Note: Keeping `v1beta` as it is often required for preview models like 3.1.)_
 
-2.  **Update VS Code Settings:**
-    - Open `.vscode/settings.json`.
-    - Change `"typescript.preferences.importModuleSpecifier"` from `"relative"` to `"non-relative"`.
-    - Set `"typescript.preferences.importModuleSpecifierEnding"` to `"minimal"` to ensure clean imports.
+2.  **Optimize JSON Handling:**
+    - Since we are using `responseMimeType: "application/json"`, the model will return raw JSON.
+    - Ensure `parseReceiptImage` and `parseReceiptText` handle the response safely:
+      ````typescript
+      const response = await result.response;
+      const text = response.text();
+      // Safe parse even if model still includes markdown markers
+      const cleanedJson = text.includes("```")
+        ? text
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim()
+        : text.trim();
+      const parsed = JSON.parse(cleanedJson) as GeminiReceiptResponse;
+      ````
 
-3.  **Sync Babel Configuration:**
-    - Ensure `babel.config.js` matches the `tsconfig.json` changes.
-    - Remove the `@` alias if you removed it from `tsconfig.json` to maintain consistency across the build pipeline.
-
-4.  **Bulk Fix Imports (Surgical):**
-    - Search for all instances of `@/components/`, `@/hooks/`, etc., and replace them with `@components/`, `@hooks/`.
-    - Ensure no imports are left using the `@/` prefix for folders that have their own dedicated alias.
+3.  **Update Documentation (Optional but Recommended):**
+    - Search for any other references to `gemini-2.0-flash` or similar in `docs/AI_SCANNER_IMPLEMENTATION.md` and update them to `gemini-3.1-flash-lite-preview` where appropriate.
 
 ## Expected Output
 
-- `tsconfig.json` and `babel.config.js` are clean and synchronized.
-- `.vscode/settings.json` correctly prioritizes non-relative alias imports.
-- Auto-imports in the editor suggest `@components/` correctly.
+- AI parsing functions correctly without 404 errors.
+- The 500 RPD limit is respected and utilized.
+- Receipt extraction is faster and more accurate due to the model upgrade.
 
 ## Step-by-Step Testing
 
-1.  **Component Test:** Open a screen and try to auto-import `Typography` or `Button`. Confirm the suggestion is `@components/ui/...`.
-2.  **Type Check:** Run `tsc --noEmit` to verify all paths resolve correctly.
-3.  **Clean Cache:** Run `npx expo start --clear` to ensure the Babel changes are picked up by the packager.
+1.  **Direct AI Test:** Scan a receipt and verify the log shows success for `Step 2/3: Analyzing text with Gemini AI...`.
+2.  **Verify Model:** Confirm in the logs (or by adding a temporary log) that `gemini-3.1-flash-lite-preview` is being called.
+3.  **Check JSON Structure:** Verify that the extracted `amount`, `merchant`, and `category` fields are correct.

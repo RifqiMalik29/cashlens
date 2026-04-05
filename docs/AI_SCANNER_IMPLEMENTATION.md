@@ -161,12 +161,10 @@ if (!API_KEY) {
 const genAI = new GoogleGenerativeAI(API_KEY || "");
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
+  model: "gemini-3.1-flash-lite-preview",
   generationConfig: {
     temperature: 0.1,
-    topP: 0.8,
-    topK: 40,
-    maxOutputTokens: 1024,
+    responseMimeType: "application/json",
     responseMimeType: "application/json"
   }
 });
@@ -1083,7 +1081,7 @@ async function parseWithRetry(
 
 - Compress image before sending (see Step 12.1)
 - Check network connection
-- Use `gemini-2.0-flash` (fastest), not `gemini-2.5-pro`
+- Use `gemini-3.1-flash-lite-preview` (fastest with 500 RPD free tier)
 - Add timeout:
 
 ```typescript
