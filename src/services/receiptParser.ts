@@ -581,74 +581,102 @@ function normalizeAmount(rawAmount: string, locale: string): number {
     `${LOG_PREFIX} [Amount] Normalizing: "${rawAmount}" for ${locale}`
   );
 
-  const config = getLocaleConfig(locale);
-  const { thousandSeparator, decimalSeparator } = config;
+  // Avoid parsing strings with multiple dots or dashes as they are likely dates (e.g., 05.04.26)
+  const dotsCount = (rawAmount.match(/\./g) || []).length;
+  const dashesCount = (rawAmount.match(/-/g) || []).length;
+  const slashesCount = (rawAmount.match(/\//g) || []).length;
+
+  if (dotsCount >= 2 || dashesCount >= 2 || slashesCount >= 2) {
+    console.log(
+      `${LOG_PREFIX} [Amount] Skipping date-like string: "${rawAmount}"`
+    );
+    return 0;
+  }
 
   let cleaned = rawAmount.trim();
-  const hasBothSeparators =
-    cleaned.includes(thousandSeparator) && cleaned.includes(decimalSeparator);
 
-  if (hasBothSeparators) {
-    const lastThousand = cleaned.lastIndexOf(thousandSeparator);
-    const lastDecimal = cleaned.lastIndexOf(decimalSeparator);
+  // Smart separator detection: determine which is thousand vs decimal based on position and length
+  // Regardless of locale, the last separator is usually decimal, unless it's followed by exactly 3 digits
+  const hasBothCommaAndDot = cleaned.includes(",") && cleaned.includes(".");
 
-    if (locale === "id-ID") {
-      if (lastDecimal > lastThousand) {
-        const decimalPart = cleaned.substring(lastDecimal + 1);
-        if (decimalPart === "00") {
-          cleaned = cleaned.substring(0, lastDecimal);
-        }
-        cleaned = cleaned.replace(
-          new RegExp(`\\${thousandSeparator}`, "g"),
-          ""
-        );
-        cleaned = cleaned.replace(decimalSeparator, ".");
+  if (hasBothCommaAndDot) {
+    const lastCommaIdx = cleaned.lastIndexOf(",");
+    const lastDotIdx = cleaned.lastIndexOf(".");
+
+    // Determine which separator is decimal based on position (rightmost) and what follows
+    let actualThousandSep: string;
+    let actualDecimalSep: string;
+
+    if (lastDotIdx > lastCommaIdx) {
+      // Format: 213,000.00 (en-US style)
+      const afterDot = cleaned.substring(lastDotIdx + 1);
+      if (afterDot.length === 2 || afterDot === "00") {
+        actualThousandSep = ",";
+        actualDecimalSep = ".";
       } else {
-        cleaned = cleaned.replace(
-          new RegExp(`\\${thousandSeparator}`, "g"),
-          ""
-        );
-        cleaned = cleaned.replace(decimalSeparator, ".");
+        actualThousandSep = ".";
+        actualDecimalSep = ",";
       }
     } else {
-      if (lastThousand < lastDecimal) {
-        const decimalPart = cleaned.substring(lastDecimal + 1);
-        if (decimalPart === "00") {
-          cleaned = cleaned.substring(0, lastDecimal);
-        }
-        cleaned = cleaned.replace(
-          new RegExp(`\\${thousandSeparator}`, "g"),
-          ""
-        );
-        cleaned = cleaned.replace(decimalSeparator, ".");
+      // Format: 213.000,00 (id-ID/de-DE style)
+      const afterComma = cleaned.substring(lastCommaIdx + 1);
+      if (afterComma.length === 2 || afterComma === "00") {
+        actualThousandSep = ".";
+        actualDecimalSep = ",";
       } else {
-        cleaned = cleaned.replace(
-          new RegExp(`\\${thousandSeparator}`, "g"),
-          ""
-        );
-        cleaned = cleaned.replace(decimalSeparator, ".");
+        actualThousandSep = ",";
+        actualDecimalSep = ".";
       }
     }
-  } else if (cleaned.includes(thousandSeparator)) {
-    const parts = cleaned.split(thousandSeparator);
+
+    // Remove thousand separators
+    cleaned = cleaned.replace(new RegExp(`\\${actualThousandSep}`, "g"), "");
+
+    // Check if decimal part is .00 or ,00 and remove if so
+    const decimalPart = cleaned.substring(
+      cleaned.lastIndexOf(actualDecimalSep) + 1
+    );
+    if (decimalPart === "00") {
+      cleaned = cleaned.substring(0, cleaned.lastIndexOf(actualDecimalSep));
+    } else {
+      // Replace decimal separator with standard dot
+      cleaned = cleaned.replace(actualDecimalSep, ".");
+    }
+  } else if (cleaned.includes(",")) {
+    // Only comma present - need to determine if it's thousand or decimal
+    const parts = cleaned.split(",");
     const lastPart = parts[parts.length - 1];
 
-    if (lastPart.length === 2 && !isNaN(parseInt(lastPart, 10))) {
+    // If last part is exactly 2 digits, it's likely a decimal separator
+    if (lastPart.length === 2) {
+      if (lastPart === "00") {
+        cleaned = parts.slice(0, -1).join("");
+      } else {
+        cleaned = parts.join("."); // Replace comma with dot for decimal
+      }
+    } else {
+      // It's a thousand separator
       cleaned = parts.join("");
-    } else {
-      cleaned = cleaned.replace(new RegExp(`\\${thousandSeparator}`, "g"), "");
     }
-  } else if (cleaned.includes(decimalSeparator)) {
-    const parts = cleaned.split(decimalSeparator);
-    const decimalPart = parts[parts.length - 1];
+  } else if (cleaned.includes(".")) {
+    // Only dot present - need to determine if it's thousand or decimal
+    const parts = cleaned.split(".");
+    const lastPart = parts[parts.length - 1];
 
-    if (decimalPart === "00") {
-      cleaned = parts[0];
+    // If last part is exactly 2 digits, it's likely a decimal separator
+    if (lastPart.length === 2) {
+      if (lastPart === "00") {
+        cleaned = parts.slice(0, -1).join("");
+      } else {
+        cleaned = parts.join("."); // Already using dot
+      }
     } else {
-      cleaned = cleaned.replace(decimalSeparator, ".");
+      // It's a thousand separator
+      cleaned = parts.join("");
     }
   }
 
+  // Final cleanup: remove any non-numeric characters except decimal point
   cleaned = cleaned.replace(/[^0-9.]/g, "");
   const amount = parseFloat(cleaned);
 
