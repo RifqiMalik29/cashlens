@@ -1,33 +1,18 @@
-/* eslint-disable no-console */
-/* eslint-disable max-lines */
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { pullAll, syncAll, type SyncResult } from "@services/syncService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
-import {
-  type Budget,
-  type Category,
-  type Transaction,
-  type UserPreferences
-} from "@types";
 import { useCallback, useEffect, useRef } from "react";
 
-const SYNC_DEBOUNCE_MS = 2000;
-const MAX_RETRIES = 3;
-const INITIAL_RETRY_DELAY_MS = 1000;
-
-interface PullDataResult {
-  transactions: Transaction[];
-  budgets: Budget[];
-  categories: Category[];
-  preferences: UserPreferences | null;
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+import {
+  hasVersionChanged,
+  performSyncWithRetry,
+  type PullDataResult,
+  SYNC_DEBOUNCE_MS,
+  type SyncVersions
+} from "./cloudSyncHelpers";
 
 export function useCloudSync() {
   const { userId, isAuthenticated, preferences, setPreferences } =
@@ -48,44 +33,15 @@ export function useCloudSync() {
   const categoryVersion = useCategoryStore((state) => state._syncVersion);
   const preferencesVersion = useAuthStore((state) => state._syncVersion);
 
-  const syncTimeoutRef = useRef<number | null>(null);
+  const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSyncingRef = useRef(false);
   const hasInitialPullRef = useRef(false);
-  const lastSyncedVersion = useRef({
+  const lastSyncedVersion = useRef<SyncVersions>({
     transactions: 0,
     budgets: 0,
     categories: 0,
     preferences: 0
   });
-
-  const performSyncWithRetry = useCallback(
-    async <T>(
-      syncFn: () => Promise<T>,
-      retries = MAX_RETRIES
-    ): Promise<T | undefined> => {
-      for (let attempt = 0; attempt < retries; attempt++) {
-        try {
-          return await syncFn();
-        } catch (error) {
-          const isNetworkError =
-            (error as Error).message.includes("Network request failed") ||
-            (error as Error).message.includes("fetch");
-
-          if (isNetworkError && attempt < retries - 1) {
-            const delay = INITIAL_RETRY_DELAY_MS * Math.pow(2, attempt);
-            console.log(
-              `[CloudSync] ⚠ Network error, retrying in ${delay}ms (attempt ${attempt + 1}/${retries})`
-            );
-            await sleep(delay);
-          } else {
-            throw error;
-          }
-        }
-      }
-      return undefined;
-    },
-    []
-  );
 
   const performSync = useCallback(async () => {
     if (!userId || !isAuthenticated || isSyncingRef.current) return;
@@ -106,12 +62,10 @@ export function useCloudSync() {
           categories: categoryVersion,
           preferences: preferencesVersion
         };
-        console.log("[CloudSync] ✓ Sync completed successfully");
       } else {
         await setError(result?.error || "Sync failed");
       }
     } catch (error) {
-      console.error("[CloudSync] ✗ Sync failed:", (error as Error).message);
       await setError((error as Error).message);
     } finally {
       isSyncingRef.current = false;
@@ -129,8 +83,7 @@ export function useCloudSync() {
     preferencesVersion,
     setSyncing,
     setSynced,
-    setError,
-    performSyncWithRetry
+    setError
   ]);
 
   const pullData = useCallback(async () => {
@@ -151,12 +104,9 @@ export function useCloudSync() {
       );
 
       if (data) {
-        // Always update transactions and budgets even if empty
         setTransactions(data.transactions);
         setBudgets(data.budgets);
 
-        // For categories, only update if we pulled something from cloud
-        // otherwise we might lose local defaults on first pull
         if (data.categories.length > 0) {
           setCategories(data.categories);
         }
@@ -167,9 +117,7 @@ export function useCloudSync() {
       }
 
       await setSynced();
-      console.log("[CloudSync] ✓ Pull completed successfully");
     } catch (error) {
-      console.error("[CloudSync] ✗ Pull failed:", (error as Error).message);
       await setError((error as Error).message);
     } finally {
       isSyncingRef.current = false;
@@ -188,19 +136,20 @@ export function useCloudSync() {
     setCategories,
     setPreferences,
     setSynced,
-    setError,
-    performSyncWithRetry
+    setError
   ]);
 
   useEffect(() => {
     if (!userId || !isAuthenticated) return;
 
-    if (
-      transactionVersion !== lastSyncedVersion.current.transactions ||
-      budgetVersion !== lastSyncedVersion.current.budgets ||
-      categoryVersion !== lastSyncedVersion.current.categories ||
-      preferencesVersion !== lastSyncedVersion.current.preferences
-    ) {
+    const currentVersions: SyncVersions = {
+      transactions: transactionVersion,
+      budgets: budgetVersion,
+      categories: categoryVersion,
+      preferences: preferencesVersion
+    };
+
+    if (hasVersionChanged(currentVersions, lastSyncedVersion.current)) {
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
       }
@@ -242,7 +191,8 @@ export function useCloudSync() {
       isAuthenticated &&
       userId &&
       lastSyncedAt === null &&
-      !hasInitialPullRef.current
+      !hasInitialPullRef.current &&
+      !isSyncingRef.current
     ) {
       hasInitialPullRef.current = true;
       pullData();
@@ -254,10 +204,14 @@ export function useCloudSync() {
     lastSyncedAt,
     performSync,
     pullData,
-    hasUnsyncedChanges:
-      transactionVersion !== lastSyncedVersion.current.transactions ||
-      budgetVersion !== lastSyncedVersion.current.budgets ||
-      categoryVersion !== lastSyncedVersion.current.categories ||
-      preferencesVersion !== lastSyncedVersion.current.preferences
+    hasUnsyncedChanges: hasVersionChanged(
+      {
+        transactions: transactionVersion,
+        budgets: budgetVersion,
+        categories: categoryVersion,
+        preferences: preferencesVersion
+      },
+      lastSyncedVersion.current
+    )
   };
 }
