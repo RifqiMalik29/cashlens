@@ -160,14 +160,16 @@ if (!API_KEY) {
 
 const genAI = new GoogleGenerativeAI(API_KEY || "");
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-3.1-flash-lite-preview",
-  generationConfig: {
-    temperature: 0.1,
-    responseMimeType: "application/json",
-    responseMimeType: "application/json"
-  }
-});
+const model = genAI.getGenerativeModel(
+  {
+    model: "gemini-3.1-flash-lite-preview",
+    generationConfig: {
+      temperature: 0.1,
+      responseMimeType: "application/json"
+    }
+  },
+  { apiVersion: "v1beta" }
+);
 
 interface GeminiReceiptResponse {
   amount: number;
