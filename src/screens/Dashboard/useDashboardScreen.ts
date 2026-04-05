@@ -43,20 +43,12 @@ export function useDashboardScreen() {
       .filter((t) => t.type === "expense")
       .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
 
-    const monthIncome = currentMonthTransactions
-      .filter((t) => t.type === "income")
-      .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-
-    const monthExpense = currentMonthTransactions
-      .filter((t) => t.type === "expense")
-      .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-
     return {
       balance: allTimeIncome - allTimeExpense,
-      income: monthIncome,
-      expense: monthExpense
+      income: allTimeIncome,
+      expense: allTimeExpense
     };
-  }, [transactions, currentMonthTransactions]);
+  }, [transactions]);
 
   const categorySpending = useMemo<CategorySpending[]>(() => {
     const expenseByCategory = currentMonthTransactions
