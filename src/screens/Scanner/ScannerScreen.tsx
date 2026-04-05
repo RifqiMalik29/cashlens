@@ -1,7 +1,10 @@
+import { AIProcessingIndicator } from "@components/scanner/AIProcessingIndicator";
 import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
 import { ScanningProgress } from "@components/scanner/ScanningProgress";
+import { Typography } from "@components/ui/Typography";
 import { useHeader } from "@hooks/useHeader";
 import { CameraView } from "expo-camera";
+import { useKeepAwake } from "expo-keep-awake";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -26,6 +29,7 @@ export default function ScannerScreen() {
     flashEnabled,
     cameraReady,
     cameraError,
+    isOffline,
     handleTakePhoto,
     handlePickFromGallery,
     toggleFlash,
@@ -33,6 +37,9 @@ export default function ScannerScreen() {
     handleCameraReady,
     handleRefreshCamera
   } = useScannerScreen();
+
+  // Keep screen awake during scanning/processing
+  useKeepAwake();
 
   useHeader({
     showHeader: false,
@@ -65,7 +72,32 @@ export default function ScannerScreen() {
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
         <ScannerOverlay />
         <ScanningProgress isScanning={isScanning} />
+
+        {isOffline && (
+          <View className="absolute top-24 left-4 right-4 rounded-xl bg-yellow-500/90 p-4 shadow-lg z-50">
+            <Typography
+              variant="body"
+              weight="bold"
+              color="#FFFFFF"
+              style={{ textAlign: "center" }}
+            >
+              AI Mode Limit Terlampaui
+            </Typography>
+            <Typography
+              variant="caption"
+              color="#FFFFFF"
+              style={{ textAlign: "center", marginTop: 2 }}
+            >
+              Menggunakan OCR offline sebagai fallback. Akurasi mungkin berbeda.
+            </Typography>
+          </View>
+        )}
       </View>
+
+      <AIProcessingIndicator
+        isProcessing={isScanning}
+        stage={isScanning ? "analyzing" : "capturing"}
+      />
 
       <SafeAreaView className="flex-1" edges={["bottom"]}>
         <View className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
