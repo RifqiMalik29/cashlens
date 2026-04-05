@@ -14,7 +14,8 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"app/**/*.{ts,tsx}\"",
     "prepare": "husky",
-    "android:dev": "npx expo run:android"
+    "android:dev": "npx expo run:android",
+    "ios:dev": "npx expo run:ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
