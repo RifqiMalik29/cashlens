@@ -1,5 +1,6 @@
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { Cloud, CloudOff } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "./Typography";
@@ -10,6 +11,7 @@ interface SyncIndicatorProps {
 
 export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
   const { isSyncing, lastSyncedAt, error, getRelativeTime } = useSyncStatus();
+  const { t } = useTranslation();
 
   if (error) {
     return (
@@ -17,7 +19,7 @@ export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
         <CloudOff size={16} color="#EF4444" />
         {!compact && (
           <Typography variant="caption" color="#EF4444">
-            Sinkronisasi gagal
+            {t("sync.failed")}
           </Typography>
         )}
       </View>
@@ -30,7 +32,7 @@ export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
         <View className="w-2 h-2 bg-primary rounded-full animate-pulse" />
         {!compact && (
           <Typography variant="caption" color="#4CAF82">
-            Menyinkronkan...
+            {t("sync.syncing")}
           </Typography>
         )}
       </View>
@@ -43,7 +45,7 @@ export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
         <Cloud size={16} color="#4CAF82" />
         {!compact && (
           <Typography variant="caption" color="#6B7280">
-            Terakhir: {getRelativeTime(lastSyncedAt)}
+            {t("sync.lastSynced", { time: getRelativeTime(lastSyncedAt) })}
           </Typography>
         )}
       </View>
@@ -55,7 +57,7 @@ export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
       <CloudOff size={16} color="#9CA3AF" />
       {!compact && (
         <Typography variant="caption" color="#9CA3AF">
-          Belum disinkronkan
+          {t("sync.notSynced")}
         </Typography>
       )}
     </View>
@@ -68,6 +70,7 @@ interface SyncStatusButtonProps {
 
 export function SyncStatusButton({ onPress }: SyncStatusButtonProps) {
   const { isSyncing, lastSyncedAt, error, getRelativeTime } = useSyncStatus();
+  const { t } = useTranslation();
 
   return (
     <TouchableOpacity
@@ -86,19 +89,19 @@ export function SyncStatusButton({ onPress }: SyncStatusButtonProps) {
       <View className="flex-1">
         <Typography variant="body" weight="medium" color="#1A1A2E">
           {error
-            ? "Sinkronisasi Gagal"
+            ? t("sync.failed")
             : isSyncing
-              ? "Menyinkronkan..."
-              : "Cloud Sync"}
+              ? t("sync.syncing")
+              : t("sync.synced")}
         </Typography>
         <Typography variant="caption" color="#6B7280">
           {error
-            ? "Ketuk untuk coba lagi"
+            ? t("sync.tapToRetry")
             : isSyncing
-              ? "Mohon tunggu..."
+              ? t("sync.pleaseWait")
               : lastSyncedAt
-                ? `Terakhir: ${getRelativeTime(lastSyncedAt)}`
-                : "Belum disinkronkan"}
+                ? t("sync.lastSynced", { time: getRelativeTime(lastSyncedAt) })
+                : t("sync.notSynced")}
         </Typography>
       </View>
 

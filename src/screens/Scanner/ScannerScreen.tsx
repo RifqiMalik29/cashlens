@@ -5,6 +5,7 @@ import { Typography } from "@components/ui/Typography";
 import { useHeader } from "@hooks/useHeader";
 import { CameraView } from "expo-camera";
 import { useKeepAwake } from "expo-keep-awake";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,6 +20,7 @@ import {
 import { useScannerScreen } from "./useScannerScreen";
 
 export default function ScannerScreen() {
+  const { t } = useTranslation();
   const {
     cameraRef,
     permission,
@@ -81,14 +83,14 @@ export default function ScannerScreen() {
               color="#FFFFFF"
               style={{ textAlign: "center" }}
             >
-              AI Mode Limit Terlampaui
+              {t("scanner.ocrOfflineFallback")}
             </Typography>
             <Typography
               variant="caption"
               color="#FFFFFF"
               style={{ textAlign: "center", marginTop: 2 }}
             >
-              Menggunakan OCR offline sebagai fallback. Akurasi mungkin berbeda.
+              {t("scanner.ocrOfflineFallbackDesc")}
             </Typography>
           </View>
         )}

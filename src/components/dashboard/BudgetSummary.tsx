@@ -3,6 +3,7 @@ import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import { Card } from "../ui/Card";
@@ -49,6 +50,7 @@ function getProgressColor(percentage: number): string {
 }
 
 export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
+  const { t } = useTranslation();
   const budgets = useBudgetStore((state) => state.budgets);
   const categories = useCategoryStore((state) => state.categories);
   const transactions = useTransactionStore((state) => state.transactions);
@@ -99,12 +101,12 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
     <Card className="mx-4 mb-4" style={{ shadowOpacity: 0.08 }}>
       <View className="flex-row items-center justify-between mb-3">
         <Typography variant="label" weight="medium" color="#6B7280">
-          Anggaran Aktif
+          {t("budget.activeBudgets")}
         </Typography>
         {onPressBudget && (
           <TouchableOpacity onPress={onPressBudget} activeOpacity={0.7}>
             <Typography variant="caption" color="#4CAF82" weight="medium">
-              Kelola
+              {t("common.edit")}
             </Typography>
           </TouchableOpacity>
         )}

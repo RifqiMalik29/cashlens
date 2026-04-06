@@ -72,11 +72,19 @@
     "cameraPermissionDesc": "CashLens memerlukan akses kamera untuk memindai struk transaksi Anda.",
     "grantPermission": "Beri Izin Kamera",
     "cameraNotReady": "Kamera belum siap",
+    "cameraLoading": "Memuat kamera...",
+    "cameraError": "Kamera gagal dimuat. Periksa izin dan coba lagi.",
+    "cameraErrorSimulator": "Kamera tidak tersedia di simulator. Gunakan perangkat asli atau pilih dari galeri.",
+    "refreshCamera": "Refresh Kamera",
     "processingReceipt": "Memproses Struk...",
     "readingData": "Membaca informasi transaksi",
     "noAmountFound": "Tidak dapat menemukan jumlah total pada struk",
     "scanFailed": "Gagal memproses struk",
-    "cameraInactive": "Kamera tidak aktif di tab lain"
+    "cameraInactive": "Kamera tidak aktif di tab lain",
+    "positionReceipt": "Posisikan struk dalam bingkai",
+    "ocrFailed": "Gagal membaca struk",
+    "ocrOfflineFallback": "AI Mode Limit Terlampaui",
+    "ocrOfflineFallbackDesc": "Menggunakan OCR offline sebagai fallback. Akurasi mungkin berbeda."
   },
   "budget": {
     "title": "Anggaran",
@@ -97,11 +105,18 @@
     "createBudget": "Buat Anggaran",
     "saveChanges": "Simpan Perubahan",
     "deleteBudget": "Hapus Anggaran",
+    "deleteBudgetConfirm": "Hapus anggaran ini? Tindakan ini tidak bisa dibatalkan.",
     "budgetAmount": "Jumlah Anggaran",
     "category": "Kategori",
     "period": "Periode",
     "startDate": "Tanggal Mulai",
-    "datePlaceholder": "YYYY-MM-DD (contoh: 2024-01-01)"
+    "datePlaceholder": "YYYY-MM-DD (contoh: 2024-01-01)",
+    "editBudget": "Edit Anggaran",
+    "addNewBudget": "Tambah Anggaran Baru",
+    "editBudgetDesc": "Sesuaikan jumlah dan periode anggaran",
+    "addBudgetDesc": "Tentukan batas pengeluaran untuk kategori ini",
+    "budgetSaved": "Anggaran berhasil disimpan",
+    "budgetDeleted": "Anggaran berhasil dihapus"
   },
   "settings": {
     "title": "Pengaturan",
@@ -130,7 +145,10 @@
       "howToBudget": "Bagaimana cara membuat anggaran?",
       "howToBudgetDesc": "Buka tab Anggaran dan klik tombol + untuk membuat anggaran baru.",
       "contactSupport": "Hubungi Dukungan",
-      "contactSupportDesc": "Jika ada kendala, hubungi kami di support@cashlens.app"
+      "contactSupportDesc": "Jika ada kendala, hubungi kami di support@cashlens.app",
+      "privacyPolicy": "Kebijakan Privasi",
+      "email": "Email",
+      "whatsapp": "WhatsApp"
     },
     "themeScreen": {
       "title": "Tema",
@@ -140,7 +158,14 @@
     "logout": "Keluar dari Akun",
     "logoutDesc": "Anda akan keluar dari akun dan kembali ke layar login.",
     "about": "Tentang",
-    "version": "Versi"
+    "version": "Versi",
+    "developer": "Developer",
+    "clearLocalData": "Hapus Semua Data Lokal",
+    "clearLocalDataWarning": "⚠️ PERINGATAN: Ini akan menghapus semua data lokal (transaksi, anggaran, kategori). Gunakan ini untuk memperbaiki masalah sync UUID. Data di Supabase tidak terpengaruh.",
+    "clearDataSuccess": "Data lokal berhasil dihapus",
+    "clearDataError": "Gagal menghapus data lokal",
+    "clearDataConfirmTitle": "Hapus Semua Data Lokal",
+    "clearDataConfirmDesc": "Ini akan menghapus semua data lokal (transaksi, anggaran, kategori, dll). Data di Supabase tidak akan terpengaruh. Anda harus login ulang setelah ini."
   },
   "currency": {
     "title": "Pilih Mata Uang",

@@ -4,12 +4,14 @@ import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import { formatCurrency } from "@utils/formatCurrency";
+import { useTranslation } from "react-i18next";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useBudgetScreen } from "./useBudgetScreen";
 
 export default function BudgetScreen() {
+  const { t } = useTranslation();
   const {
     activeBudgets,
     exceededBudgets,
@@ -41,9 +43,9 @@ export default function BudgetScreen() {
             </Typography>
           </View>
           <EmptyState
-            title="Belum Ada Anggaran"
-            description="Buat anggaran untuk membatasi pengeluaran per kategori dan track progresnya."
-            actionLabel="Tambah Anggaran"
+            title={t("budget.noBudgets")}
+            description={t("budget.noBudgetsDesc")}
+            actionLabel={t("budget.addBudget")}
             onAction={handleAddBudget}
           />
         </View>
@@ -126,7 +128,7 @@ export default function BudgetScreen() {
               color="#EF4444"
               style={{ marginLeft: 20, marginBottom: 8 }}
             >
-              Melebihi Anggaran ({exceededBudgets.length})
+              {t("budget.exceededBudgets")} ({exceededBudgets.length})
             </Typography>
             {exceededBudgets.map((budget) => (
               <BudgetCard
@@ -150,7 +152,7 @@ export default function BudgetScreen() {
               color="#1A1A2E"
               style={{ marginLeft: 20, marginBottom: 8 }}
             >
-              Anggaran Aktif ({activeBudgets.length})
+              {t("budget.activeBudgets")} ({activeBudgets.length})
             </Typography>
             {activeBudgets.map((budget) => (
               <BudgetCard

@@ -6,6 +6,7 @@ import {
 import { SyncStatusButton } from "@components/ui/SyncIndicator";
 import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
+import Constants from "expo-constants";
 import {
   CreditCard,
   Globe,
@@ -107,21 +108,21 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        <SettingsSection title="Developer">
-          <SettingsItem
-            icon={<Trash2 size={20} color="#EF4444" />}
-            label="Hapus Semua Data Lokal"
-            danger
-            onPress={handleClearAllData}
-          />
-          <View className="bg-surface-secondary rounded-lg p-4 mt-3">
-            <Typography variant="caption" color="#6B7280">
-              ⚠️ PERINGATAN: Ini akan menghapus semua data lokal (transaksi,
-              anggaran, kategori). Gunakan ini untuk memperbaiki masalah sync
-              UUID. Data di Supabase tidak terpengaruh.
-            </Typography>
-          </View>
-        </SettingsSection>
+        {__DEV__ && (
+          <SettingsSection title={t("settings.developer")}>
+            <SettingsItem
+              icon={<Trash2 size={20} color="#EF4444" />}
+              label={t("settings.clearLocalData")}
+              danger
+              onPress={handleClearAllData}
+            />
+            <View className="bg-surface-secondary rounded-lg p-4 mt-3">
+              <Typography variant="caption" color="#6B7280">
+                {t("settings.clearLocalDataWarning")}
+              </Typography>
+            </View>
+          </SettingsSection>
+        )}
 
         <SettingsSection title={t("settings.account")}>
           <SettingsItem
@@ -143,7 +144,7 @@ export default function SettingsScreen() {
               {t("common.appName")}
             </Typography>
             <Typography variant="caption" color="#6B7280">
-              {t("settings.version")} 1.0.0
+              {t("settings.version")} {Constants.expoConfig?.version ?? "1.0.0"}
             </Typography>
           </View>
         </SettingsSection>

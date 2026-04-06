@@ -72,11 +72,19 @@
     "cameraPermissionDesc": "CashLens needs camera access to scan your transaction receipts.",
     "grantPermission": "Grant Camera Permission",
     "cameraNotReady": "Camera not ready",
+    "cameraLoading": "Loading camera...",
+    "cameraError": "Camera failed to load. Check permissions and try again.",
+    "cameraErrorSimulator": "Camera not available on simulator. Use a real device or pick from gallery.",
+    "refreshCamera": "Refresh Camera",
     "processingReceipt": "Processing Receipt...",
     "readingData": "Reading transaction information",
     "noAmountFound": "Could not find total amount on receipt",
     "scanFailed": "Failed to process receipt",
-    "cameraInactive": "Camera inactive in other tabs"
+    "cameraInactive": "Camera inactive in other tabs",
+    "positionReceipt": "Position receipt in frame",
+    "ocrFailed": "Failed to read receipt",
+    "ocrOfflineFallback": "AI Mode Limit Exceeded",
+    "ocrOfflineFallbackDesc": "Using offline OCR as fallback. Accuracy may vary."
   },
   "budget": {
     "title": "Budget",
@@ -97,11 +105,18 @@
     "createBudget": "Create Budget",
     "saveChanges": "Save Changes",
     "deleteBudget": "Delete Budget",
+    "deleteBudgetConfirm": "Delete this budget? This action cannot be undone.",
     "budgetAmount": "Budget Amount",
     "category": "Category",
     "period": "Period",
     "startDate": "Start Date",
-    "datePlaceholder": "YYYY-MM-DD (e.g., 2024-01-01)"
+    "datePlaceholder": "YYYY-MM-DD (e.g., 2024-01-01)",
+    "editBudget": "Edit Budget",
+    "addNewBudget": "Add New Budget",
+    "editBudgetDesc": "Adjust budget amount and period",
+    "addBudgetDesc": "Set a spending limit for this category",
+    "budgetSaved": "Budget saved successfully",
+    "budgetDeleted": "Budget deleted"
   },
   "settings": {
     "title": "Settings",
@@ -130,7 +145,10 @@
       "howToBudget": "How to set a budget?",
       "howToBudgetDesc": "Go to the Budget tab and click the + button to create a new budget.",
       "contactSupport": "Contact Support",
-      "contactSupportDesc": "If you have issues, contact us at support@cashlens.app"
+      "contactSupportDesc": "If you have issues, contact us at support@cashlens.app",
+      "privacyPolicy": "Privacy Policy",
+      "email": "Email",
+      "whatsapp": "WhatsApp"
     },
     "themeScreen": {
       "title": "Theme",
@@ -140,7 +158,14 @@
     "logout": "Logout",
     "logoutDesc": "You will be logged out and return to the login screen.",
     "about": "About",
-    "version": "Version"
+    "version": "Version",
+    "developer": "Developer",
+    "clearLocalData": "Clear All Local Data",
+    "clearLocalDataWarning": "⚠️ WARNING: This will delete all local data (transactions, budgets, categories). Use this to fix sync UUID issues. Data on Supabase will not be affected.",
+    "clearDataSuccess": "Local data cleared successfully",
+    "clearDataError": "Failed to clear local data",
+    "clearDataConfirmTitle": "Clear All Local Data",
+    "clearDataConfirmDesc": "This will delete all local data (transactions, budgets, categories, etc.). Data on Supabase will not be affected. You must log in again after this."
   },
   "currency": {
     "title": "Select Currency",

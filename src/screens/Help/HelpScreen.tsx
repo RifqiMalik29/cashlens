@@ -1,14 +1,14 @@
 import { SettingsItem, SettingsSection } from "@components/settings";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
-import { Mail, MessageSquare } from "lucide-react-native";
+import { Mail, MessageSquare, Shield } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useHelpScreen } from "./useHelpScreen";
 
 export default function HelpScreen() {
-  const { t, handleContactPress } = useHelpScreen();
+  const { t, handleContactPress, handlePrivacyPolicyPress } = useHelpScreen();
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
@@ -46,15 +46,22 @@ export default function HelpScreen() {
 
         <SettingsSection title={t("settings.help.contactSupport")}>
           <SettingsItem
-            icon={<Mail size={20} color="#4CAF82" />}
-            label="Email"
-            value="support@cashlens.app"
-            onPress={() => handleContactPress("email")}
+            icon={<Shield size={20} color="#4CAF82" />}
+            label={t("settings.help.privacyPolicy")}
+            onPress={handlePrivacyPolicyPress}
           />
           <View style={{ marginTop: spacing[3] }}>
             <SettingsItem
+              icon={<Mail size={20} color="#4CAF82" />}
+              label={t("settings.help.email")}
+              value="support@cashlens.app"
+              onPress={() => handleContactPress("email")}
+            />
+          </View>
+          <View style={{ marginTop: spacing[3] }}>
+            <SettingsItem
               icon={<MessageSquare size={20} color="#4CAF82" />}
-              label="WhatsApp"
+              label={t("settings.help.whatsapp")}
               value="+62 812-3456-7890"
               onPress={() => handleContactPress("whatsapp")}
             />

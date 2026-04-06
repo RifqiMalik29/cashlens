@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { Typography } from "../ui";
 
 export function ScannerOverlay() {
+  const { t } = useTranslation();
   return (
     <View className="absolute inset-0 items-center justify-center">
       <View className="relative">
@@ -44,7 +46,7 @@ export function ScannerOverlay() {
           <View className="flex-row items-center gap-2">
             <View className="w-2 h-2 bg-primary rounded-full" />
             <View className="text-sm font-semibold text-primary">
-              <Typography>Posisikan struk dalam bingkai</Typography>
+              <Typography>{t("scanner.positionReceipt")}</Typography>
             </View>
           </View>
         </View>

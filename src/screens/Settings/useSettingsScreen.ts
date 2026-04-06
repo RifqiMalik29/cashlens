@@ -132,12 +132,12 @@ export function useSettingsScreen() {
     await Haptics.selectionAsync();
 
     Alert.alert(
-      "Hapus Semua Data Lokal",
-      "Ini akan menghapus semua data lokal (transaksi, anggaran, kategori, dll). Data di Supabase tidak akan terpengaruh. Anda harus login ulang setelah ini.",
+      t("settings.clearDataConfirmTitle"),
+      t("settings.clearDataConfirmDesc"),
       [
-        { text: "Batal", style: "cancel" },
+        { text: t("common.cancel"), style: "cancel" },
         {
-          text: "Hapus",
+          text: t("common.delete"),
           style: "destructive",
           onPress: async () => {
             try {
@@ -145,21 +145,16 @@ export function useSettingsScreen() {
               await Haptics.notificationAsync(
                 Haptics.NotificationFeedbackType.Success
               );
-              Alert.alert(
-                "Berhasil",
-                "Data lokal berhasil dihapus. Aplikasi akan restart.",
-                [
-                  {
-                    text: "OK",
-                    onPress: () => {
-                      // Force app to restart by navigating to root
-                      router.replace("/(auth)/login");
-                    }
+              Alert.alert(t("common.success"), t("settings.clearDataSuccess"), [
+                {
+                  text: t("common.confirm"),
+                  onPress: () => {
+                    router.replace("/(auth)/login");
                   }
-                ]
-              );
+                }
+              ]);
             } catch {
-              Alert.alert("Error", "Gagal menghapus data lokal");
+              Alert.alert(t("common.error"), t("settings.clearDataError"));
             }
           }
         }

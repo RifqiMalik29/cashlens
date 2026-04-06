@@ -1,6 +1,11 @@
 import { useHeader } from "@hooks/useHeader";
 import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
 import { useTranslation } from "react-i18next";
+
+const SUPPORT_EMAIL = "support@cashlens.app";
+const SUPPORT_WHATSAPP = "6281234567890"; // Format without + or dashes
+const PRIVACY_POLICY_URL = "https://cashlens.app/privacy";
 
 export function useHelpScreen() {
   const { t } = useTranslation();
@@ -10,13 +15,33 @@ export function useHelpScreen() {
     statusBarStyle: "dark"
   });
 
-  const handleContactPress = async (_type: "email" | "whatsapp") => {
+  const handleContactPress = async (type: "email" | "whatsapp") => {
     await Haptics.selectionAsync();
-    // Implementation for opening email or whatsapp if needed
+    const url =
+      type === "email"
+        ? `mailto:${SUPPORT_EMAIL}`
+        : `https://wa.me/${SUPPORT_WHATSAPP}`;
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) await Linking.openURL(url);
+    } catch {
+      // Silently fail if the app can't be opened
+    }
+  };
+
+  const handlePrivacyPolicyPress = async () => {
+    await Haptics.selectionAsync();
+    try {
+      const supported = await Linking.canOpenURL(PRIVACY_POLICY_URL);
+      if (supported) await Linking.openURL(PRIVACY_POLICY_URL);
+    } catch {
+      // Silently fail
+    }
   };
 
   return {
     t,
-    handleContactPress
+    handleContactPress,
+    handlePrivacyPolicyPress
   };
 }
