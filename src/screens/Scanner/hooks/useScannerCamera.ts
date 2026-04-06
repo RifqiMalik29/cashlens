@@ -1,9 +1,10 @@
 import { createLogger } from "@utils/logger";
 import { useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const logger = createLogger("[ScannerCamera]");
+const CAMERA_READY_TIMEOUT_MS = 5000;
 
 interface UseScannerCameraProps {
   onPhotoCaptured: (uri: string) => Promise<void>;
@@ -18,11 +19,24 @@ export function useScannerCamera({
 }: UseScannerCameraProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cameraRef = useRef<any>(null);
+  const readyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [permission, requestPermissionHandler] = useCameraPermissions();
   const [flashEnabled, setFlashEnabled] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState(false);
+
+  // Timeout fallback for simulators where camera may never be ready
+  useEffect(() => {
+    if (cameraReady || cameraError) return;
+    readyTimeoutRef.current = setTimeout(() => {
+      logger.warn("Camera ready timeout — possible simulator limitation");
+      setCameraError(true);
+    }, CAMERA_READY_TIMEOUT_MS);
+    return () => {
+      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+    };
+  }, [cameraReady, cameraError]);
 
   const requestPermission = useCallback(async () => {
     logger.debug("[Permission] Requesting camera permission...");
