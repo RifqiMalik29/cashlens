@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rifqi2173.cashlens"
+      "bundleIdentifier": "com.cashlens.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.rifqi2173.cashlens",
+      "package": "com.cashlens.app",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
@@ -50,7 +50,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": "100%",
+          "imageHeight": "100%",
           "resizeMode": "contain",
           "backgroundColor": "#4CAF82",
           "dark": {
