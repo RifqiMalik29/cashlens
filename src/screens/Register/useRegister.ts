@@ -2,6 +2,7 @@ import { signUpWithEmail } from "@services/supabase";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
+import { useSyncStore } from "@stores/useSyncStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -11,6 +12,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function useRegister() {
   const router = useRouter();
   const { setAuthenticated, setUserId, reset } = useAuthStore();
+  const resetSyncStatus = useSyncStore((state) => state.reset);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,6 +63,7 @@ export function useRegister() {
         useTransactionStore.getState().clearTransactions();
         useBudgetStore.getState().clearBudgets();
         useCategoryStore.getState().resetToDefault();
+        resetSyncStatus();
 
         setAuthenticated(true);
         setUserId(data.user.id, data.user.email);
