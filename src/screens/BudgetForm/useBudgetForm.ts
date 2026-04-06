@@ -4,7 +4,7 @@ import { useCategoryStore } from "@stores/useCategoryStore";
 import { type BudgetPeriod } from "@types";
 import { generateId } from "@utils/generateId";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export function useBudgetForm() {
   const router = useRouter();
@@ -20,7 +20,8 @@ export function useBudgetForm() {
   const existingBudget = id ? budgets.find((b) => b.id === id) : null;
   const isEditMode = !!existingBudget;
 
-  const [amount, setAmount] = useState(
+  // Store raw value without formatting
+  const [rawAmount, setRawAmount] = useState(
     existingBudget ? existingBudget.amount.toString() : ""
   );
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(
@@ -41,10 +42,25 @@ export function useBudgetForm() {
     (cat) => cat.type === "expense" || cat.type === "both"
   );
 
+  // Format amount for display only
+  const displayAmount = useMemo(() => {
+    if (!rawAmount) return "";
+    const num = parseFloat(rawAmount);
+    if (isNaN(num)) return rawAmount;
+    return new Intl.NumberFormat("id-ID").format(num);
+  }, [rawAmount]);
+
+  // Handle formatted input - strip non-digits
+  const handleAmountChange = useCallback((text: string) => {
+    // Remove all non-digit characters
+    const cleaned = text.replace(/[^0-9]/g, "");
+    setRawAmount(cleaned);
+  }, []);
+
   const handleSave = useCallback(async () => {
     setError(null);
 
-    if (!amount || parseFloat(amount) <= 0) {
+    if (!rawAmount || parseFloat(rawAmount) <= 0) {
       setError("Jumlah anggaran harus diisi dan lebih dari 0");
       return;
     }
@@ -60,7 +76,7 @@ export function useBudgetForm() {
       const budgetData = {
         id: existingBudget?.id ?? generateId(),
         categoryId: selectedCategoryId,
-        amount: parseFloat(amount),
+        amount: parseFloat(rawAmount),
         currency: baseCurrency,
         period,
         startDate: startDate + "T00:00:00",
@@ -80,7 +96,7 @@ export function useBudgetForm() {
       setIsLoading(false);
     }
   }, [
-    amount,
+    rawAmount,
     selectedCategoryId,
     period,
     startDate,
@@ -112,8 +128,8 @@ export function useBudgetForm() {
   }, []);
 
   return {
-    amount,
-    setAmount,
+    displayAmount,
+    handleAmountChange,
     selectedCategoryId,
     setSelectedCategoryId,
     period,

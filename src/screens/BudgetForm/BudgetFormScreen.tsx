@@ -14,8 +14,8 @@ import { useBudgetForm } from "./useBudgetForm";
 
 export default function BudgetFormScreen() {
   const {
-    amount,
-    setAmount,
+    displayAmount,
+    handleAmountChange,
     selectedCategoryId,
     setSelectedCategoryId,
     period,
@@ -53,8 +53,8 @@ export default function BudgetFormScreen() {
             </Typography>
             <Input
               placeholder="0"
-              value={amount}
-              onChangeText={setAmount}
+              value={displayAmount}
+              onChangeText={handleAmountChange}
               keyboardType="numeric"
             />
 

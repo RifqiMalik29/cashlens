@@ -1,4 +1,5 @@
 import {
+  BudgetSummary,
   RecentTransactions,
   SpendingChart,
   SummaryCard
@@ -7,6 +8,7 @@ import { EmptyState } from "@components/transaction/EmptyState";
 import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -23,6 +25,8 @@ export default function DashboardScreen() {
     hasTransactions,
     hasCurrentMonthData
   } = useDashboardScreen();
+
+  const router = useRouter();
 
   useHeader({
     showHeader: false,
@@ -85,6 +89,11 @@ export default function DashboardScreen() {
             currency={baseCurrency}
           />
         </View>
+
+        <BudgetSummary
+          currency={baseCurrency}
+          onPressBudget={() => router.push("/(tabs)/budget")}
+        />
 
         {hasCurrentMonthData && (
           <SpendingChart
