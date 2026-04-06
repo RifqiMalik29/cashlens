@@ -92,7 +92,7 @@ export default function DashboardScreen() {
 
         <BudgetSummary
           currency={baseCurrency}
-          onPressBudget={() => router.push("/(tabs)/budget")}
+          onPressBudget={() => router.replace("/(tabs)/budget")}
         />
 
         {hasCurrentMonthData && (
