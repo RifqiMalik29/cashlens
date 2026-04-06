@@ -11,6 +11,7 @@ import {
   performSyncWithRetry,
   type PullDataResult,
   SYNC_DEBOUNCE_MS,
+  SYNC_PULL_INTERVAL_MS,
   type SyncVersions
 } from "./cloudSyncHelpers";
 
@@ -34,6 +35,7 @@ export function useCloudSync() {
   const preferencesVersion = useAuthStore((state) => state._syncVersion);
 
   const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pullIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isSyncingRef = useRef(false);
   const hasInitialPullRef = useRef(false);
   const lastSyncedVersion = useRef<SyncVersions>({
@@ -45,15 +47,12 @@ export function useCloudSync() {
 
   const performSync = useCallback(async () => {
     if (!userId || !isAuthenticated || isSyncingRef.current) return;
-
     isSyncingRef.current = true;
     await setSyncing(true);
-
     try {
       const result = await performSyncWithRetry<SyncResult>(() =>
         syncAll(userId, transactions, budgets, categories, preferences)
       );
-
       if (result?.success) {
         await setSynced();
         lastSyncedVersion.current = {
@@ -88,42 +87,26 @@ export function useCloudSync() {
 
   const pullData = useCallback(async () => {
     if (!userId || !isAuthenticated || isSyncingRef.current) return;
-
     const isFirstTime = lastSyncedAt === null;
-
     isSyncingRef.current = true;
-    if (isFirstTime) {
-      await setInitialPulling(true);
-    } else {
-      await setSyncing(true);
-    }
-
+    if (isFirstTime) await setInitialPulling(true);
+    else await setSyncing(true);
     try {
       const data = await performSyncWithRetry<PullDataResult>(() =>
         pullAll(userId)
       );
-
       if (data) {
         setTransactions(data.transactions);
         setBudgets(data.budgets);
-
-        if (data.categories.length > 0) {
-          setCategories(data.categories);
-        }
-
-        if (data.preferences) {
-          setPreferences(data.preferences);
-        }
+        if (data.categories.length > 0) setCategories(data.categories);
+        if (data.preferences) setPreferences(data.preferences);
       }
-
       await setSynced();
     } catch (error) {
       await setError((error as Error).message);
     } finally {
       isSyncingRef.current = false;
-      if (isFirstTime) {
-        await setInitialPulling(false);
-      }
+      if (isFirstTime) await setInitialPulling(false);
     }
   }, [
     userId,
@@ -141,28 +124,21 @@ export function useCloudSync() {
 
   useEffect(() => {
     if (!userId || !isAuthenticated) return;
-
     const currentVersions: SyncVersions = {
       transactions: transactionVersion,
       budgets: budgetVersion,
       categories: categoryVersion,
       preferences: preferencesVersion
     };
-
     if (hasVersionChanged(currentVersions, lastSyncedVersion.current)) {
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current);
-      }
-
-      syncTimeoutRef.current = setTimeout(() => {
-        performSync();
-      }, SYNC_DEBOUNCE_MS);
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
+      syncTimeoutRef.current = setTimeout(
+        () => performSync(),
+        SYNC_DEBOUNCE_MS
+      );
     }
-
     return () => {
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current);
-      }
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current);
     };
   }, [
     userId,
@@ -198,6 +174,18 @@ export function useCloudSync() {
       pullData();
     }
   }, [isAuthenticated, userId, lastSyncedAt, pullData]);
+
+  // Periodic pull from cloud to sync changes from other devices
+  useEffect(() => {
+    if (!userId || !isAuthenticated) return;
+    if (pullIntervalRef.current) clearInterval(pullIntervalRef.current);
+    pullIntervalRef.current = setInterval(() => {
+      if (!isSyncingRef.current) pullData();
+    }, SYNC_PULL_INTERVAL_MS);
+    return () => {
+      if (pullIntervalRef.current) clearInterval(pullIntervalRef.current);
+    };
+  }, [userId, isAuthenticated, pullData]);
 
   return {
     isSyncing: isSyncingRef.current,

@@ -6,6 +6,7 @@ import {
 } from "@types";
 
 export const SYNC_DEBOUNCE_MS = 2000;
+export const SYNC_PULL_INTERVAL_MS = 5 * 60 * 1000; // Pull from cloud every 5 minutes
 export const MAX_RETRIES = 3;
 export const INITIAL_RETRY_DELAY_MS = 1000;
 

@@ -1,7 +1,7 @@
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
-import { formatCurrency } from "@utils/formatCurrency";
+import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -147,7 +147,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
 
               <View className="flex-row justify-between">
                 <Typography variant="caption" color="#6B7280">
-                  {formatCurrency(budget.spent, currency)}{" "}
+                  {formatCompactCurrency(budget.spent, currency)}{" "}
                   {periodLabels[budget.period] || "/bulan"}
                 </Typography>
                 <Typography
@@ -156,8 +156,8 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
                   weight={budget.isOverBudget ? "medium" : "regular"}
                 >
                   {budget.isOverBudget
-                    ? `Lewat ${formatCurrency(Math.abs(budget.remaining), currency)}`
-                    : `Sisa ${formatCurrency(budget.remaining, currency)}`}
+                    ? `Lewat ${formatCompactCurrency(Math.abs(budget.remaining), currency)}`
+                    : `Sisa ${formatCompactCurrency(budget.remaining, currency)}`}
                 </Typography>
               </View>
             </View>

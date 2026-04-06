@@ -35,25 +35,35 @@ export function formatCurrency(
 
 export function formatCompactCurrency(
   amount: number,
-  currencyCode: string,
-  locale: string = "id-ID"
+  currencyCode: string
 ): string {
-  const formatted = new Intl.NumberFormat(locale, {
-    notation: "compact",
-    compactDisplay: "short",
-    maximumFractionDigits: 1
-  }).format(amount);
+  const currencies: Record<string, { symbol: string }> = {
+    IDR: { symbol: "Rp" },
+    USD: { symbol: "$" },
+    EUR: { symbol: "€" },
+    GBP: { symbol: "£" },
+    JPY: { symbol: "¥" },
+    SGD: { symbol: "S$" },
+    MYR: { symbol: "RM" },
+    AUD: { symbol: "A$" },
+    CNY: { symbol: "¥" },
+    KRW: { symbol: "₩" },
+    THB: { symbol: "฿" },
+    HKD: { symbol: "HK$" }
+  };
 
-  const currency =
-    currencyCode === "IDR"
-      ? "Rp"
-      : currencyCode === "USD"
-        ? "$"
-        : currencyCode === "EUR"
-          ? "€"
-          : currencyCode === "GBP"
-            ? "£"
-            : currencyCode;
+  const currency = currencies[currencyCode]?.symbol || currencyCode;
+
+  let formatted: string;
+  if (amount >= 1_000_000_000) {
+    formatted = `${(amount / 1_000_000_000).toFixed(1).replace(/\.0$/, "")}B`;
+  } else if (amount >= 1_000_000) {
+    formatted = `${(amount / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+  } else if (amount >= 1_000) {
+    formatted = `${(amount / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+  } else {
+    formatted = amount.toString();
+  }
 
   return `${currency} ${formatted}`;
 }
