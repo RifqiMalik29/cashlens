@@ -1,3 +1,4 @@
+import { useScanQuota } from "@hooks/useScanQuota";
 import { useIsFocused } from "@react-navigation/native";
 
 import { useScannerCamera } from "./hooks/useScannerCamera";
@@ -5,6 +6,7 @@ import { useScannerProcessor } from "./hooks/useScannerProcessor";
 
 export function useScannerScreen() {
   const isFocused = useIsFocused();
+  const { remaining, limit, isLimitReached, recordScan } = useScanQuota();
 
   const {
     isScanning,
@@ -14,7 +16,7 @@ export function useScannerScreen() {
     handlePickFromGallery,
     dismissError,
     setError
-  } = useScannerProcessor();
+  } = useScannerProcessor({ isLimitReached, recordScan });
 
   const {
     cameraRef,
@@ -49,6 +51,9 @@ export function useScannerScreen() {
     dismissError,
     handleCameraReady,
     handleRefreshCamera,
-    isOffline
+    isOffline,
+    remainingScans: remaining,
+    scanLimit: limit,
+    isLimitReached
   };
 }

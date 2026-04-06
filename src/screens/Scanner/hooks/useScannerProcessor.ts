@@ -19,7 +19,26 @@ interface ScannedData {
   receiptImageUri?: string;
 }
 
-export function useScannerProcessor() {
+interface UseScannerProcessorResult {
+  isScanning: boolean;
+  error: string | null;
+  isOffline: boolean;
+  processScannedData: (uri: string) => Promise<void>;
+  handlePickFromGallery: () => Promise<void>;
+  dismissError: () => void;
+  setError: (msg: string) => void;
+  recordScan: () => Promise<void>;
+}
+
+interface UseScannerProcessorOptions {
+  isLimitReached: boolean;
+  recordScan: () => Promise<void>;
+}
+
+export function useScannerProcessor({
+  isLimitReached,
+  recordScan
+}: UseScannerProcessorOptions): UseScannerProcessorResult {
   const router = useRouter();
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,44 +85,51 @@ export function useScannerProcessor() {
           throw new Error("Teks struk tidak terdeteksi atau terlalu pendek.");
         }
 
-        // Step 2: Try AI Text Parsing (Much cheaper than vision)
-        try {
-          logger.debug("Step 2/3: Analyzing text with Gemini AI...");
-          const aiResult = await parseReceiptText(rawText);
+        // Step 2: Try AI Text Parsing (skip if free quota exceeded)
+        if (isLimitReached) {
+          logger.warn("Free tier quota exceeded, using Local Regex Fallback");
+          setIsOffline(true);
+        } else {
+          try {
+            logger.debug("Step 2/3: Analyzing text with Gemini AI...");
+            const aiResult = await parseReceiptText(rawText);
 
-          scannedData = {
-            amount: aiResult.amount,
-            categoryId: aiResult.category,
-            date: aiResult.date || new Date().toISOString(),
-            note: aiResult.merchant || "Transaksi dari AI Scan (Text)",
-            receiptImageUri: imageUri
-          };
-          logger.debug("✓ Gemini parsing successful!");
-        } catch (aiError) {
-          // Step 3: Local Regex Fallback
-          if (aiError instanceof GeminiRateLimitError) {
-            logger.warn("AI rate limit hit, using Local Regex Fallback");
-            setIsOffline(true);
-          } else {
-            logger.warn("AI failed, using Local Regex Fallback:", aiError);
+            scannedData = {
+              amount: aiResult.amount,
+              categoryId: aiResult.category,
+              date: aiResult.date || new Date().toISOString(),
+              note: aiResult.merchant || "Transaksi dari AI Scan (Text)",
+              receiptImageUri: imageUri
+            };
+            logger.debug("✓ Gemini parsing successful!");
+
+            // Record successful AI scan against quota
+            await recordScan();
+          } catch (aiError) {
+            if (aiError instanceof GeminiRateLimitError) {
+              logger.warn("AI rate limit hit, using Local Regex Fallback");
+              setIsOffline(true);
+            } else {
+              logger.warn("AI failed, using Local Regex Fallback:", aiError);
+            }
           }
-
-          logger.debug("Step 3/3: Parsing with Local Regex Parser...");
-          const parsed = parseReceipt(rawText);
-
-          if (!parsed.amount) {
-            throw new Error("Tidak dapat menemukan jumlah total pada struk.");
-          }
-
-          scannedData = {
-            amount: parsed.amount,
-            categoryId: parsed.categoryId || "cat_other_expense",
-            date: parsed.date || new Date().toISOString(),
-            note: parsed.note || "Transaksi dari scan (Local Regex)",
-            receiptImageUri: imageUri
-          };
-          logger.debug("✓ Local Regex parsing successful!");
         }
+
+        // Step 3: Local Regex Fallback (always available)
+        const localParsed = parseReceipt(rawText);
+
+        if (!localParsed.amount) {
+          throw new Error("Tidak dapat menemukan jumlah total pada struk.");
+        }
+
+        scannedData = {
+          amount: localParsed.amount,
+          categoryId: localParsed.categoryId || "cat_other_expense",
+          date: localParsed.date || new Date().toISOString(),
+          note: localParsed.note || "Transaksi dari scan (Local Regex)",
+          receiptImageUri: imageUri
+        };
+        logger.debug("✓ Local Regex parsing successful!");
 
         const params = new URLSearchParams({
           amount: scannedData.amount.toString(),
@@ -125,7 +151,7 @@ export function useScannerProcessor() {
         setIsScanning(false);
       }
     },
-    [router]
+    [router, isLimitReached, recordScan]
   );
 
   const handlePickFromGallery = useCallback(async () => {
@@ -174,6 +200,7 @@ export function useScannerProcessor() {
     processScannedData,
     handlePickFromGallery,
     dismissError,
-    setError
+    setError,
+    recordScan
   };
 }

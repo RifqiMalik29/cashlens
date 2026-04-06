@@ -84,7 +84,13 @@
     "positionReceipt": "Posisikan struk dalam bingkai",
     "ocrFailed": "Gagal membaca struk",
     "ocrOfflineFallback": "AI Mode Limit Terlampaui",
-    "ocrOfflineFallbackDesc": "Menggunakan OCR offline sebagai fallback. Akurasi mungkin berbeda."
+    "ocrOfflineFallbackDesc": "Menggunakan OCR offline sebagai fallback. Akurasi mungkin berbeda.",
+    "quotaExceededDesc": "Batas gratis tercapai (5/bulan). Upgrade ke Premium untuk scan AI tanpa batas.",
+    "scansRemaining": "{{count}}/{{limit}} scan tersisa",
+    "stageCapturing": "Mengambil foto struk",
+    "stageAnalyzing": "Menganalisis dengan AI",
+    "stageExtracting": "Mengekstrak data",
+    "processingWait": "Ini mungkin membutuhkan beberapa detik"
   },
   "budget": {
     "title": "Anggaran",

@@ -32,6 +32,9 @@ export default function ScannerScreen() {
     cameraReady,
     cameraError,
     isOffline,
+    remainingScans,
+    scanLimit,
+    isLimitReached,
     handleTakePhoto,
     handlePickFromGallery,
     toggleFlash,
@@ -75,6 +78,16 @@ export default function ScannerScreen() {
         <ScannerOverlay />
         <ScanningProgress isScanning={isScanning} />
 
+        {/* Scan quota indicator */}
+        <View className="absolute top-12 right-4 bg-black/70 rounded-full px-3 py-1.5 z-40">
+          <Typography variant="caption" color="#FFFFFF" weight="medium">
+            {t("scanner.scansRemaining", {
+              count: remainingScans,
+              limit: scanLimit
+            })}
+          </Typography>
+        </View>
+
         {isOffline && (
           <View className="absolute top-24 left-4 right-4 rounded-xl bg-yellow-500/90 p-4 shadow-lg z-50">
             <Typography
@@ -90,7 +103,9 @@ export default function ScannerScreen() {
               color="#FFFFFF"
               style={{ textAlign: "center", marginTop: 2 }}
             >
-              {t("scanner.ocrOfflineFallbackDesc")}
+              {isLimitReached
+                ? t("scanner.quotaExceededDesc")
+                : t("scanner.ocrOfflineFallbackDesc")}
             </Typography>
           </View>
         )}

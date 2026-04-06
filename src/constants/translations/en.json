@@ -84,7 +84,13 @@
     "positionReceipt": "Position receipt in frame",
     "ocrFailed": "Failed to read receipt",
     "ocrOfflineFallback": "AI Mode Limit Exceeded",
-    "ocrOfflineFallbackDesc": "Using offline OCR as fallback. Accuracy may vary."
+    "ocrOfflineFallbackDesc": "Using offline OCR as fallback. Accuracy may vary.",
+    "quotaExceededDesc": "Free tier limit reached (5/month). Upgrade to Premium for unlimited AI scans.",
+    "scansRemaining": "{{count}}/{{limit}} scans left",
+    "stageCapturing": "Capturing receipt",
+    "stageAnalyzing": "Analyzing with AI",
+    "stageExtracting": "Extracting data",
+    "processingWait": "This may take a few seconds"
   },
   "budget": {
     "title": "Budget",

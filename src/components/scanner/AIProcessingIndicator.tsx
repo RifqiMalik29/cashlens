@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -17,6 +18,7 @@ export function AIProcessingIndicator({
   isProcessing,
   stage = "analyzing"
 }: AIProcessingIndicatorProps) {
+  const { t } = useTranslation();
   const [dots, setDots] = useState("");
   const scale = useSharedValue(1);
 
@@ -48,10 +50,10 @@ export function AIProcessingIndicator({
 
   if (!isProcessing) return null;
 
-  const stageText = {
-    capturing: "Capturing receipt",
-    analyzing: "Analyzing with AI",
-    extracting: "Extracting data"
+  const stageText: Record<string, string> = {
+    capturing: t("scanner.stageCapturing"),
+    analyzing: t("scanner.stageAnalyzing"),
+    extracting: t("scanner.stageExtracting")
   };
 
   return (
@@ -69,7 +71,7 @@ export function AIProcessingIndicator({
       </Text>
 
       <Text className="mt-2 text-sm text-gray-400">
-        This may take a few seconds
+        {t("scanner.processingWait")}
       </Text>
     </View>
   );
