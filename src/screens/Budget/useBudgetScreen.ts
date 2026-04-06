@@ -138,12 +138,12 @@ export function useBudgetScreen() {
   }, [budgetsWithProgress]);
 
   const handleAddBudget = useCallback(() => {
-    router.push("/(tabs)/budget/add");
+    router.push("/(forms)/budget-add");
   }, [router]);
 
   const handleEditBudget = useCallback(
     (budgetId: string) => {
-      router.push(`/(tabs)/budget/edit?id=${budgetId}`);
+      router.push(`/(forms)/budget-edit?id=${budgetId}`);
     },
     [router]
   );

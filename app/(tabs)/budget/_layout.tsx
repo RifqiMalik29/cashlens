@@ -8,16 +8,9 @@ export default function BudgetStack() {
       }}
     >
       <Stack.Screen
-        name="add"
+        name="index"
         options={{
-          title: "Tambah Anggaran",
-          headerShown: false
-        }}
-      />
-      <Stack.Screen
-        name="edit"
-        options={{
-          title: "Edit Anggaran",
+          title: "Anggaran",
           headerShown: false
         }}
       />
