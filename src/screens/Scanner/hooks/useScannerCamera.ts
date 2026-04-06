@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
+import { createLogger } from "@utils/logger";
 import { useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { useCallback, useRef, useState } from "react";
 
-const LOG_PREFIX = "[ScannerCamera]";
+const logger = createLogger("[ScannerCamera]");
 
 interface UseScannerCameraProps {
   onPhotoCaptured: (uri: string) => Promise<void>;
@@ -25,33 +25,30 @@ export function useScannerCamera({
   const [cameraError, setCameraError] = useState(false);
 
   const requestPermission = useCallback(async () => {
-    console.log(`${LOG_PREFIX} [Permission] Requesting camera permission...`);
+    logger.debug("[Permission] Requesting camera permission...");
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      console.log(`${LOG_PREFIX} [Permission] Status: ${status}`);
+      logger.debug("[Permission] Status:", status);
       return status === "granted";
     } catch (error) {
-      console.error(
-        `${LOG_PREFIX} [Permission] Error:`,
-        (error as Error).message
-      );
+      logger.error("[Permission] Error:", error);
       return false;
     }
   }, []);
 
   const handleTakePhoto = useCallback(async () => {
-    console.log(`${LOG_PREFIX} [Take Photo] Capturing photo...`);
+    logger.debug("[Take Photo] Capturing photo...");
 
     try {
       if (!cameraRef.current) {
-        console.log(`${LOG_PREFIX} [Take Photo] Camera ref not ready`);
+        logger.debug("[Take Photo] Camera ref not ready");
         onError("Kamera belum siap");
         return;
       }
 
       if (isScanning) return;
 
-      console.log(`${LOG_PREFIX} [Take Photo] Taking picture...`);
+      logger.debug("[Take Photo] Taking picture...");
 
       const photo = await cameraRef.current.takePictureAsync({
         quality: 0.8,
@@ -59,18 +56,15 @@ export function useScannerCamera({
       });
 
       if (!photo) {
-        console.log(`${LOG_PREFIX} [Take Photo] Failed to capture`);
+        logger.debug("[Take Photo] Failed to capture");
         onError("Gagal mengambil foto");
         return;
       }
 
-      console.log(`${LOG_PREFIX} [Take Photo] Photo captured: ${photo.uri}`);
+      logger.debug("[Take Photo] Photo captured:", photo.uri);
       await onPhotoCaptured(photo.uri);
     } catch (error) {
-      console.error(
-        `${LOG_PREFIX} [Take Photo] Error:`,
-        (error as Error).message
-      );
+      logger.error("[Take Photo] Error:", error);
       onError("Gagal mengambil foto");
     }
   }, [onPhotoCaptured, onError, isScanning]);
@@ -80,13 +74,13 @@ export function useScannerCamera({
   }, []);
 
   const handleCameraReady = useCallback(() => {
-    console.log(`${LOG_PREFIX} Camera is ready`);
+    logger.debug("Camera is ready");
     setCameraReady(true);
     setCameraError(false);
   }, []);
 
   const handleRefreshCamera = useCallback(async () => {
-    console.log(`${LOG_PREFIX} Refreshing camera...`);
+    logger.debug("Refreshing camera...");
     setCameraReady(false);
     setCameraError(false);
     await requestPermission();

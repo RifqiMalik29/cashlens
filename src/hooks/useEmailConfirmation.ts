@@ -1,8 +1,10 @@
-/* eslint-disable no-console */
 import { supabase } from "@services/supabase";
+import { createLogger } from "@utils/logger";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
+
+const logger = createLogger("[EmailConfirmation]");
 
 export function useEmailConfirmation() {
   const router = useRouter();
@@ -21,13 +23,10 @@ export function useEmailConfirmation() {
         });
 
         if (!error) {
-          console.log("[EmailConfirmation] ✓ Email confirmed successfully");
+          logger.debug("✓ Email confirmed successfully");
           router.replace("/(tabs)");
         } else {
-          console.error(
-            "[EmailConfirmation] ✗ Failed to confirm:",
-            error?.message
-          );
+          logger.error("✗ Failed to confirm:", error?.message);
         }
       }
     };

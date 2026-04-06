@@ -1,7 +1,9 @@
-/* eslint-disable no-console */
 import { supabase } from "@services/supabase";
 import { useAuthStore } from "@stores/useAuthStore";
+import { createLogger } from "@utils/logger";
 import { useEffect } from "react";
+
+const logger = createLogger("[SessionRestore]");
 
 export function useSessionRestore() {
   const { setUserId, setAuthenticated, setUserEmail } = useAuthStore();
@@ -14,18 +16,15 @@ export function useSessionRestore() {
         } = await supabase.auth.getSession();
 
         if (session?.user) {
-          console.log(
-            "[SessionRestore] ✓ Restored session for:",
-            session.user.email
-          );
+          logger.debug("✓ Restored session for:", session.user.email);
           setUserId(session.user.id, session.user.email);
           setUserEmail(session.user.email ?? null);
           setAuthenticated(true);
         } else {
-          console.log("[SessionRestore] ⚠ No active session found");
+          logger.debug("⚠ No active session found");
         }
       } catch (error) {
-        console.error("[SessionRestore] ✗ Failed to restore session:", error);
+        logger.error("✗ Failed to restore session:", error);
       }
     };
 
@@ -35,15 +34,12 @@ export function useSessionRestore() {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        console.log(
-          "[SessionRestore] 🔄 Auth state changed:",
-          session.user.email
-        );
+        logger.debug("🔄 Auth state changed:", session.user.email);
         setUserId(session.user.id, session.user.email);
         setUserEmail(session.user.email ?? null);
         setAuthenticated(true);
       } else {
-        console.log("[SessionRestore] 🔄 User signed out");
+        logger.debug("🔄 User signed out");
         setUserId(null);
         setUserEmail(null);
         setAuthenticated(false);

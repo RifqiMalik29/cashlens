@@ -1,18 +1,16 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createLogger } from "@utils/logger";
 import * as FileSystem from "expo-file-system";
 import { File } from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 
-const LOG_PREFIX = "[GeminiAI]";
+const logger = createLogger("[GeminiAI]");
 const CACHE_PREFIX = "gemini_cache_v1:";
 const API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
 
 if (!API_KEY) {
-  // eslint-disable-next-line no-console
-  console.error(
-    `${LOG_PREFIX} Missing EXPO_PUBLIC_GEMINI_API_KEY in .env.local`
-  );
+  logger.error("Missing EXPO_PUBLIC_GEMINI_API_KEY in .env.local");
 }
 
 const genAI = new GoogleGenerativeAI(API_KEY || "");
@@ -58,9 +56,8 @@ export class GeminiRateLimitError extends Error {
 export async function parseReceiptImage(
   imageUri: string
 ): Promise<GeminiReceiptResponse> {
-  // eslint-disable-next-line no-console
-  console.log(
-    `${LOG_PREFIX} Starting receipt parsing using model: gemini-3.1-flash-lite-preview (Vision)...`
+  logger.debug(
+    "Starting receipt parsing using model: gemini-3.1-flash-lite-preview (Vision)..."
   );
 
   try {
@@ -71,8 +68,7 @@ export async function parseReceiptImage(
     if (cacheKey) {
       const cachedData = await AsyncStorage.getItem(cacheKey);
       if (cachedData) {
-        // eslint-disable-next-line no-console
-        console.log(`${LOG_PREFIX} ✓ Using CACHED result for this image!`);
+        logger.debug("✓ Using CACHED result for this image!");
         return JSON.parse(cachedData);
       }
     }
@@ -80,9 +76,8 @@ export async function parseReceiptImage(
     const compressedImage = await compressImage(imageUri);
     const base64Image = await imageToBase64(compressedImage);
 
-    // eslint-disable-next-line no-console
-    console.log(
-      `${LOG_PREFIX} Sending image to Gemini... (Base64 length: ${base64Image.length})`
+    logger.debug(
+      `Sending image to Gemini... (Base64 length: ${base64Image.length})`
     );
 
     const prompt = `You are a receipt parsing expert. Analyze this receipt image and extract information in JSON format:
@@ -144,8 +139,7 @@ Rules:
 export async function parseReceiptText(
   ocrText: string
 ): Promise<GeminiReceiptResponse> {
-  // eslint-disable-next-line no-console
-  console.log(`${LOG_PREFIX} Starting receipt text parsing using Gemini...`);
+  logger.debug("Starting receipt text parsing using Gemini...");
 
   try {
     const prompt = `You are a receipt parsing expert. Analyze this RAW OCR TEXT and extract information in JSON format:
@@ -202,10 +196,7 @@ async function compressImage(imageUri: string): Promise<string> {
     );
     return result.uri;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(
-      `${LOG_PREFIX} Image compression failed, using original image. Error: ${(error as Error).message}`
-    );
+    logger.error("Image compression failed, using original image.", error);
     return imageUri;
   }
 }

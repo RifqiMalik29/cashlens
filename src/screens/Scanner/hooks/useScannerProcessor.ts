@@ -1,14 +1,14 @@
-/* eslint-disable no-console */
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GeminiRateLimitError, parseReceiptText } from "@services/gemini";
 import { recognizeText } from "@services/ocr";
 import { parseReceipt } from "@services/receiptParser";
+import { createLogger } from "@utils/logger";
 import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 
-const LOG_PREFIX = "[ScannerProcessor]";
+const logger = createLogger("[ScannerProcessor]");
 const OCR_CACHE_PREFIX = "ocr_text_cache:";
 
 interface ScannedData {
@@ -27,9 +27,7 @@ export function useScannerProcessor() {
 
   const processScannedData = useCallback(
     async (imageUri: string) => {
-      console.log(`\n${LOG_PREFIX} ========================================`);
-      console.log(`${LOG_PREFIX} START PROCESSING SCAN (ADVANCED HYBRID)`);
-      console.log(`${LOG_PREFIX} ========================================`);
+      logger.debug("START PROCESSING SCAN (ADVANCED HYBRID)");
 
       setIsScanning(true);
       setError(null);
@@ -39,7 +37,7 @@ export function useScannerProcessor() {
         let scannedData: ScannedData;
 
         // Step 1: ALWAYS run Local OCR first
-        console.log(`${LOG_PREFIX} Step 1/3: Running Local OCR (ML Kit)...`);
+        logger.debug("Step 1/3: Running Local OCR (ML Kit)...");
 
         // Caching raw text by MD5 to avoid re-running Gemini on the same text
         const file = new File(imageUri);
@@ -52,7 +50,7 @@ export function useScannerProcessor() {
             `${OCR_CACHE_PREFIX}${md5}`
           );
           if (cachedText) {
-            console.log(`${LOG_PREFIX} ✓ Found cached OCR text!`);
+            logger.debug("✓ Found cached OCR text!");
             rawText = cachedText;
           }
         }
@@ -70,9 +68,7 @@ export function useScannerProcessor() {
 
         // Step 2: Try AI Text Parsing (Much cheaper than vision)
         try {
-          console.log(
-            `${LOG_PREFIX} Step 2/3: Analyzing text with Gemini AI...`
-          );
+          logger.debug("Step 2/3: Analyzing text with Gemini AI...");
           const aiResult = await parseReceiptText(rawText);
 
           scannedData = {
@@ -82,24 +78,17 @@ export function useScannerProcessor() {
             note: aiResult.merchant || "Transaksi dari AI Scan (Text)",
             receiptImageUri: imageUri
           };
-          console.log(`${LOG_PREFIX} ✓ Gemini parsing successful!`);
+          logger.debug("✓ Gemini parsing successful!");
         } catch (aiError) {
           // Step 3: Local Regex Fallback
           if (aiError instanceof GeminiRateLimitError) {
-            console.warn(
-              `${LOG_PREFIX} AI rate limit hit, using Local Regex Fallback`
-            );
+            logger.warn("AI rate limit hit, using Local Regex Fallback");
             setIsOffline(true);
           } else {
-            console.warn(
-              `${LOG_PREFIX} AI failed, using Local Regex Fallback:`,
-              (aiError as Error).message
-            );
+            logger.warn("AI failed, using Local Regex Fallback:", aiError);
           }
 
-          console.log(
-            `${LOG_PREFIX} Step 3/3: Parsing with Local Regex Parser...`
-          );
+          logger.debug("Step 3/3: Parsing with Local Regex Parser...");
           const parsed = parseReceipt(rawText);
 
           if (!parsed.amount) {
@@ -113,7 +102,7 @@ export function useScannerProcessor() {
             note: parsed.note || "Transaksi dari scan (Local Regex)",
             receiptImageUri: imageUri
           };
-          console.log(`${LOG_PREFIX} ✓ Local Regex parsing successful!`);
+          logger.debug("✓ Local Regex parsing successful!");
         }
 
         const params = new URLSearchParams({
@@ -130,31 +119,30 @@ export function useScannerProcessor() {
           params: Object.fromEntries(params)
         });
       } catch (err) {
-        console.error(`${LOG_PREFIX} ✗ Processing failed:`, err);
+        logger.error("✗ Processing failed:", err);
         setError((err as Error).message || "Gagal memproses struk");
       } finally {
         setIsScanning(false);
-        console.log(`${LOG_PREFIX} ========================================\n`);
       }
     },
     [router]
   );
 
   const handlePickFromGallery = useCallback(async () => {
-    console.log(`${LOG_PREFIX} [Gallery] Starting gallery picker...`);
+    logger.debug("[Gallery] Starting gallery picker...");
 
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
-      console.log(`${LOG_PREFIX} [Gallery] Gallery permission: ${status}`);
+      logger.debug("[Gallery] Gallery permission:", status);
 
       if (status !== "granted") {
-        console.log(`${LOG_PREFIX} [Gallery] Permission denied`);
+        logger.debug("[Gallery] Permission denied");
         setError("Izin akses galeri diperlukan");
         return;
       }
 
-      console.log(`${LOG_PREFIX} [Gallery] Launching image picker...`);
+      logger.debug("[Gallery] Launching image picker...");
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
         allowsEditing: true,
@@ -163,22 +151,19 @@ export function useScannerProcessor() {
       });
 
       if (result.canceled) {
-        console.log(`${LOG_PREFIX} [Gallery] User canceled`);
+        logger.debug("[Gallery] User canceled");
         return;
       }
 
-      console.log(
-        `${LOG_PREFIX} [Gallery] Image selected: ${result.assets[0].uri}`
-      );
+      logger.debug("[Gallery] Image selected:", result.assets[0].uri);
       await processScannedData(result.assets[0].uri);
     } catch (error) {
-      console.error(`${LOG_PREFIX} [Gallery] Error:`, (error as Error).message);
+      logger.error("[Gallery] Error:", error);
       setError("Gagal memilih gambar dari galeri");
     }
   }, [processScannedData]);
 
   const dismissError = useCallback(() => {
-    console.log(`${LOG_PREFIX} [Error] Dismissing error`);
     setError(null);
   }, []);
 

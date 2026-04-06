@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
 /* eslint-disable max-lines */
 // import { type Transaction } from "@types";
 
+import { createLogger } from "@utils/logger";
+
 import { type Transaction } from "../types";
 
-const LOG_PREFIX = "[ReceiptParser]";
+const logger = createLogger("[ReceiptParser]");
 
 interface ParsedReceiptData {
   amount?: number;
@@ -502,7 +503,7 @@ const BANK_CLEANUP_PATTERNS = [
 const TIME_PATTERN = /(\d{2}:\d{2}(?::\d{2})?)/;
 
 export function detectLocale(text: string): string {
-  console.log(`${LOG_PREFIX} [Locale] Detecting locale...`);
+  logger.debug("[Locale] Detecting locale...");
 
   const textLower = text.toLowerCase();
   const idKeywords = [
@@ -561,14 +562,14 @@ export function detectLocale(text: string): string {
     }
   }
 
-  console.log(`${LOG_PREFIX} [Locale] Scores - ID: ${idScore}, EN: ${enScore}`);
+  logger.debug(` [Locale] Scores - ID: ${idScore}, EN: ${enScore}`);
 
   if (idScore >= enScore) {
-    console.log(`${LOG_PREFIX} [Locale] Detected: id-ID`);
+    logger.debug(` [Locale] Detected: id-ID`);
     return "id-ID";
   }
 
-  console.log(`${LOG_PREFIX} [Locale] Detected: en-US`);
+  logger.debug(` [Locale] Detected: en-US`);
   return "en-US";
 }
 
@@ -577,9 +578,7 @@ function getLocaleConfig(locale: string): LocaleConfig {
 }
 
 function normalizeAmount(rawAmount: string, locale: string): number {
-  console.log(
-    `${LOG_PREFIX} [Amount] Normalizing: "${rawAmount}" for ${locale}`
-  );
+  logger.debug(`[Amount] Normalizing: "${rawAmount}" for ${locale}`);
 
   // Avoid parsing strings with multiple dots or dashes as they are likely dates (e.g., 05.04.26)
   const dotsCount = (rawAmount.match(/\./g) || []).length;
@@ -587,9 +586,7 @@ function normalizeAmount(rawAmount: string, locale: string): number {
   const slashesCount = (rawAmount.match(/\//g) || []).length;
 
   if (dotsCount >= 2 || dashesCount >= 2 || slashesCount >= 2) {
-    console.log(
-      `${LOG_PREFIX} [Amount] Skipping date-like string: "${rawAmount}"`
-    );
+    logger.debug(`[Amount] Skipping date-like string: "${rawAmount}"`);
     return 0;
   }
 
@@ -680,7 +677,7 @@ function normalizeAmount(rawAmount: string, locale: string): number {
   cleaned = cleaned.replace(/[^0-9.]/g, "");
   const amount = parseFloat(cleaned);
 
-  console.log(`${LOG_PREFIX} [Amount] Normalized result: ${amount}`);
+  logger.debug(` [Amount] Normalized result: ${amount}`);
   return isNaN(amount) ? 0 : amount;
 }
 
@@ -688,7 +685,7 @@ function parseAmountWithLocale(
   text: string,
   locale: string
 ): number | undefined {
-  console.log(`${LOG_PREFIX} [Amount] Parsing with locale: ${locale}`);
+  logger.debug(` [Amount] Parsing with locale: ${locale}`);
 
   const config = getLocaleConfig(locale);
   let foundAmount: number | undefined;
@@ -831,7 +828,7 @@ function parseDateStringWithLocale(
 }
 
 function detectCategory(text: string): string {
-  console.log(`${LOG_PREFIX} [Category] Detecting category...`);
+  logger.debug(` [Category] Detecting category...`);
 
   const textUpper = text.toUpperCase();
   const categoryScores: Record<string, number> = {};
@@ -841,9 +838,7 @@ function detectCategory(text: string): string {
     for (const keyword of keywords) {
       if (textUpper.includes(keyword)) {
         score++;
-        console.log(
-          `${LOG_PREFIX} [Category] Match: "${keyword}" → ${categoryId}`
-        );
+        logger.debug(`[Category] Match: "${keyword}" → ${categoryId}`);
       }
     }
     if (score > 0) {
@@ -857,13 +852,11 @@ function detectCategory(text: string): string {
 
   if (sortedCategories.length > 0) {
     const winner = sortedCategories[0][0];
-    console.log(`${LOG_PREFIX} [Category] ✓ Detected: ${winner}`);
+    logger.debug(`[Category] ✓ Detected: ${winner}`);
     return winner;
   }
 
-  console.log(
-    `${LOG_PREFIX} [Category] No match, defaulting to cat_other_expense`
-  );
+  logger.debug("[Category] No match, defaulting to cat_other_expense");
   return "cat_other_expense";
 }
 
@@ -897,9 +890,9 @@ function parseStoreName(text: string): string | undefined {
 }
 
 export function parseReceipt(text: string): ParsedReceiptData {
-  console.log(`\n${LOG_PREFIX} ========================================`);
-  console.log(`${LOG_PREFIX} START PARSING`);
-  console.log(`${LOG_PREFIX} ========================================\n`);
+  logger.debug("========================================");
+  logger.debug("START PARSING");
+  logger.debug("========================================\n");
 
   const locale = detectLocale(text);
   const amount = parseAmountWithLocale(text, locale);
@@ -907,14 +900,14 @@ export function parseReceipt(text: string): ParsedReceiptData {
   const note = parseStoreName(text);
   const categoryId = detectCategory(text);
 
-  console.log(`\n${LOG_PREFIX} ========================================`);
-  console.log(`${LOG_PREFIX} RESULTS:`);
-  console.log(`${LOG_PREFIX}   Locale: ${locale}`);
-  console.log(`${LOG_PREFIX}   Amount: ${amount ?? "NOT FOUND"}`);
-  console.log(`${LOG_PREFIX}   Category: ${categoryId}`);
-  console.log(`${LOG_PREFIX}   Date: ${date ?? "NOT FOUND"}`);
-  console.log(`${LOG_PREFIX}   Store: ${note ?? "NOT FOUND"}`);
-  console.log(`${LOG_PREFIX} ========================================\n`);
+  logger.debug("========================================");
+  logger.debug("RESULTS:");
+  logger.debug(`  Locale: ${locale}`);
+  logger.debug(`  Amount: ${amount ?? "NOT FOUND"}`);
+  logger.debug(`  Category: ${categoryId}`);
+  logger.debug(`  Date: ${date ?? "NOT FOUND"}`);
+  logger.debug(`  Store: ${note ?? "NOT FOUND"}`);
+  logger.debug("========================================\n");
 
   return {
     amount,
@@ -928,7 +921,7 @@ export function parseReceipt(text: string): ParsedReceiptData {
 export function extractReceiptData(
   text: string
 ): Partial<Transaction> & { receiptImageUri?: string } {
-  console.log(`${LOG_PREFIX} Extracting transaction data...`);
+  logger.debug("Extracting transaction data...");
 
   const parsed = parseReceipt(text);
 
@@ -941,6 +934,6 @@ export function extractReceiptData(
     isFromScan: true
   };
 
-  console.log(`${LOG_PREFIX} Result:`, JSON.stringify(result, null, 2));
+  logger.debug("Result:", JSON.stringify(result, null, 2));
   return result;
 }
