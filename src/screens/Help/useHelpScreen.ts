@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 
 const SUPPORT_EMAIL = "support@cashlens.app";
 const SUPPORT_WHATSAPP = "6281234567890"; // Format without + or dashes
-const PRIVACY_POLICY_URL = "https://cashlens.app/privacy";
+const PRIVACY_POLICY_URL =
+  "https://github.com/RifqiMalik29/cashlens/blob/main/docs/PRIVACY_POLICY.md";
 
 export function useHelpScreen() {
   const { t } = useTranslation();
