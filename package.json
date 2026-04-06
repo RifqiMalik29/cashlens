@@ -86,5 +86,14 @@
       "prettier --write"
     ]
   },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@react-native-ml-kit/text-recognition"
+        ]
+      }
+    }
+  },
   "private": true
 }
