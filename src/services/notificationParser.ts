@@ -2,7 +2,7 @@ export interface ParsedDraft {
   source: string;
   amount: number;
   currency: string;
-  description: string; // This will now be a translation key or raw text
+  description: string;
   descriptionParams?: Record<string, string>;
   type: "income" | "expense";
   date: string;
@@ -19,7 +19,7 @@ const PARSERS = [
       amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
       currency: "IDR",
       description: "drafts.bcaTo",
-      descriptionParams: { target: match[2] },
+      descriptionParams: { target: match[2].trim() },
       type: "expense"
     })
   },
@@ -31,7 +31,59 @@ const PARSERS = [
     extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
       amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
       currency: "IDR",
-      description: `GoPay: ${match[2]}`, // Keeping raw for dynamic merchant names if no key needed
+      description: `GoPay: ${match[2].trim()}`,
+      type: "expense"
+    })
+  },
+  {
+    // OVO
+    name: "OVO",
+    package: "com.grb.ovo",
+    regex: /Berhasil bayar Rp ([\d.,]+) ke (.*)/i,
+    extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
+      amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
+      currency: "IDR",
+      description: "drafts.ovoPayment",
+      descriptionParams: { target: match[2].trim() },
+      type: "expense"
+    })
+  },
+  {
+    // DANA
+    name: "DANA",
+    package: "id.dana",
+    regex: /Pembayaran Rp ([\d.,]+) di (.*) berhasil/i,
+    extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
+      amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
+      currency: "IDR",
+      description: "drafts.danaPayment",
+      descriptionParams: { target: match[2].trim() },
+      type: "expense"
+    })
+  },
+  {
+    // Bank Jago Spending
+    name: "Jago",
+    package: "com.jago.app",
+    regex: /Uang keluar Rp([\d.,]+) untuk (.*)/i,
+    extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
+      amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
+      currency: "IDR",
+      description: "drafts.jagoSpending",
+      descriptionParams: { target: match[2].trim() },
+      type: "expense"
+    })
+  },
+  {
+    // ShopeePay
+    name: "ShopeePay",
+    package: "com.shopee.id",
+    regex: /Pembayaran sebesar Rp ([\d.,]+) ke (.*) telah berhasil/i,
+    extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
+      amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
+      currency: "IDR",
+      description: "drafts.shopeePayment",
+      descriptionParams: { target: match[2].trim() },
       type: "expense"
     })
   },

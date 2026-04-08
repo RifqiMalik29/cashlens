@@ -3,6 +3,7 @@ import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useDraftStore } from "@stores/useDraftStore";
+import { useNotificationStore } from "@stores/useNotificationStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
 import { useEffect, useMemo, useState } from "react";
@@ -28,6 +29,7 @@ export function useDashboardScreen() {
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
   const { addDraft, drafts } = useDraftStore();
+  const { isFeatureEnabled, enabledPackages } = useNotificationStore();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
 
@@ -37,8 +39,20 @@ export function useDashboardScreen() {
   );
 
   useEffect(() => {
+    if (!isFeatureEnabled) return;
+
     logger.debug("Dashboard", "Subscribing to notifications...");
     const unsubscribe = notificationService.subscribe((raw) => {
+      // Filter by enabled packages (ignoring the test package check which is handled in the parser)
+      const isTestPackage = raw.packageName === "com.rifqi2173.cashlens";
+      if (!isTestPackage && !enabledPackages.includes(raw.packageName)) {
+        logger.debug(
+          "Dashboard",
+          `Ignoring notification from disabled package: ${raw.packageName}`
+        );
+        return;
+      }
+
       logger.debug("Dashboard", `Raw notification received: ${raw.text}`);
       const parsed = parseNotification(raw.text, raw.packageName);
 
@@ -59,7 +73,7 @@ export function useDashboardScreen() {
     });
 
     return unsubscribe;
-  }, [addDraft]);
+  }, [addDraft, isFeatureEnabled, enabledPackages]);
 
   const handleTestNotification = async () => {
     // Request permission to POST notifications on Android 13+
