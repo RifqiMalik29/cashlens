@@ -20,6 +20,7 @@ interface TypographyProps {
   style?: TextStyle;
   children: React.ReactNode;
   numberOfLines?: number;
+  className?: string;
 }
 
 const variantClasses: Record<Variant, string> = {
@@ -46,11 +47,12 @@ export function Typography({
   color = colors.textPrimary,
   style,
   children,
-  numberOfLines
+  numberOfLines,
+  className
 }: TypographyProps) {
   return (
     <Text
-      className={`${variantClasses[variant]} ${weightClasses[weight]}`}
+      className={`${variantClasses[variant]} ${weightClasses[weight]} ${className}`}
       style={[{ color }, style]}
       numberOfLines={numberOfLines}
     >

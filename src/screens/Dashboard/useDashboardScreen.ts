@@ -1,7 +1,13 @@
+import { parseNotification } from "@services/notificationParser";
+import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
+import { useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
-import { useMemo } from "react";
+import { logger } from "@utils/logger";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { PermissionsAndroid, Platform } from "react-native";
 
 interface CategorySpending {
   categoryId: string;
@@ -17,9 +23,70 @@ interface DailySpending {
 }
 
 export function useDashboardScreen() {
+  const { t } = useTranslation();
   const { baseCurrency } = useAuthStore((state) => state.preferences);
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
+  const { addDraft, drafts } = useDraftStore();
+  const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
+    useState(false);
+
+  const pendingCount = useMemo(
+    () => drafts.filter((d) => d.status === "pending").length,
+    [drafts]
+  );
+
+  useEffect(() => {
+    logger.debug("Dashboard", "Subscribing to notifications...");
+    const unsubscribe = notificationService.subscribe((raw) => {
+      logger.debug("Dashboard", `Raw notification received: ${raw.text}`);
+      const parsed = parseNotification(raw.text, raw.packageName);
+
+      if (parsed) {
+        logger.debug("Dashboard", `Parsed successfully: ${parsed.description}`);
+        addDraft({
+          source: parsed.source,
+          amount: parsed.amount,
+          currency: parsed.currency,
+          description: parsed.description,
+          descriptionParams: parsed.descriptionParams,
+          type: parsed.type,
+          date: parsed.date
+        });
+      } else {
+        logger.warn("Dashboard", `Failed to parse: ${raw.text}`);
+      }
+    });
+
+    return unsubscribe;
+  }, [addDraft]);
+
+  const handleTestNotification = async () => {
+    // Request permission to POST notifications on Android 13+
+    if (Platform.OS === "android" && Platform.Version >= 33) {
+      const hasPostNotif = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+      if (!hasPostNotif) {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
+      }
+    }
+
+    const granted = await notificationService.isPermissionGranted();
+    if (!granted) {
+      setIsPermissionDialogVisible(true);
+      return;
+    }
+
+    logger.debug("Dashboard", t("notifications.testSent"));
+    notificationService.sendTestNotification(
+      "BCA Mobile",
+      "Transfer Rp 150.000 ke TOKOPEDIA BERHASIL",
+      "com.bca.mobile"
+    );
+  };
 
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -117,6 +184,7 @@ export function useDashboardScreen() {
   }, [transactions]);
 
   return {
+    t,
     summary,
     categorySpending,
     dailySpending,
@@ -124,6 +192,10 @@ export function useDashboardScreen() {
     baseCurrency,
     categories,
     hasTransactions: transactions.length > 0,
-    hasCurrentMonthData: currentMonthTransactions.length > 0
+    hasCurrentMonthData: currentMonthTransactions.length > 0,
+    isPermissionDialogVisible,
+    setIsPermissionDialogVisible,
+    pendingCount,
+    handleTestNotification
   };
 }

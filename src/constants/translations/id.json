@@ -173,6 +173,23 @@
     "clearDataConfirmTitle": "Hapus Semua Data Lokal",
     "clearDataConfirmDesc": "Ini akan menghapus semua data lokal (transaksi, anggaran, kategori, dll). Data di Supabase tidak akan terpengaruh. Anda harus login ulang setelah ini."
   },
+  "notifications": {
+    "permissionTitle": "Izin Diperlukan",
+    "permissionDesc": "Untuk mendeteksi transaksi otomatis, CashLens memerlukan akses ke notifikasi perangkatmu.",
+    "testSent": "Notifikasi tes terkirim untuk BCA Mobile...",
+    "permissionWarning": "Buka Pengaturan Notification Listener?",
+    "later": "Nanti Saja"
+  },
+  "drafts": {
+    "title": "Inbox Draft",
+    "emptyTitle": "Inbox Kosong",
+    "emptyDesc": "Belum ada notifikasi transaksi yang terdeteksi.",
+    "confirm": "Konfirmasi",
+    "successTitle": "Berhasil",
+    "successDesc": "Transaksi telah berhasil ditambahkan ke catatan keuanganmu.",
+    "incomingTransfer": "Transfer Masuk",
+    "bcaTo": "BCA: Ke {{target}}"
+  },
   "currency": {
     "title": "Pilih Mata Uang",
     "searchPlaceholder": "Cari mata uang...",

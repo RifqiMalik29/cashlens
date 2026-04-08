@@ -1,13 +1,15 @@
 import {
   BudgetSummary,
+  DashboardHeader,
   RecentTransactions,
   SpendingChart,
   SummaryCard
 } from "@components/dashboard";
 import { EmptyState } from "@components/transaction/EmptyState";
-import { Typography } from "@components/ui/Typography";
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { colors, spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { notificationService } from "@services/notificationService";
 import { useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,6 +18,7 @@ import { useDashboardScreen } from "./useDashboardScreen";
 
 export default function DashboardScreen() {
   const {
+    t,
     summary,
     categorySpending,
     dailySpending,
@@ -23,7 +26,11 @@ export default function DashboardScreen() {
     baseCurrency,
     categories,
     hasTransactions,
-    hasCurrentMonthData
+    hasCurrentMonthData,
+    isPermissionDialogVisible,
+    setIsPermissionDialogVisible,
+    pendingCount,
+    handleTestNotification
   } = useDashboardScreen();
 
   const router = useRouter();
@@ -40,17 +47,14 @@ export default function DashboardScreen() {
         className="flex-1"
         style={{ backgroundColor: colors.primary }}
       >
-        <View className="px-6 pt-6 pb-4">
-          <Typography variant="h2" weight="bold" color="#FFFFFF">
-            CashLens
-          </Typography>
-          <Typography variant="body" color="#FFFFFF">
-            Kelola keuanganmu dengan cerdas
-          </Typography>
-        </View>
+        <DashboardHeader
+          pendingCount={pendingCount}
+          handleTestNotification={handleTestNotification}
+          onPressBell={() => router.push("/drafts")}
+        />
         <EmptyState
-          title="Belum Ada Transaksi"
-          description="Mulai catat transaksi keuanganmu untuk melihat ringkasan dan analisis pengeluaran di dashboard."
+          title={t("dashboard.noTransactions")}
+          description={t("dashboard.noTransactionsDesc")}
           customContainerStyle={{ backgroundColor: colors.background }}
         />
       </SafeAreaView>
@@ -69,17 +73,11 @@ export default function DashboardScreen() {
         contentContainerStyle={{ paddingBottom: spacing[8] }}
         style={{ backgroundColor: colors.background }}
       >
-        <View
-          className="px-6 pt-6 pb-12"
-          style={{ backgroundColor: colors.primary }}
-        >
-          <Typography variant="h1" weight="bold" color="#FFFFFF">
-            CashLens
-          </Typography>
-          <Typography variant="body" color="#FFFFFF">
-            Kelola keuanganmu dengan cerdas
-          </Typography>
-        </View>
+        <DashboardHeader
+          pendingCount={pendingCount}
+          handleTestNotification={handleTestNotification}
+          onPressBell={() => router.push("/drafts")}
+        />
 
         <View style={{ marginTop: -40 }}>
           <SummaryCard
@@ -111,6 +109,21 @@ export default function DashboardScreen() {
           />
         )}
       </ScrollView>
+
+      <BaseDialog
+        isVisible={isPermissionDialogVisible}
+        title={t("notifications.permissionTitle")}
+        message={t("notifications.permissionDesc")}
+        type="warning"
+        primaryButtonText={t("notifications.permissionWarning")}
+        onPrimaryButtonPress={() => {
+          setIsPermissionDialogVisible(false);
+          notificationService.openNotificationSettings();
+        }}
+        secondaryButtonText={t("notifications.later")}
+        onSecondaryButtonPress={() => setIsPermissionDialogVisible(false)}
+        onClose={() => setIsPermissionDialogVisible(false)}
+      />
     </SafeAreaView>
   );
 }

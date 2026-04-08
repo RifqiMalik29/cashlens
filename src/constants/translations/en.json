@@ -173,6 +173,23 @@
     "clearDataConfirmTitle": "Clear All Local Data",
     "clearDataConfirmDesc": "This will delete all local data (transactions, budgets, categories, etc.). Data on Supabase will not be affected. You must log in again after this."
   },
+  "notifications": {
+    "permissionTitle": "Permission Required",
+    "permissionDesc": "To detect transactions automatically, CashLens requires access to your device's notifications.",
+    "testSent": "Test notification sent for BCA Mobile...",
+    "permissionWarning": "Open Notification Listener Settings?",
+    "later": "Later"
+  },
+  "drafts": {
+    "title": "Draft Inbox",
+    "emptyTitle": "Inbox Empty",
+    "emptyDesc": "No transaction notifications detected yet.",
+    "confirm": "Confirm",
+    "successTitle": "Success",
+    "successDesc": "Transaction has been successfully added to your records.",
+    "incomingTransfer": "Incoming Transfer",
+    "bcaTo": "BCA: To {{target}}"
+  },
   "currency": {
     "title": "Select Currency",
     "searchPlaceholder": "Search currency...",
