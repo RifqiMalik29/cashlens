@@ -10,8 +10,8 @@ export function useEmailConfirmation() {
   const router = useRouter();
 
   useEffect(() => {
-    const handleDeepLink = async (event: { url: string }) => {
-      const { queryParams } = Linking.parse(event.url);
+    const handleUrl = async (url: string) => {
+      const { queryParams } = Linking.parse(url);
 
       if (queryParams?.access_token && queryParams?.type === "signup") {
         const accessToken = queryParams.access_token as string;
@@ -31,12 +31,14 @@ export function useEmailConfirmation() {
       }
     };
 
-    const subscription = Linking.addEventListener("url", handleDeepLink);
-
+    // 1. Check initial URL (cold start)
     Linking.getInitialURL().then((url) => {
-      if (url) {
-        handleDeepLink({ url });
-      }
+      if (url) handleUrl(url);
+    });
+
+    // 2. Listen for subsequent URLs (background start)
+    const subscription = Linking.addEventListener("url", (event) => {
+      handleUrl(event.url);
     });
 
     return () => {

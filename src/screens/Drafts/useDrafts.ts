@@ -1,3 +1,5 @@
+import { colors } from "@constants/theme";
+import { useHeader } from "@hooks/useHeader";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { type DraftTransaction, useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
@@ -14,6 +16,12 @@ export function useDrafts() {
   const { addTransaction } = useTransactionStore();
   const { categories } = useCategoryStore();
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
+  useHeader({
+    title: t("drafts.title"),
+    statusBarColor: colors.primary,
+    statusBarStyle: "light"
+  });
 
   const pendingDrafts = useMemo(
     () => drafts.filter((d) => d.status === "pending"),

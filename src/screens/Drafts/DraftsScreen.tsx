@@ -1,7 +1,6 @@
 import { BaseDialog } from "@components/ui/BaseDialog";
 import { spacing } from "@constants/theme";
 import { type DraftTransaction } from "@stores/useDraftStore";
-import { Stack } from "expo-router";
 import { FlatList, View } from "react-native";
 
 import { DraftEmptyState, DraftItem } from "./components";
@@ -29,13 +28,6 @@ export default function DraftsScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <Stack.Screen
-        options={{
-          title: t("drafts.title"),
-          headerShown: true
-        }}
-      />
-
       <FlatList
         data={pendingDrafts}
         keyExtractor={(item) => item.id}
