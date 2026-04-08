@@ -1,11 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
+import { logger } from "@utils/logger";
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "";
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing Supabase environment variables. Check .env.local");
+  logger.warn(
+    "Supabase",
+    "WARNING: Supabase environment variables are missing!"
+  );
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -18,7 +22,25 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 export const signInWithEmail = async (email: string, password: string) => {
-  return supabase.auth.signInWithPassword({ email, password });
+  logger.debug("Supabase", `Login: ${email} -> ${supabaseUrl}`);
+
+  try {
+    const result = await supabase.auth.signInWithPassword({ email, password });
+    if (result.error) {
+      logger.error("Supabase", `Auth Error: ${result.error.message}`);
+    }
+    return result;
+  } catch (err) {
+    const error = err as Error;
+    logger.error("Supabase", `Fetch Error: ${error.message}`);
+    return {
+      data: { user: null, session: null },
+      error: { message: error.message, status: 500 } as {
+        message: string;
+        status: number;
+      }
+    };
+  }
 };
 
 export const signUpWithEmail = async (email: string, password: string) => {
