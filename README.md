@@ -1,6 +1,6 @@
 # CashLens 💰
 
-Personal finance tracker built with React Native Expo. Features daily/monthly/yearly transaction recording, AI-powered receipt scanning with offline fallback, multi-currency support, custom categories, and budgeting.
+Personal finance tracker built with React Native Expo. Features daily/monthly/yearly transaction recording, AI-powered receipt scanning with offline fallback, automatic transaction detection from banking notifications, multi-currency support, custom categories, and budgeting.
 
 ---
 
@@ -32,6 +32,11 @@ Personal finance tracker built with React Native Expo. Features daily/monthly/ye
   - Local OCR → Gemini AI text parsing → Regex fallback
   - MD5 caching for duplicate scans (zero API cost on repeats)
   - 100% offline fallback when AI rate limit exceeded
+- 🔔 **Automatic transaction detection from banking notifications**
+  - Monitors banking app notifications (BCA Mobile, GoPay, etc.)
+  - Parses transaction details using regex patterns
+  - Creates draft transactions for review before adding to records
+  - Zero manual entry required for detected transactions
 - 💱 Multi-currency with live exchange rates
 - 🗂️ Custom categories with filtering
 - 📊 Budget management with period tracking
@@ -92,6 +97,7 @@ cashlens/
 ├── app/
 │   ├── (auth)/          # Login, onboarding screens
 │   ├── (tabs)/          # Main tab screens (re-exports only)
+│   ├── drafts.tsx       # Draft inbox screen
 │   └── _layout.tsx      # Root layout
 └── src/
     ├── components/
@@ -106,11 +112,12 @@ cashlens/
     │   ├── Scanner/
     │   │   ├── hooks/   # useScannerCamera, useScannerProcessor
     │   │   └── ...
+    │   ├── Drafts/      # Draft transaction inbox
     │   ├── Budget/
     │   ├── Settings/
     │   └── ...
-    ├── services/        # Supabase, OCR, Gemini AI, currency, sync, i18n
-    ├── stores/          # Zustand stores
+    ├── services/        # Supabase, OCR, Gemini AI, currency, sync, i18n, notifications
+    ├── stores/          # Zustand stores (including useDraftStore)
     ├── types/           # TypeScript types (AI, transactions, etc.)
     └── utils/           # Helper functions
 ```
