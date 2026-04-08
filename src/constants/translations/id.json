@@ -78,6 +78,8 @@
     "refreshCamera": "Refresh Kamera",
     "processingReceipt": "Memproses Struk...",
     "readingData": "Membaca informasi transaksi",
+    "improvingWithAI": "Meningkatkan pembacaan dengan AI...",
+    "analyzingWithVision": "Menganalisis dengan Vision AI Pro...",
     "noAmountFound": "Tidak dapat menemukan jumlah total pada struk",
     "scanFailed": "Gagal memproses struk",
     "cameraInactive": "Kamera tidak aktif di tab lain",
@@ -200,6 +202,12 @@
     "disconnectTelegram": "Putus Koneksi",
     "linkingLoading": "Menghubungkan...",
     "linkingError": "Gagal mendapatkan token linking. Pastikan backend aktif."
+  },
+  "paywall": {
+    "title": "Limit AI Tercapai",
+    "message": "Kamu telah menggunakan 5 scan Vision AI gratis. Untuk terus menggunakan fitur pemindaian tercanggih kami, silakan upgrade ke Premium.",
+    "upgrade": "Upgrade ke Premium",
+    "later": "Mungkin Nanti"
   },
   "drafts": {
     "title": "Inbox Draft",

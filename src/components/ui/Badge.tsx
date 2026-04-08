@@ -4,7 +4,13 @@ import { View, type ViewStyle } from "react-native";
 
 import { Typography } from "./Typography";
 
-type BadgeVariant = "default" | "success" | "warning" | "error" | "primary";
+type BadgeVariant =
+  | "default"
+  | "success"
+  | "warning"
+  | "error"
+  | "primary"
+  | "secondary";
 
 interface BadgeProps {
   label: string;
@@ -23,7 +29,11 @@ const variantConfig: Record<
   success: { containerClass: "bg-green-100", textColor: "#065F46" },
   warning: { containerClass: "bg-yellow-100", textColor: "#92400E" },
   error: { containerClass: "bg-red-100", textColor: "#991B1B" },
-  primary: { containerClass: "bg-primary-light", textColor: colors.primary }
+  primary: { containerClass: "bg-primary-light", textColor: colors.primary },
+  secondary: {
+    containerClass: "bg-surface-secondary",
+    textColor: colors.textSecondary
+  }
 };
 
 export function Badge({ label, variant = "default", style }: BadgeProps) {

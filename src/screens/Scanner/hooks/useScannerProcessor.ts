@@ -1,23 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GeminiRateLimitError, parseReceiptText } from "@services/gemini";
-import { recognizeText } from "@services/ocr";
-import { parseReceipt } from "@services/receiptParser";
+import { processReceiptIntelligence } from "@services/receiptParser";
+import { useAuthStore } from "@stores/useAuthStore";
 import { createLogger } from "@utils/logger";
-import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 
 const logger = createLogger("[ScannerProcessor]");
-const OCR_CACHE_PREFIX = "ocr_text_cache:";
-
-interface ScannedData {
-  amount: number;
-  categoryId: string;
-  date: string;
-  note: string;
-  receiptImageUri?: string;
-}
 
 interface UseScannerProcessorResult {
   isScanning: boolean;
@@ -28,6 +16,10 @@ interface UseScannerProcessorResult {
   dismissError: () => void;
   setError: (msg: string) => void;
   recordScan: () => Promise<void>;
+  processingStatus: string;
+  processingMethod?: "local_ocr" | "gemini_text" | "gemini_vision";
+  showPaywall: boolean;
+  setShowPaywall: (show: boolean) => void;
 }
 
 interface UseScannerProcessorOptions {
@@ -36,139 +28,81 @@ interface UseScannerProcessorOptions {
 }
 
 export function useScannerProcessor({
-  isLimitReached,
   recordScan
 }: UseScannerProcessorOptions): UseScannerProcessorResult {
   const router = useRouter();
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isOffline, setIsOffline] = useState(false);
+  const [processingStatus, setProcessingStatus] = useState("");
+  const [processingMethod, setProcessingMethod] = useState<
+    "local_ocr" | "gemini_text" | "gemini_vision" | undefined
+  >();
+  const [showPaywall, setShowPaywall] = useState(false);
+
+  const { subscriptionTier, stealthScansUsed } = useAuthStore();
 
   const processScannedData = useCallback(
     async (imageUri: string) => {
-      logger.debug("START PROCESSING SCAN (ADVANCED HYBRID)");
+      // PAYWALL CHECK: If free user and already used 5 magic scans
+      if (subscriptionTier === "free" && stealthScansUsed >= 5) {
+        setShowPaywall(true);
+        return;
+      }
 
+      logger.debug("START INTELLIGENT SCAN");
       setIsScanning(true);
       setError(null);
       setIsOffline(false);
+      setProcessingStatus("Menyiapkan pemindaian...");
 
       try {
-        let scannedData: ScannedData;
+        const result = await processReceiptIntelligence(imageUri, (status) =>
+          setProcessingStatus(status)
+        );
 
-        // Step 1: ALWAYS run Local OCR first
-        logger.debug("Step 1/3: Running Local OCR (ML Kit)...");
+        setProcessingMethod(result.method);
 
-        // Caching raw text by MD5 to avoid re-running Gemini on the same text
-        const file = new File(imageUri);
-        const info = await file.info({ md5: true });
-        const md5 = info.exists ? info.md5 : null;
-
-        let rawText = "";
-        if (md5) {
-          const cachedText = await AsyncStorage.getItem(
-            `${OCR_CACHE_PREFIX}${md5}`
-          );
-          if (cachedText) {
-            logger.debug("✓ Found cached OCR text!");
-            rawText = cachedText;
-          }
-        }
-
-        if (!rawText) {
-          rawText = await recognizeText(imageUri);
-          if (md5) {
-            await AsyncStorage.setItem(`${OCR_CACHE_PREFIX}${md5}`, rawText);
-          }
-        }
-
-        if (!rawText || rawText.trim().length < 5) {
-          throw new Error("Teks struk tidak terdeteksi atau terlalu pendek.");
-        }
-
-        // Step 2: Try AI Text Parsing (skip if free quota exceeded)
-        if (isLimitReached) {
-          logger.warn("Free tier quota exceeded, using Local Regex Fallback");
-          setIsOffline(true);
+        if (result.method !== "local_ocr") {
+          await recordScan();
         } else {
-          try {
-            logger.debug("Step 2/3: Analyzing text with Gemini AI...");
-            const aiResult = await parseReceiptText(rawText);
-
-            scannedData = {
-              amount: aiResult.amount,
-              categoryId: aiResult.category,
-              date: aiResult.date || new Date().toISOString(),
-              note: aiResult.merchant || "Transaksi dari AI Scan (Text)",
-              receiptImageUri: imageUri
-            };
-            logger.debug("✓ Gemini parsing successful!");
-
-            // Record successful AI scan against quota
-            await recordScan();
-          } catch (aiError) {
-            if (aiError instanceof GeminiRateLimitError) {
-              logger.warn("AI rate limit hit, using Local Regex Fallback");
-              setIsOffline(true);
-            } else {
-              logger.warn("AI failed, using Local Regex Fallback:", aiError);
-            }
-          }
+          setIsOffline(true);
         }
-
-        // Step 3: Local Regex Fallback (always available)
-        const localParsed = parseReceipt(rawText);
-
-        if (!localParsed.amount) {
-          throw new Error("Tidak dapat menemukan jumlah total pada struk.");
-        }
-
-        scannedData = {
-          amount: localParsed.amount,
-          categoryId: localParsed.categoryId || "cat_other_expense",
-          date: localParsed.date || new Date().toISOString(),
-          note: localParsed.note || "Transaksi dari scan (Local Regex)",
-          receiptImageUri: imageUri
-        };
-        logger.debug("✓ Local Regex parsing successful!");
 
         const params = new URLSearchParams({
-          amount: scannedData.amount.toString(),
-          categoryId: scannedData.categoryId,
-          date: scannedData.date,
-          note: scannedData.note,
-          receiptImageUri: scannedData.receiptImageUri || "",
+          amount: result.data.amount?.toString() || "0",
+          categoryId: result.data.categoryId || "cat_other_expense",
+          date: result.data.date || new Date().toISOString(),
+          note: result.data.note || "Transaksi dari AI Scan",
+          receiptImageUri: imageUri,
           isFromScan: "true"
         });
 
-        router.push({
-          pathname: "/(tabs)/transactions/add",
-          params: Object.fromEntries(params)
-        });
+        setTimeout(() => {
+          router.push({
+            pathname: "/(tabs)/transactions/add",
+            params: Object.fromEntries(params)
+          });
+        }, 500);
       } catch (err) {
-        logger.error("✗ Processing failed:", err);
+        logger.error("✗ Intelligent processing failed:", err);
         setError((err as Error).message || "Gagal memproses struk");
       } finally {
         setIsScanning(false);
       }
     },
-    [router, isLimitReached, recordScan]
+    [router, recordScan, subscriptionTier, stealthScansUsed]
   );
 
   const handlePickFromGallery = useCallback(async () => {
-    logger.debug("[Gallery] Starting gallery picker...");
-
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
-      logger.debug("[Gallery] Gallery permission:", status);
-
       if (status !== "granted") {
-        logger.debug("[Gallery] Permission denied");
         setError("Izin akses galeri diperlukan");
         return;
       }
 
-      logger.debug("[Gallery] Launching image picker...");
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
         allowsEditing: true,
@@ -176,12 +110,7 @@ export function useScannerProcessor({
         quality: 0.8
       });
 
-      if (result.canceled) {
-        logger.debug("[Gallery] User canceled");
-        return;
-      }
-
-      logger.debug("[Gallery] Image selected:", result.assets[0].uri);
+      if (result.canceled) return;
       await processScannedData(result.assets[0].uri);
     } catch (error) {
       logger.error("[Gallery] Error:", error);
@@ -201,6 +130,10 @@ export function useScannerProcessor({
     handlePickFromGallery,
     dismissError,
     setError,
-    recordScan
+    recordScan,
+    processingStatus,
+    processingMethod,
+    showPaywall,
+    setShowPaywall
   };
 }

@@ -201,6 +201,12 @@
     "linkingLoading": "Connecting...",
     "linkingError": "Failed to get linking token. Ensure backend is active."
   },
+  "paywall": {
+    "title": "AI Limit Reached",
+    "message": "You have used your 5 free Vision AI scans. To continue using our most advanced scanning features, please upgrade to Premium.",
+    "upgrade": "Upgrade to Premium",
+    "later": "Maybe Later"
+  },
   "drafts": {
     "title": "Draft Inbox",
     "emptyTitle": "Inbox Empty",

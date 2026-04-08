@@ -1,21 +1,22 @@
 import { createLogger } from "@utils/logger";
 import { useCameraPermissions } from "expo-camera";
-import * as ImagePicker from "expo-image-picker";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const logger = createLogger("[ScannerCamera]");
-const CAMERA_READY_TIMEOUT_MS = 5000;
+const CAMERA_READY_TIMEOUT_MS = 10000;
 
 interface UseScannerCameraProps {
   onPhotoCaptured: (uri: string) => Promise<void>;
   onError: (message: string) => void;
   isScanning: boolean;
+  isFocused: boolean;
 }
 
 export function useScannerCamera({
   onPhotoCaptured,
   onError,
-  isScanning
+  isScanning,
+  isFocused
 }: UseScannerCameraProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cameraRef = useRef<any>(null);
@@ -26,43 +27,38 @@ export function useScannerCamera({
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState(false);
 
-  // Timeout fallback for simulators where camera may never be ready
   useEffect(() => {
-    if (cameraReady || cameraError) return;
+    if (!isFocused || cameraReady || cameraError) {
+      if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
+      return;
+    }
+
+    // Start timeout to detect if camera fails to load
     readyTimeoutRef.current = setTimeout(() => {
-      logger.warn("Camera ready timeout — possible simulator limitation");
-      setCameraError(true);
+      if (!cameraReady && isFocused) {
+        logger.warn("Camera ready timeout reached");
+        // On some devices, camera takes a long time.
+        // We set error only if it's still not ready after 10s.
+        setCameraError(true);
+      }
     }, CAMERA_READY_TIMEOUT_MS);
+
     return () => {
       if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
     };
-  }, [cameraReady, cameraError]);
-
-  const requestPermission = useCallback(async () => {
-    logger.debug("[Permission] Requesting camera permission...");
-    try {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      logger.debug("[Permission] Status:", status);
-      return status === "granted";
-    } catch (error) {
-      logger.error("[Permission] Error:", error);
-      return false;
-    }
-  }, []);
+  }, [cameraReady, cameraError, isFocused]);
 
   const handleTakePhoto = useCallback(async () => {
     logger.debug("[Take Photo] Capturing photo...");
 
     try {
-      if (!cameraRef.current) {
-        logger.debug("[Take Photo] Camera ref not ready");
+      if (!cameraRef.current || !cameraReady) {
+        logger.debug("[Take Photo] Camera not ready");
         onError("Kamera belum siap");
         return;
       }
 
       if (isScanning) return;
-
-      logger.debug("[Take Photo] Taking picture...");
 
       const photo = await cameraRef.current.takePictureAsync({
         quality: 0.8,
@@ -70,7 +66,6 @@ export function useScannerCamera({
       });
 
       if (!photo) {
-        logger.debug("[Take Photo] Failed to capture");
         onError("Gagal mengambil foto");
         return;
       }
@@ -81,24 +76,25 @@ export function useScannerCamera({
       logger.error("[Take Photo] Error:", error);
       onError("Gagal mengambil foto");
     }
-  }, [onPhotoCaptured, onError, isScanning]);
+  }, [onPhotoCaptured, onError, isScanning, cameraReady]);
 
   const toggleFlash = useCallback(() => {
     setFlashEnabled((prev) => !prev);
   }, []);
 
   const handleCameraReady = useCallback(() => {
-    logger.debug("Camera is ready");
+    logger.debug("Camera is ready event received");
     setCameraReady(true);
     setCameraError(false);
+    if (readyTimeoutRef.current) clearTimeout(readyTimeoutRef.current);
   }, []);
 
-  const handleRefreshCamera = useCallback(async () => {
+  const handleRefreshCamera = useCallback(() => {
     logger.debug("Refreshing camera...");
     setCameraReady(false);
     setCameraError(false);
-    await requestPermission();
-  }, [requestPermission]);
+    requestPermissionHandler();
+  }, [requestPermissionHandler]);
 
   return {
     cameraRef,

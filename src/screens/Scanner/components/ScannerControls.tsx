@@ -1,4 +1,3 @@
-import { Typography } from "@components/ui/Typography";
 import { Camera, Image, Zap } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
 
@@ -22,48 +21,33 @@ export function ScannerControls({
   const disabled = isScanning || !cameraReady;
 
   return (
-    <View className="flex-row items-center justify-around gap-4">
+    <View className="flex-row items-center justify-between w-full px-10">
       <TouchableOpacity
         onPress={onPickFromGallery}
         disabled={disabled}
-        className="items-center"
+        className="w-14 h-14 rounded-full bg-white/10 items-center justify-center border border-white/20"
       >
-        <View className="w-14 h-14 rounded-full bg-white/20 items-center justify-center backdrop-blur-sm">
-          <Image size={28} color="#FFFFFF" />
-        </View>
-        <Typography variant="caption" color="#FFFFFF" style={{ marginTop: 4 }}>
-          Galeri
-        </Typography>
+        <Image size={28} color="#FFFFFF" />
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={onTakePhoto}
         disabled={disabled}
-        className="items-center"
+        className="w-24 h-24 rounded-full bg-white/20 items-center justify-center border-2 border-white/30"
       >
-        <View className="w-20 h-20 rounded-full bg-primary items-center justify-center border-4 border-white/50">
-          <Camera size={36} color="#FFFFFF" />
+        <View className="w-20 h-20 rounded-full bg-primary items-center justify-center shadow-lg">
+          <Camera size={40} color="#FFFFFF" />
         </View>
-        <Typography variant="caption" color="#FFFFFF" style={{ marginTop: 4 }}>
-          Ambil Foto
-        </Typography>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={onToggleFlash}
         disabled={disabled}
-        className="items-center"
+        className={`w-14 h-14 rounded-full items-center justify-center border border-white/20 ${
+          flashEnabled ? "bg-amber-400" : "bg-white/10"
+        }`}
       >
-        <View
-          className={`w-14 h-14 rounded-full items-center justify-center backdrop-blur-sm ${
-            flashEnabled ? "bg-yellow-500/80" : "bg-white/20"
-          }`}
-        >
-          <Zap size={28} color="#FFFFFF" />
-        </View>
-        <Typography variant="caption" color="#FFFFFF" style={{ marginTop: 4 }}>
-          Flash
-        </Typography>
+        <Zap size={28} color={flashEnabled ? "#000000" : "#FFFFFF"} />
       </TouchableOpacity>
     </View>
   );

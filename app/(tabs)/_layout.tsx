@@ -55,6 +55,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="scanner"
         options={{
+          headerShown: false,
           tabBarLabel: "Scan",
           tabBarIcon: ({ color, size }) => (
             <ScanLine size={size} color={color} />

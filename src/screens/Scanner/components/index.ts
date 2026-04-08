@@ -1,3 +1,4 @@
+export { AIProcessingIndicator } from "./AIProcessingIndicator";
 export { CameraErrorView } from "./CameraErrorView";
 export { CameraInactiveView } from "./CameraInactiveView";
 export { CameraLoadingView } from "./CameraLoadingView";
