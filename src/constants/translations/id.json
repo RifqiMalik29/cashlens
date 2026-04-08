@@ -73,7 +73,7 @@
     "grantPermission": "Beri Izin Kamera",
     "cameraNotReady": "Kamera belum siap",
     "cameraLoading": "Memuat kamera...",
-    "cameraError": "Kamera gagal dimuat. Periksa izin dan coba lagi.",
+    "cameraError": "Koneksi kamera terputus. Silakan coba lagi.",
     "cameraErrorSimulator": "Kamera tidak tersedia di simulator. Gunakan perangkat asli atau pilih dari galeri.",
     "refreshCamera": "Refresh Kamera",
     "processingReceipt": "Memproses Struk...",
@@ -142,8 +142,8 @@
     "system": "Sistem",
     "light": "Terang",
     "dark": "Gelap",
-    "support": "Bantuan",
-    "helpCenter": "Pusat Bantuan",
+    "support": "Dukungan",
+    "helpCenter": "Bantuan",
     "help": {
       "title": "Pusat Bantuan",
       "subtitle": "Dukungan dan FAQ",
@@ -167,13 +167,7 @@
     "logoutDesc": "Anda akan keluar dari akun dan kembali ke layar login.",
     "about": "Tentang",
     "version": "Versi",
-    "developer": "Developer",
-    "clearLocalData": "Hapus Semua Data Lokal",
-    "clearLocalDataWarning": "⚠️ PERINGATAN: Ini akan menghapus semua data lokal (transaksi, anggaran, kategori). Gunakan ini untuk memperbaiki masalah sync UUID. Data di Supabase tidak terpengaruh.",
-    "clearDataSuccess": "Data lokal berhasil dihapus",
-    "clearDataError": "Gagal menghapus data lokal",
-    "clearDataConfirmTitle": "Hapus Semua Data Lokal",
-    "clearDataConfirmDesc": "Ini akan menghapus semua data lokal (transaksi, anggaran, kategori, dll). Data di Supabase tidak akan terpengaruh. Anda harus login ulang setelah ini."
+    "developer": "Developer"
   },
   "notifications": {
     "permissionTitle": "Izin Diperlukan",

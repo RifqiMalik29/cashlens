@@ -9,6 +9,7 @@ import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import Constants from "expo-constants";
 import {
+  Bell,
   CreditCard,
   Globe,
   HelpCircle,
@@ -20,7 +21,7 @@ import {
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AccountSection } from "./components/AccountSection";
+import { ProfileSection } from "./components/ProfileSection";
 import { useSettingsScreen } from "./useSettingsScreen";
 
 export default function SettingsScreen() {
@@ -40,7 +41,10 @@ export default function SettingsScreen() {
     handleThemePress,
     handleHelpPress,
     handleNotificationSettingsPress,
-    handleClearAllData
+    subscriptionTier,
+    setSubscriptionTier,
+    stealthScansUsed,
+    resetStealthScans
   } = useSettingsScreen();
 
   return (
@@ -63,10 +67,10 @@ export default function SettingsScreen() {
           <SyncStatusButton onPress={handleForceSync} />
         </SettingsSection>
 
-        <AccountSection
+        <ProfileSection
           userEmail={userEmail}
-          subscriptionTier="free"
-          onNotificationSettingsPress={handleNotificationSettingsPress}
+          subscriptionTier={subscriptionTier}
+          onUpgradePress={() => setSubscriptionTier("premium")}
           t={t}
         />
 
@@ -101,39 +105,60 @@ export default function SettingsScreen() {
               onPress={handleThemePress}
             />
           </View>
+          <View style={{ marginTop: spacing[3] }}>
+            <SettingsItem
+              icon={<Bell size={20} color="#4CAF82" />}
+              label={t("notificationSettings.title")}
+              onPress={handleNotificationSettingsPress}
+            />
+          </View>
         </SettingsSection>
 
         <SettingsSection title={t("settings.support")}>
           <SettingsItem
             icon={<HelpCircle size={20} color="#4CAF82" />}
-            label={t("settings.help")}
+            label={t("settings.helpCenter")}
             onPress={handleHelpPress}
           />
         </SettingsSection>
 
-        <SettingsSection title={t("settings.dataManagement")}>
-          <SettingsItem
-            icon={<RefreshCcw size={20} color="#4CAF82" />}
-            label={t("settings.clearAllData")}
-            onPress={handleClearAllData}
-            danger
-          />
-        </SettingsSection>
+        {/* Developer Section (DEV only) */}
+        {__DEV__ && (
+          <SettingsSection title={t("settings.developer")}>
+            <View className="bg-white border border-border rounded-xl overflow-hidden">
+              <SettingsItem
+                icon={<RefreshCcw size={20} color="#3B82F6" />}
+                label={`Reset Stealth Scans (${stealthScansUsed}/5)`}
+                onPress={resetStealthScans}
+              />
+            </View>
+          </SettingsSection>
+        )}
 
-        <View style={{ marginTop: spacing[6], paddingHorizontal: spacing[4] }}>
+        <SettingsSection title={t("settings.account")}>
           <SettingsItem
             icon={<LogOut size={20} color="#EF4444" />}
-            label={t("settings.signOut")}
-            onPress={handleSignOut}
+            label={t("settings.logout")}
             danger
+            onPress={handleSignOut}
           />
-        </View>
+          <View className="bg-surface-secondary rounded-lg p-4 mt-3">
+            <Typography variant="caption" color="#6B7280">
+              {t("auth.logoutConfirm")}
+            </Typography>
+          </View>
+        </SettingsSection>
 
-        <View className="items-center mt-8 mb-4">
-          <Typography variant="caption" color={colors.textSecondary}>
-            v{Constants.expoConfig?.version || "1.0.0"}
-          </Typography>
-        </View>
+        <SettingsSection title={t("settings.about")}>
+          <View className="bg-white border border-border rounded-lg px-4 py-3">
+            <Typography variant="body" weight="medium" color="#1A1A2E">
+              {t("common.appName")}
+            </Typography>
+            <Typography variant="caption" color="#6B7280">
+              {t("settings.version")} {Constants.expoConfig?.version ?? "1.0.0"}
+            </Typography>
+          </View>
+        </SettingsSection>
       </ScrollView>
 
       <BaseDialog

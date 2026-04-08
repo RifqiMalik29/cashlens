@@ -3,9 +3,7 @@ import { colors } from "@constants/theme";
 import { useCloudSync } from "@hooks/useCloudSync";
 import { useHeader } from "@hooks/useHeader";
 import { useSyncStatus } from "@hooks/useSyncStatus";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuthStore } from "@stores/useAuthStore";
-import { logger } from "@utils/logger";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
@@ -92,7 +90,8 @@ export function useSettingsScreen() {
           reset();
           router.replace("/(auth)/login");
         } catch (error) {
-          logger.error("Settings", "Sign out error", error as Error);
+          // eslint-disable-next-line no-console
+          console.error("Sign out error:", error);
         } finally {
           setLogoutSyncing(false);
         }
@@ -110,7 +109,8 @@ export function useSettingsScreen() {
       await pullData();
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
-      logger.error("Settings", "Manual sync error", error as Error);
+      // eslint-disable-next-line no-console
+      console.error("Manual sync error:", error);
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } finally {
       setManualSyncing(false);
@@ -147,50 +147,6 @@ export function useSettingsScreen() {
     router.push("/(tabs)/settings/notifications");
   };
 
-  const handleClearAllData = async () => {
-    await Haptics.selectionAsync();
-
-    setDialogState({
-      isVisible: true,
-      title: t("settings.clearDataConfirmTitle"),
-      message: t("settings.clearDataConfirmDesc"),
-      type: "warning",
-      primaryButtonText: t("common.delete"),
-      onPrimaryButtonPress: async () => {
-        try {
-          await AsyncStorage.clear();
-          await Haptics.notificationAsync(
-            Haptics.NotificationFeedbackType.Success
-          );
-          setDialogState({
-            isVisible: true,
-            title: t("common.success"),
-            message: t("settings.clearDataSuccess"),
-            type: "success",
-            primaryButtonText: t("common.confirm"),
-            onPrimaryButtonPress: () => {
-              setDialogState((prev) => ({ ...prev, isVisible: false }));
-              router.replace("/(auth)/login");
-            }
-          });
-        } catch {
-          setDialogState({
-            isVisible: true,
-            title: t("common.error"),
-            message: t("settings.clearDataError"),
-            type: "error",
-            primaryButtonText: t("common.confirm"),
-            onPrimaryButtonPress: () =>
-              setDialogState((prev) => ({ ...prev, isVisible: false }))
-          });
-        }
-      },
-      secondaryButtonText: t("common.cancel"),
-      onSecondaryButtonPress: () =>
-        setDialogState((prev) => ({ ...prev, isVisible: false }))
-    });
-  };
-
   return {
     t,
     userEmail,
@@ -207,7 +163,6 @@ export function useSettingsScreen() {
     handleThemePress,
     handleHelpPress,
     handleNotificationSettingsPress,
-    handleClearAllData,
     subscriptionTier,
     setSubscriptionTier,
     stealthScansUsed,

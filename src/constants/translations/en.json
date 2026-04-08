@@ -73,7 +73,7 @@
     "grantPermission": "Grant Camera Permission",
     "cameraNotReady": "Camera not ready",
     "cameraLoading": "Loading camera...",
-    "cameraError": "Camera failed to load. Check permissions and try again.",
+    "cameraError": "Camera connection lost. Please try again.",
     "cameraErrorSimulator": "Camera not available on simulator. Use a real device or pick from gallery.",
     "refreshCamera": "Refresh Camera",
     "processingReceipt": "Processing Receipt...",
@@ -165,13 +165,7 @@
     "logoutDesc": "You will be logged out and return to the login screen.",
     "about": "About",
     "version": "Version",
-    "developer": "Developer",
-    "clearLocalData": "Clear All Local Data",
-    "clearLocalDataWarning": "⚠️ WARNING: This will delete all local data (transactions, budgets, categories). Use this to fix sync UUID issues. Data on Supabase will not be affected.",
-    "clearDataSuccess": "Local data cleared successfully",
-    "clearDataError": "Failed to clear local data",
-    "clearDataConfirmTitle": "Clear All Local Data",
-    "clearDataConfirmDesc": "This will delete all local data (transactions, budgets, categories, etc.). Data on Supabase will not be affected. You must log in again after this."
+    "developer": "Developer"
   },
   "notifications": {
     "permissionTitle": "Permission Required",
