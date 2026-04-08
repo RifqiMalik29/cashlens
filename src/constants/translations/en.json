@@ -180,6 +180,27 @@
     "permissionWarning": "Open Notification Listener Settings?",
     "later": "Later"
   },
+  "notificationSettings": {
+    "title": "Transaction Notifications",
+    "subtitle": "Manage automatic transaction detection",
+    "enableFeature": "Enable Feature",
+    "enableFeatureDesc": "Detect transaction drafts from bank and e-wallet notifications.",
+    "permissionStatus": "Permission Status",
+    "permissionGranted": "Permission Granted",
+    "permissionDenied": "Permission Denied",
+    "fixPermission": "Grant Access",
+    "selectApps": "Select Apps",
+    "selectAppsDesc": "Only notifications from selected apps will be processed.",
+    "telegramBot": "Telegram Bot",
+    "telegramBotDesc": "Send transactions directly via Telegram chat.",
+    "telegramStatus": "Telegram Status",
+    "telegramLinked": "Connected",
+    "telegramNotLinked": "Not Connected",
+    "connectTelegram": "Connect Telegram",
+    "disconnectTelegram": "Disconnect",
+    "linkingLoading": "Connecting...",
+    "linkingError": "Failed to get linking token. Ensure backend is active."
+  },
   "drafts": {
     "title": "Draft Inbox",
     "emptyTitle": "Inbox Empty",
@@ -188,7 +209,11 @@
     "successTitle": "Success",
     "successDesc": "Transaction has been successfully added to your records.",
     "incomingTransfer": "Incoming Transfer",
-    "bcaTo": "BCA: To {{target}}"
+    "bcaTo": "BCA: To {{target}}",
+    "ovoPayment": "OVO: At {{target}}",
+    "danaPayment": "DANA: At {{target}}",
+    "jagoSpending": "Jago: {{target}}",
+    "shopeePayment": "ShopeePay: At {{target}}"
   },
   "currency": {
     "title": "Select Currency",

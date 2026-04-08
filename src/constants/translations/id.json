@@ -180,6 +180,27 @@
     "permissionWarning": "Buka Pengaturan Notification Listener?",
     "later": "Nanti Saja"
   },
+  "notificationSettings": {
+    "title": "Notifikasi Transaksi",
+    "subtitle": "Atur deteksi transaksi otomatis",
+    "enableFeature": "Aktifkan Fitur",
+    "enableFeatureDesc": "Deteksi draft transaksi dari notifikasi aplikasi bank dan e-wallet.",
+    "permissionStatus": "Status Izin",
+    "permissionGranted": "Izin Diberikan",
+    "permissionDenied": "Izin Ditolak",
+    "fixPermission": "Berikan Akses",
+    "selectApps": "Pilih Aplikasi",
+    "selectAppsDesc": "Hanya notifikasi dari aplikasi yang dipilih yang akan diproses.",
+    "telegramBot": "Telegram Bot",
+    "telegramBotDesc": "Kirim transaksi langsung melalui chat Telegram.",
+    "telegramStatus": "Status Telegram",
+    "telegramLinked": "Terhubung",
+    "telegramNotLinked": "Belum Terhubung",
+    "connectTelegram": "Hubungkan Telegram",
+    "disconnectTelegram": "Putus Koneksi",
+    "linkingLoading": "Menghubungkan...",
+    "linkingError": "Gagal mendapatkan token linking. Pastikan backend aktif."
+  },
   "drafts": {
     "title": "Inbox Draft",
     "emptyTitle": "Inbox Kosong",
@@ -188,7 +209,11 @@
     "successTitle": "Berhasil",
     "successDesc": "Transaksi telah berhasil ditambahkan ke catatan keuanganmu.",
     "incomingTransfer": "Transfer Masuk",
-    "bcaTo": "BCA: Ke {{target}}"
+    "bcaTo": "BCA: Ke {{target}}",
+    "ovoPayment": "OVO: Di {{target}}",
+    "danaPayment": "DANA: Di {{target}}",
+    "jagoSpending": "Jago: {{target}}",
+    "shopeePayment": "ShopeePay: Di {{target}}"
   },
   "currency": {
     "title": "Pilih Mata Uang",

@@ -144,6 +144,11 @@ export function useSettingsScreen() {
     router.push("/(tabs)/settings/help");
   };
 
+  const handleNotificationSettingsPress = async () => {
+    await Haptics.selectionAsync();
+    router.push("/(tabs)/settings/notifications");
+  };
+
   const handleClearAllData = async () => {
     await Haptics.selectionAsync();
 
@@ -203,6 +208,7 @@ export function useSettingsScreen() {
     handleLanguagePress,
     handleThemePress,
     handleHelpPress,
+    handleNotificationSettingsPress,
     handleClearAllData
   };
 }

@@ -9,6 +9,7 @@ import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import Constants from "expo-constants";
 import {
+  Bell,
   CreditCard,
   Globe,
   HelpCircle,
@@ -39,6 +40,7 @@ export default function SettingsScreen() {
     handleLanguagePress,
     handleThemePress,
     handleHelpPress,
+    handleNotificationSettingsPress,
     handleClearAllData
   } = useSettingsScreen();
 
@@ -99,6 +101,13 @@ export default function SettingsScreen() {
               label={t("settings.theme")}
               value={themeDisplay}
               onPress={handleThemePress}
+            />
+          </View>
+          <View style={{ marginTop: spacing[3] }}>
+            <SettingsItem
+              icon={<Bell size={20} color="#4CAF82" />}
+              label={t("notificationSettings.title")}
+              onPress={handleNotificationSettingsPress}
             />
           </View>
         </SettingsSection>

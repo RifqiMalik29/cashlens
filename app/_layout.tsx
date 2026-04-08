@@ -5,6 +5,7 @@ import { useCloudSync } from "@hooks/useCloudSync";
 import { useEmailConfirmation } from "@hooks/useEmailConfirmation";
 import { useSessionRestore } from "@hooks/useSessionRestore";
 import { useSyncStatus } from "@hooks/useSyncStatus";
+import { useTelegramRealtime } from "@hooks/useTelegramRealtime";
 import i18n, { initI18n } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { Stack, useRouter, useSegments } from "expo-router";
@@ -32,6 +33,9 @@ export default function RootLayout() {
 
   // Handle email confirmation deep links
   useEmailConfirmation();
+
+  // Listen for Telegram linking status
+  useTelegramRealtime();
 
   // Sync language preference from store
   useEffect(() => {
@@ -90,7 +94,7 @@ export default function RootLayout() {
         isVisible={showOverlay}
         message={
           isLogoutSyncing
-            ? "Menyimpan perubahan terakhir..."
+            ? "Menyinkronkan perubahan terakhir..."
             : isManualSyncing
               ? "Menyinkronkan data..."
               : undefined
