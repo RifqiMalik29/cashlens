@@ -9,19 +9,18 @@ import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import Constants from "expo-constants";
 import {
-  Bell,
   CreditCard,
   Globe,
   HelpCircle,
   LayoutGrid,
   LogOut,
-  Mail,
   Palette,
-  Trash2
+  RefreshCcw
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AccountSection } from "./components/AccountSection";
 import { useSettingsScreen } from "./useSettingsScreen";
 
 export default function SettingsScreen() {
@@ -64,13 +63,12 @@ export default function SettingsScreen() {
           <SyncStatusButton onPress={handleForceSync} />
         </SettingsSection>
 
-        <SettingsSection title={t("settings.profile")}>
-          <SettingsItem
-            icon={<Mail size={20} color="#4CAF82" />}
-            label={t("settings.email")}
-            value={userEmail || "Not logged in"}
-          />
-        </SettingsSection>
+        <AccountSection
+          userEmail={userEmail}
+          subscriptionTier="free"
+          onNotificationSettingsPress={handleNotificationSettingsPress}
+          t={t}
+        />
 
         <SettingsSection title={t("settings.finance")}>
           <SettingsItem
@@ -103,63 +101,39 @@ export default function SettingsScreen() {
               onPress={handleThemePress}
             />
           </View>
-          <View style={{ marginTop: spacing[3] }}>
-            <SettingsItem
-              icon={<Bell size={20} color="#4CAF82" />}
-              label={t("notificationSettings.title")}
-              onPress={handleNotificationSettingsPress}
-            />
-          </View>
         </SettingsSection>
 
         <SettingsSection title={t("settings.support")}>
           <SettingsItem
             icon={<HelpCircle size={20} color="#4CAF82" />}
-            label={t("settings.helpCenter")}
+            label={t("settings.help")}
             onPress={handleHelpPress}
           />
         </SettingsSection>
 
-        {__DEV__ && (
-          <SettingsSection title={t("settings.developer")}>
-            <SettingsItem
-              icon={<Trash2 size={20} color="#EF4444" />}
-              label={t("settings.clearLocalData")}
-              danger
-              onPress={handleClearAllData}
-            />
-            <View className="bg-surface-secondary rounded-lg p-4 mt-3">
-              <Typography variant="caption" color="#6B7280">
-                {t("settings.clearLocalDataWarning")}
-              </Typography>
-            </View>
-          </SettingsSection>
-        )}
+        <SettingsSection title={t("settings.dataManagement")}>
+          <SettingsItem
+            icon={<RefreshCcw size={20} color="#4CAF82" />}
+            label={t("settings.clearAllData")}
+            onPress={handleClearAllData}
+            danger
+          />
+        </SettingsSection>
 
-        <SettingsSection title={t("settings.account")}>
+        <View style={{ marginTop: spacing[6], paddingHorizontal: spacing[4] }}>
           <SettingsItem
             icon={<LogOut size={20} color="#EF4444" />}
-            label={t("settings.logout")}
-            danger
+            label={t("settings.signOut")}
             onPress={handleSignOut}
+            danger
           />
-          <View className="bg-surface-secondary rounded-lg p-4 mt-3">
-            <Typography variant="caption" color="#6B7280">
-              {t("auth.logoutConfirm")}
-            </Typography>
-          </View>
-        </SettingsSection>
+        </View>
 
-        <SettingsSection title={t("settings.about")}>
-          <View className="bg-white border border-border rounded-lg px-4 py-3">
-            <Typography variant="body" weight="medium" color="#1A1A2E">
-              {t("common.appName")}
-            </Typography>
-            <Typography variant="caption" color="#6B7280">
-              {t("settings.version")} {Constants.expoConfig?.version ?? "1.0.0"}
-            </Typography>
-          </View>
-        </SettingsSection>
+        <View className="items-center mt-8 mb-4">
+          <Typography variant="caption" color={colors.textSecondary}>
+            v{Constants.expoConfig?.version || "1.0.0"}
+          </Typography>
+        </View>
       </ScrollView>
 
       <BaseDialog
