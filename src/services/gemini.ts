@@ -80,19 +80,34 @@ export async function parseReceiptImage(
       `Sending image to Gemini... (Base64 length: ${base64Image.length})`
     );
 
-    const prompt = `You are a receipt parsing expert. Analyze this receipt image and extract information in JSON format:
+    const prompt = `You are a high-precision receipt parsing engine. Analyze this image and return ONLY a JSON object.
+
+Structure:
 {
-  "amount": <total amount as number>,
-  "currency": <currency code like IDR, USD, etc>,
-  "date": <date in YYYY-MM-DD format>,
-  "merchant": <store name>,
-  "category": <one of: cat_food, cat_transport, cat_shopping, cat_bills, cat_health, cat_entertainment, cat_education, cat_travel, cat_personal, cat_housing, cat_gifts, cat_investment, cat_savings, cat_business, cat_other_expense>,
-  "items": [{"name": "<item name>", "quantity": <qty>, "price": <price>}],
-  "confidence": <0-100 confidence score>
+  "amount": <number: actual total paid for items>,
+  "currency": "IDR",
+  "date": "YYYY-MM-DD",
+  "merchant": "<string: brand name from top of receipt>",
+  "category": "<string: internal_category_id>",
+  "items": [{"name": string, "price": number}],
+  "confidence": <number: 0-100>
 }
-Rules:
-- Return ONLY valid JSON.
-- Use Indonesian context (Rp = IDR).`;
+
+Merchant Extraction Rules:
+- The merchant is usually at the VERY TOP. 
+- Stylized fonts can be tricky: "Cendol" might look like "Enda". Look at the item list to confirm if the merchant name appears there too.
+- Clean the name: Remove addresses, phone numbers, and slogans.
+
+Category Selection Logic:
+- cat_food: If you see items like "Mie", "Bakso", "Ayam", "Cendol", "Nasi", "Drink", "Food", or any restaurant names.
+- cat_shopping: For clothes, electronics, or general department stores.
+- cat_transport: For fuel, parking, or rideshare.
+- Default to "cat_other_expense" only if absolutely zero context is found.
+
+Anti-Hallucination Rules:
+- IGNORE "Tunai", "Cash", or "Bayar" lines when picking the "amount". 
+- IGNORE "Kembalian" or "Change".
+- The "amount" must equal the sum of item prices if available.`;
 
     const result = await model.generateContent([
       prompt,
@@ -144,7 +159,7 @@ export async function parseReceiptText(
   try {
     const prompt = `You are a receipt parsing expert. Analyze this RAW OCR TEXT and extract information in JSON format:
 {
-  "amount": <number>,
+  "amount": <the actual total cost to be paid, excluding cash paid/change>,
   "currency": <string>,
   "date": <YYYY-MM-DD>,
   "merchant": <string>,
@@ -153,7 +168,8 @@ export async function parseReceiptText(
   "confidence": <0-100>
 }
 Rules:
-- Input is raw text from OCR, might have typos.
+- IGNORE "Tunai", "Cash", "Bayar", or "Total Bayar" if it refers to the money handed by the user.
+- IGNORE "Kembalian" or "Change".
 - Return ONLY valid JSON.
 
 RAW OCR TEXT:
