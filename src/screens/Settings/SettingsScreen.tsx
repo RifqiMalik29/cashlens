@@ -3,6 +3,7 @@ import {
   SettingsItem,
   SettingsSection
 } from "@components/settings";
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { SyncStatusButton } from "@components/ui/SyncIndicator";
 import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
@@ -29,6 +30,8 @@ export default function SettingsScreen() {
     currentCurrency,
     languageDisplay,
     themeDisplay,
+    dialogState,
+    setDialogState,
     handleSignOut,
     handleForceSync,
     handleCurrencyPress,
@@ -149,6 +152,20 @@ export default function SettingsScreen() {
           </View>
         </SettingsSection>
       </ScrollView>
+
+      <BaseDialog
+        isVisible={dialogState.isVisible}
+        title={dialogState.title}
+        message={dialogState.message}
+        type={dialogState.type}
+        primaryButtonText={dialogState.primaryButtonText}
+        onPrimaryButtonPress={dialogState.onPrimaryButtonPress}
+        secondaryButtonText={dialogState.secondaryButtonText}
+        onSecondaryButtonPress={dialogState.onSecondaryButtonPress}
+        onClose={() =>
+          setDialogState((prev) => ({ ...prev, isVisible: false }))
+        }
+      />
     </SafeAreaView>
   );
 }

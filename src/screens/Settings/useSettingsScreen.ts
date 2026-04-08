@@ -12,9 +12,19 @@ import { useSyncStore } from "@stores/useSyncStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert } from "react-native";
+
+export interface SettingsDialogState {
+  isVisible: boolean;
+  title: string;
+  message: string;
+  type: "info" | "success" | "error" | "warning";
+  primaryButtonText?: string;
+  onPrimaryButtonPress?: () => void;
+  secondaryButtonText?: string;
+  onSecondaryButtonPress?: () => void;
+}
 
 export function useSettingsScreen() {
   const router = useRouter();
@@ -22,6 +32,12 @@ export function useSettingsScreen() {
   const { pullData, performSync, hasUnsyncedChanges } = useCloudSync();
   const { setLogoutSyncing, setManualSyncing } = useSyncStatus();
   const { t } = useTranslation();
+  const [dialogState, setDialogState] = useState<SettingsDialogState>({
+    isVisible: false,
+    title: "",
+    message: "",
+    type: "info"
+  });
 
   useHeader({
     showHeader: false,
@@ -131,35 +147,45 @@ export function useSettingsScreen() {
   const handleClearAllData = async () => {
     await Haptics.selectionAsync();
 
-    Alert.alert(
-      t("settings.clearDataConfirmTitle"),
-      t("settings.clearDataConfirmDesc"),
-      [
-        { text: t("common.cancel"), style: "cancel" },
-        {
-          text: t("common.delete"),
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await AsyncStorage.clear();
-              await Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Success
-              );
-              Alert.alert(t("common.success"), t("settings.clearDataSuccess"), [
-                {
-                  text: t("common.confirm"),
-                  onPress: () => {
-                    router.replace("/(auth)/login");
-                  }
-                }
-              ]);
-            } catch {
-              Alert.alert(t("common.error"), t("settings.clearDataError"));
+    setDialogState({
+      isVisible: true,
+      title: t("settings.clearDataConfirmTitle"),
+      message: t("settings.clearDataConfirmDesc"),
+      type: "warning",
+      primaryButtonText: t("common.delete"),
+      onPrimaryButtonPress: async () => {
+        try {
+          await AsyncStorage.clear();
+          await Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success
+          );
+          setDialogState({
+            isVisible: true,
+            title: t("common.success"),
+            message: t("settings.clearDataSuccess"),
+            type: "success",
+            primaryButtonText: t("common.confirm"),
+            onPrimaryButtonPress: () => {
+              setDialogState((prev) => ({ ...prev, isVisible: false }));
+              router.replace("/(auth)/login");
             }
-          }
+          });
+        } catch {
+          setDialogState({
+            isVisible: true,
+            title: t("common.error"),
+            message: t("settings.clearDataError"),
+            type: "error",
+            primaryButtonText: t("common.confirm"),
+            onPrimaryButtonPress: () =>
+              setDialogState((prev) => ({ ...prev, isVisible: false }))
+          });
         }
-      ]
-    );
+      },
+      secondaryButtonText: t("common.cancel"),
+      onSecondaryButtonPress: () =>
+        setDialogState((prev) => ({ ...prev, isVisible: false }))
+    });
   };
 
   return {
@@ -168,6 +194,8 @@ export function useSettingsScreen() {
     currentCurrency,
     languageDisplay,
     themeDisplay,
+    dialogState,
+    setDialogState,
     handleSignOut,
     handleForceSync,
     handleCurrencyPress,
