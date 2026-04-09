@@ -35,7 +35,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+          # Temporarily disabled cache to avoid "no match" error until folder is pushed
+          # cache: 'gradle' 
 
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
