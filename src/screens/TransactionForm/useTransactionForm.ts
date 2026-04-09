@@ -1,11 +1,13 @@
+import { useQuota } from "@hooks/useQuota";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { type TransactionType } from "@types";
-import { generateId } from "@utils/generateId";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+
+import { handleDelete, handleSave, handleTypeChange } from "./handlers";
 
 const DEFAULT_AMOUNT = "";
 
@@ -44,6 +46,8 @@ export function useTransactionForm() {
   const deleteTransaction = useTransactionStore(
     (state) => state.deleteTransaction
   );
+
+  const { canAddTransaction } = useQuota();
 
   const existingTransaction = id ? transactions.find((t) => t.id === id) : null;
   const existingDraft = draftId ? drafts.find((d) => d.id === draftId) : null;
@@ -114,91 +118,69 @@ export function useTransactionForm() {
     existingDraft
   ]);
 
-  const handleSave = async () => {
-    setError(null);
-
-    if (!amount || parseFloat(amount) <= 0) {
-      setError("Jumlah harus diisi dan lebih dari 0");
-      return;
-    }
-
-    if (!selectedCategoryId) {
-      setError("Kategori harus dipilih");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const numericAmount = parseFloat(amount);
-      const transactionData = {
-        id: existingTransaction?.id ?? generateId(),
-        amount: numericAmount,
-        currency: baseCurrency,
-        amountInBaseCurrency: numericAmount,
-        exchangeRate: 1,
-        type,
-        categoryId: selectedCategoryId,
-        note: note.trim(),
-        date,
-        receiptImageUri: receiptUri,
-        isFromScan:
-          isScanTransaction || existingTransaction?.isFromScan || false,
-        createdAt: existingTransaction?.createdAt ?? new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      if (isEditMode) {
-        updateTransaction(transactionData.id, transactionData);
-      } else {
-        addTransaction(transactionData);
-        // If it was a draft, confirm it
-        if (draftId) {
-          confirmDraft(draftId);
-        }
-      }
-
-      router.back();
-    } catch (err) {
-      setError((err as Error).message || "Terjadi kesalahan");
-    } finally {
-      setIsLoading(false);
-    }
+  const onSave = async () => {
+    await handleSave({
+      setAmount,
+      setType,
+      setSelectedCategoryId,
+      setDate,
+      setNote,
+      setReceiptUri,
+      setError,
+      setIsLoading,
+      amount,
+      type,
+      selectedCategoryId,
+      date,
+      note,
+      receiptUri,
+      isEditMode,
+      isScanTransaction,
+      canAddTransaction,
+      baseCurrency,
+      draftId,
+      existingTransaction,
+      addTransaction,
+      updateTransaction,
+      confirmDraft,
+      resetForm: () => {
+        setAmount(DEFAULT_AMOUNT);
+        setType("expense");
+        setSelectedCategoryId(null);
+        setDate(new Date().toISOString());
+        setNote("");
+        setReceiptUri(undefined);
+        setError(null);
+      },
+      routerBack: () => router.back()
+    });
   };
 
-  const handleDelete = async () => {
-    if (!id || !existingTransaction) return;
-
-    setIsLoading(true);
-
-    try {
-      deleteTransaction(id);
-      router.back();
-    } catch (err) {
-      setError((err as Error).message || "Gagal menghapus transaksi");
-    } finally {
-      setIsLoading(false);
-    }
+  const onDelete = async () => {
+    await handleDelete({
+      id,
+      existingTransaction,
+      deleteTransaction,
+      setError,
+      setIsLoading,
+      routerBack: () => router.back()
+    });
   };
 
-  const handleTypeChange = (newType: TransactionType) => {
-    setType(newType);
-    const filteredCategories = categories.filter(
-      (cat) => cat.type === "both" || cat.type === newType
-    );
-    if (
-      selectedCategoryId &&
-      !filteredCategories.some((c) => c.id === selectedCategoryId)
-    ) {
-      setSelectedCategoryId(null);
-    }
+  const handleTypeChangeFn = (newType: TransactionType) => {
+    handleTypeChange({
+      newType,
+      categories,
+      selectedCategoryId,
+      setSelectedCategoryId
+    });
   };
 
   return {
     amount,
     setAmount,
     type,
-    handleTypeChange,
+    handleTypeChange: handleTypeChangeFn,
     selectedCategoryId,
     setSelectedCategoryId,
     date,
@@ -211,7 +193,7 @@ export function useTransactionForm() {
     isScanTransaction,
     categories,
     baseCurrency,
-    handleSave,
-    handleDelete
+    handleSave: onSave,
+    handleDelete: onDelete
   };
 }
