@@ -105,8 +105,7 @@ export function useScannerProcessor({
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
-        allowsEditing: true,
-        aspect: [3, 4],
+        allowsEditing: false,
         quality: 0.8
       });
 
