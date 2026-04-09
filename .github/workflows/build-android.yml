@@ -15,6 +15,8 @@ jobs:
   build:
     name: Build APK
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create/update releases
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -35,8 +37,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          # Temporarily disabled cache to avoid "no match" error until folder is pushed
-          # cache: 'gradle' 
 
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -58,7 +58,19 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
 
-      - name: 📤 Upload APK
+      - name: 🚀 Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-debug
+          name: Continuous Build
+          body: "This is an automated build of the latest code from the main branch."
+          draft: false
+          prerelease: true
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📤 Upload Artifact (Backup)
         uses: actions/upload-artifact@v4
         with:
           name: cashlens-debug-apk

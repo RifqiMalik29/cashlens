@@ -21,9 +21,7 @@ export function ProgressBar({ progress, color }: ProgressBarProps) {
         className="h-full rounded-full"
         style={{
           width: `${clampedProgress}%`,
-          backgroundColor: getProgressColor(),
-          transitionProperty: "width",
-          transitionDuration: "300ms"
+          backgroundColor: getProgressColor()
         }}
       />
     </View>
