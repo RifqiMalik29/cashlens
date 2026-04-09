@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*' # Trigger only when a tag starting with 'v' is pushed (e.g., v1.0.0)
+  workflow_dispatch: # Allow manual triggering for testing
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -41,28 +42,36 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 🔐 Create .env.local
+      - name: 🔐 Create .env
         run: |
-          echo "EXPO_PUBLIC_SUPABASE_URL=${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}" >> .env.local
-          echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}" >> .env.local
-          echo "EXPO_PUBLIC_GEMINI_API_KEY=${{ secrets.EXPO_PUBLIC_GEMINI_API_KEY }}" >> .env.local
+          echo "EXPO_PUBLIC_SUPABASE_URL=${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}" >> .env
+          echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}" >> .env
+          echo "EXPO_PUBLIC_GEMINI_API_KEY=${{ secrets.EXPO_PUBLIC_GEMINI_API_KEY }}" >> .env
 
       - name: 🏗 Build Android APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon # Switching to Release build for better performance
+          ./gradlew assembleRelease --no-daemon
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
 
       - name: 🚀 Create GitHub Release
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           name: "Release ${{ github.ref_name }}"
           tag_name: ${{ github.ref }}
           body: "Official release version ${{ github.ref_name }}. Built automatically by GitHub Actions."
           draft: false
-          prerelease: false # This is now a real release
-          files: android/app/build/outputs/apk/release/app-release-unsigned.apk # Note: Adjust path if different
+          prerelease: false
+          files: android/app/build/outputs/apk/release/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Upload APK for Manual Run
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: android/app/build/outputs/apk/release/*.apk
