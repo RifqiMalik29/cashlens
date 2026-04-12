@@ -1,25 +1,7 @@
+import { ICON_MAP } from "@constants/iconMap";
 import { spacing } from "@constants/theme";
 import { type Category, type TransactionType } from "@types";
-import {
-  BookOpen,
-  Briefcase,
-  Car,
-  FileText,
-  Gift,
-  Heart,
-  Home,
-  Laptop,
-  MoreHorizontal,
-  Music,
-  PiggyBank,
-  Plane,
-  ShoppingBag,
-  Sparkles,
-  TrendingUp,
-  UtensilsCrossed,
-  Wallet
-} from "lucide-react-native";
-import { type ComponentType } from "react";
+import { MoreHorizontal } from "lucide-react-native";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -30,29 +12,6 @@ interface CategoryPickerProps {
   type: TransactionType;
   onSelectCategory: (categoryId: string) => void;
 }
-
-const ICON_MAP: Record<
-  string,
-  ComponentType<{ size: number; color: string }>
-> = {
-  UtensilsCrossed,
-  Car,
-  ShoppingBag,
-  FileText,
-  Heart,
-  Music,
-  BookOpen,
-  Plane,
-  Home,
-  Sparkles,
-  Gift,
-  TrendingUp,
-  PiggyBank,
-  Briefcase,
-  MoreHorizontal,
-  Wallet,
-  Laptop
-};
 
 export function CategoryPicker({
   categories,
@@ -95,11 +54,10 @@ export function CategoryPicker({
                   className="items-center justify-center rounded-full mb-2"
                   style={{
                     width: 40,
-                    height: 40,
-                    backgroundColor: category.color
+                    height: 40
                   }}
                 >
-                  <IconComponent size={18} color="#FFFFFF" />
+                  <IconComponent size={24} color={category.color} />
                 </View>
                 <Typography
                   variant="caption"
