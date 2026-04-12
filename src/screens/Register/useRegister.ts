@@ -1,4 +1,4 @@
-import { signUpWithEmail } from "@services/supabase";
+import { authService } from "@services/api/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
@@ -11,9 +11,10 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useRegister() {
   const router = useRouter();
-  const { setAuthenticated, setUserId, reset } = useAuthStore();
+  const { setAuthenticated, setUserId, setTokens, reset } = useAuthStore();
   const resetSyncStatus = useSyncStore((state) => state.reset);
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -23,6 +24,11 @@ export function useRegister() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleRegister = async () => {
+    if (!name.trim()) {
+      setError("Nama harus diisi");
+      return;
+    }
+
     if (!email.trim()) {
       setError("Email harus diisi");
       return;
@@ -33,8 +39,8 @@ export function useRegister() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Kata sandi minimal 6 karakter");
+    if (password.length < 8) {
+      setError("Kata sandi minimal 8 karakter");
       return;
     }
 
@@ -47,30 +53,20 @@ export function useRegister() {
     setError(null);
 
     try {
-      const { data, error: signUpError } = await signUpWithEmail(
-        email,
-        password
-      );
+      const data = await authService.register(email, password, name);
 
-      if (signUpError) {
-        setError(signUpError.message);
-        return;
-      }
+      // Clear all stores to prevent data leakage from previous users
+      reset();
+      useTransactionStore.getState().clearTransactions();
+      useBudgetStore.getState().clearBudgets();
+      useCategoryStore.getState().resetToDefault();
+      resetSyncStatus();
 
-      if (data?.user) {
-        // Clear all stores to prevent data leakage from previous users
-        reset();
-        useTransactionStore.getState().clearTransactions();
-        useBudgetStore.getState().clearBudgets();
-        useCategoryStore.getState().resetToDefault();
-        resetSyncStatus();
+      setAuthenticated(true);
+      setUserId(data.user.id, data.user.email);
+      setTokens(data.access_token, data.refresh_token);
 
-        setAuthenticated(true);
-        setUserId(data.user.id, data.user.email);
-        router.replace("/(tabs)");
-      } else {
-        router.push("/(auth)/login");
-      }
+      router.replace("/(tabs)");
     } catch (err) {
       setError((err as Error).message || "Terjadi kesalahan");
     } finally {
@@ -91,6 +87,8 @@ export function useRegister() {
   };
 
   return {
+    name,
+    setName,
     email,
     setEmail,
     password,

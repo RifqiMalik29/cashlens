@@ -31,7 +31,7 @@ export function useSettingsScreen() {
     stealthScansUsed,
     resetStealthScans
   } = useAuthStore();
-  const { pullData, performSync, hasUnsyncedChanges } = useCloudSync();
+  const { pullData } = useCloudSync();
   const { setLogoutSyncing, setManualSyncing } = useSyncStatus();
   const { t } = useTranslation();
   const [dialogState, setDialogState] = useState<SettingsDialogState>({
@@ -75,18 +75,13 @@ export function useSettingsScreen() {
     setDialogState({
       isVisible: true,
       title: t("auth.logoutConfirm"),
-      message: hasUnsyncedChanges
-        ? "Ada perubahan yang belum tersinkronisasi. Tetap keluar?"
-        : "Apakah Anda yakin ingin keluar?",
+      message: "Apakah Anda yakin ingin keluar?",
       type: "warning",
       primaryButtonText: t("settings.logout"),
       onPrimaryButtonPress: async () => {
         setDialogState((prev) => ({ ...prev, isVisible: false }));
         setLogoutSyncing(true);
         try {
-          if (hasUnsyncedChanges) {
-            await performSync();
-          }
           reset();
           router.replace("/(auth)/login");
         } catch (error) {

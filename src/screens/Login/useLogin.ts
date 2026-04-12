@@ -1,4 +1,4 @@
-import { signInWithEmail } from "@services/supabase";
+import { authService } from "@services/api/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
@@ -11,7 +11,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useLogin() {
   const router = useRouter();
-  const { setAuthenticated, setUserId, reset } = useAuthStore();
+  const { setAuthenticated, setUserId, setTokens, reset } = useAuthStore();
   const resetSyncStatus = useSyncStore((state) => state.reset);
 
   const [email, setEmail] = useState("");
@@ -40,15 +40,7 @@ export function useLogin() {
     setError(null);
 
     try {
-      const { data, error: signInError } = await signInWithEmail(
-        email,
-        password
-      );
-
-      if (signInError) {
-        setError(signInError.message);
-        return;
-      }
+      const data = await authService.login(email, password);
 
       // Clear all stores before setting new user to prevent data leakage
       reset();
@@ -58,7 +50,9 @@ export function useLogin() {
       resetSyncStatus();
 
       setAuthenticated(true);
-      setUserId(data.user?.id ?? null, data.user?.email ?? null);
+      setUserId(data.user.id, data.user.email);
+      setTokens(data.access_token, data.refresh_token);
+
       router.replace("/(tabs)");
     } catch (err) {
       setError((err as Error).message || "Terjadi kesalahan");

@@ -9,6 +9,8 @@ import { useRegister } from "./useRegister";
 
 export default function RegisterScreen() {
   const {
+    name,
+    setName,
     email,
     setEmail,
     password,
@@ -43,6 +45,8 @@ export default function RegisterScreen() {
           <View className="flex-1 justify-center">
             <AuthLogo />
             <RegisterForm
+              name={name}
+              setName={setName}
               email={email}
               setEmail={setEmail}
               password={password}

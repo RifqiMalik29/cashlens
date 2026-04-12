@@ -1,25 +1,7 @@
+import { ICON_MAP } from "@constants/iconMap";
 import { type Category, type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
-import {
-  BookOpen,
-  Briefcase,
-  Car,
-  FileText,
-  Gift,
-  Heart,
-  Home,
-  Laptop,
-  MoreHorizontal,
-  Music,
-  PiggyBank,
-  Plane,
-  ShoppingBag,
-  Sparkles,
-  TrendingUp,
-  UtensilsCrossed,
-  Wallet
-} from "lucide-react-native";
-import { type ComponentType } from "react";
+import { MoreHorizontal } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -30,29 +12,6 @@ interface TransactionItemProps {
   onPress?: () => void;
   baseCurrency: string;
 }
-
-const ICON_MAP: Record<
-  string,
-  ComponentType<{ size: number; color: string }>
-> = {
-  UtensilsCrossed,
-  Car,
-  ShoppingBag,
-  FileText,
-  Heart,
-  Music,
-  BookOpen,
-  Plane,
-  Home,
-  Sparkles,
-  Gift,
-  TrendingUp,
-  PiggyBank,
-  Briefcase,
-  MoreHorizontal,
-  Wallet,
-  Laptop
-};
 
 export function TransactionItem({
   transaction,

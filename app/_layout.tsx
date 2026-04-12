@@ -25,7 +25,7 @@ export default function RootLayout() {
     useSyncStatus();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
-  // Restore Supabase session on app startup
+  // Restore session on app startup
   useSessionRestore();
 
   // Initialize cloud sync

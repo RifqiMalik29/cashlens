@@ -1,5 +1,5 @@
+import { transactionService } from "@services/api/transactionService";
 import type { Transaction, TransactionType } from "@types";
-import { generateId } from "@utils/generateId";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Category {
@@ -123,8 +123,16 @@ export async function handleSave(d: SaveDeps) {
   setIsLoading(true);
   try {
     const numericAmount = parseFloat(amount);
+
+    const saved = await transactionService.createTransaction({
+      categoryId: selectedCategoryId,
+      amount: numericAmount,
+      note: note.trim(),
+      date
+    });
+
     const tx: Transaction = {
-      id: existingTransaction?.id ?? generateId(),
+      id: saved.id,
       amount: numericAmount,
       currency: baseCurrency,
       amountInBaseCurrency: numericAmount,
@@ -132,15 +140,24 @@ export async function handleSave(d: SaveDeps) {
       type,
       categoryId: selectedCategoryId,
       note: note.trim(),
-      date,
+      date: saved.transaction_date,
       receiptImageUri: receiptUri,
       isFromScan: isScanTransaction || !!existingTransaction?.isFromScan,
-      createdAt: existingTransaction?.createdAt ?? new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: saved.created_at,
+      updatedAt: saved.updated_at
     };
 
-    if (isEditMode) {
-      updateTransaction(tx.id, tx);
+    if (isEditMode && existingTransaction) {
+      await transactionService.updateTransaction(existingTransaction.id, {
+        categoryId: selectedCategoryId,
+        amount: numericAmount,
+        note: note.trim(),
+        date
+      });
+      updateTransaction(existingTransaction.id, {
+        ...tx,
+        id: existingTransaction.id
+      });
     } else {
       addTransaction(tx);
       if (draftId) confirmDraft(draftId);
@@ -175,6 +192,7 @@ export async function handleDelete(d: DeleteDeps) {
   if (!id || !existingTransaction) return;
   setIsLoading(true);
   try {
+    await transactionService.deleteTransaction(id);
     deleteTransaction(id);
     routerBack();
   } catch (err) {

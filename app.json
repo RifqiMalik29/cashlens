@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.cashlens.app"
+      "bundleIdentifier": "com.rifqi2173.cashlens"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.cashlens.app",
+      "package": "com.rifqi2173.cashlens",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"

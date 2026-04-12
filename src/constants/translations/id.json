@@ -197,6 +197,8 @@
     "telegramNotLinked": "Belum Terhubung",
     "connectTelegram": "Hubungkan Telegram",
     "disconnectTelegram": "Putus Koneksi",
+    "disconnectTitle": "Putus Koneksi Telegram",
+    "disconnectMessage": "Apakah kamu yakin ingin memutus koneksi akun Telegram? Kamu tidak akan menerima notifikasi lagi.",
     "linkingLoading": "Menghubungkan...",
     "linkingError": "Gagal mendapatkan token linking. Pastikan backend aktif."
   },
