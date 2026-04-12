@@ -8,6 +8,8 @@ interface AuthState {
   isOnboarded: boolean;
   userId: string | null;
   userEmail: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   subscriptionTier: "free" | "premium";
   stealthScansUsed: number;
   preferences: UserPreferences;
@@ -16,6 +18,7 @@ interface AuthState {
   setOnboarded: (value: boolean) => void;
   setUserId: (id: string | null, email?: string | null) => void;
   setUserEmail: (email: string | null) => void;
+  setTokens: (accessToken: string | null, refreshToken: string | null) => void;
   setSubscriptionTier: (tier: "free" | "premium") => void;
   incrementStealthScans: () => void;
   resetStealthScans: () => void;
@@ -38,6 +41,8 @@ export const useAuthStore = create<AuthState>()(
       isOnboarded: false,
       userId: null,
       userEmail: null,
+      accessToken: null,
+      refreshToken: null,
       subscriptionTier: "free",
       stealthScansUsed: 0,
       preferences: defaultPreferences,
@@ -46,6 +51,8 @@ export const useAuthStore = create<AuthState>()(
       setOnboarded: (value) => set({ isOnboarded: value }),
       setUserId: (id, email) => set({ userId: id, userEmail: email ?? null }),
       setUserEmail: (email) => set({ userEmail: email }),
+      setTokens: (accessToken, refreshToken) =>
+        set({ accessToken, refreshToken }),
       setSubscriptionTier: (tier) => set({ subscriptionTier: tier }),
       incrementStealthScans: () =>
         set((state) => ({ stealthScansUsed: state.stealthScansUsed + 1 })),
@@ -61,6 +68,8 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           userId: null,
           userEmail: null,
+          accessToken: null,
+          refreshToken: null,
           subscriptionTier: "free",
           stealthScansUsed: 0,
           preferences: defaultPreferences,

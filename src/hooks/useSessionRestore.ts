@@ -1,4 +1,4 @@
-import { supabase } from "@services/supabase";
+import { authService } from "@services/api/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { createLogger } from "@utils/logger";
 import { useEffect } from "react";
@@ -6,48 +6,34 @@ import { useEffect } from "react";
 const logger = createLogger("[SessionRestore]");
 
 export function useSessionRestore() {
-  const { setUserId, setAuthenticated, setUserEmail } = useAuthStore();
+  const { setUserId, setAuthenticated, setUserEmail, reset } = useAuthStore();
 
   useEffect(() => {
     const restoreSession = async () => {
-      try {
-        const {
-          data: { session }
-        } = await supabase.auth.getSession();
+      const { accessToken } = useAuthStore.getState();
+      if (!accessToken) {
+        logger.debug("⚠ No active session found (missing token)");
+        return;
+      }
 
-        if (session?.user) {
-          logger.debug("✓ Restored session for:", session.user.email);
-          setUserId(session.user.id, session.user.email);
-          setUserEmail(session.user.email ?? null);
+      try {
+        const user = await authService.getMe();
+
+        if (user) {
+          logger.debug("✓ Restored session for:", user.email);
+          setUserId(user.id, user.email);
+          setUserEmail(user.email);
           setAuthenticated(true);
         } else {
-          logger.debug("⚠ No active session found");
+          logger.debug("⚠ Session invalid, resetting...");
+          reset();
         }
       } catch (error) {
         logger.error("✗ Failed to restore session:", error);
+        reset();
       }
     };
 
     restoreSession();
-
-    const {
-      data: { subscription }
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        logger.debug("🔄 Auth state changed:", session.user.email);
-        setUserId(session.user.id, session.user.email);
-        setUserEmail(session.user.email ?? null);
-        setAuthenticated(true);
-      } else {
-        logger.debug("🔄 User signed out");
-        setUserId(null);
-        setUserEmail(null);
-        setAuthenticated(false);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [setUserId, setAuthenticated, setUserEmail]);
+  }, [setUserId, setAuthenticated, setUserEmail, reset]);
 }
