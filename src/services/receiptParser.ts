@@ -3,11 +3,7 @@ import { useAuthStore } from "@stores/useAuthStore";
 import { createLogger } from "@utils/logger";
 
 import { type Transaction } from "../types";
-import {
-  isGeminiAvailable,
-  parseReceiptImage,
-  parseReceiptText
-} from "./gemini";
+import { isGeminiAvailable, parseReceiptImage } from "./gemini";
 import { recognizeText } from "./ocr";
 
 const logger = createLogger("[ReceiptParser]");
@@ -199,31 +195,7 @@ export async function processReceiptIntelligence(
     };
   }
 
-  // STAGE 3: Hybrid Gemini Text (Better than Regex)
-  if (geminiReady) {
-    onStatusUpdate?.("Meningkatkan pembacaan dengan AI...");
-    try {
-      const result = await parseReceiptText(rawText);
-      if (result.amount > 0) {
-        return {
-          data: {
-            amount: result.amount,
-            amountInBaseCurrency: result.amount,
-            categoryId: result.category,
-            date: `${result.date}T${result.time || "12:00:00"}`,
-            note: result.merchant,
-            isFromScan: true
-          },
-          method: "gemini_text",
-          confidence: result.confidence
-        };
-      }
-    } catch (e) {
-      logger.warn("Gemini Text failed, checking Vision fallback", e);
-    }
-  }
-
-  // STAGE 4: Final Vision Fallback (The "Superpower")
+  // STAGE 3: Final Vision Fallback (The "Superpower")
   if (geminiReady) {
     onStatusUpdate?.("Menganalisis gambar secara mendalam...");
     const result = await parseReceiptImage(imageUri);
