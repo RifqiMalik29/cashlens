@@ -1,5 +1,6 @@
 import { processReceiptIntelligence } from "@services/receiptParser";
 import { useAuthStore } from "@stores/useAuthStore";
+import { useCategoryStore } from "@stores/useCategoryStore";
 import { createLogger } from "@utils/logger";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -41,6 +42,7 @@ export function useScannerProcessor({
   const [showPaywall, setShowPaywall] = useState(false);
 
   const { subscriptionTier, stealthScansUsed } = useAuthStore();
+  const categories = useCategoryStore((state) => state.categories);
 
   const processScannedData = useCallback(
     async (imageUri: string) => {
@@ -69,9 +71,30 @@ export function useScannerProcessor({
           setIsOffline(true);
         }
 
+        const geminiCategoryRaw = result.data.categoryId || "";
+        const isUuid = /^[0-9a-f-]{36}$/i.test(geminiCategoryRaw);
+        const resolvedCategory = isUuid
+          ? categories.find((c) => c.id === geminiCategoryRaw)
+          : categories.find(
+              (c) => c.name.toLowerCase() === geminiCategoryRaw.toLowerCase()
+            );
+        const fallbackCategory =
+          resolvedCategory ??
+          categories.find((c) => c.name.toLowerCase() === "other") ??
+          categories.find((c) => c.name.toLowerCase() === "lainnya") ??
+          categories.find((c) => c.type === "expense") ??
+          null;
+
+        logger.debug("Scan result category raw:", geminiCategoryRaw);
+        logger.debug(
+          "Resolved category:",
+          fallbackCategory?.id,
+          fallbackCategory?.name
+        );
+
         const params = new URLSearchParams({
           amount: result.data.amount?.toString() || "0",
-          categoryId: result.data.categoryId || "cat_other_expense",
+          categoryId: fallbackCategory?.id || "",
           date: result.data.date || new Date().toISOString(),
           note: result.data.note || "Transaksi dari AI Scan",
           receiptImageUri: imageUri,
@@ -91,7 +114,7 @@ export function useScannerProcessor({
         setIsScanning(false);
       }
     },
-    [router, recordScan, subscriptionTier, stealthScansUsed]
+    [router, recordScan, subscriptionTier, stealthScansUsed, categories]
   );
 
   const handlePickFromGallery = useCallback(async () => {

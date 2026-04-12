@@ -11,7 +11,7 @@ import { colors, spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import { notificationService } from "@services/notificationService";
 import { useRouter } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useDashboardScreen } from "./useDashboardScreen";
@@ -30,7 +30,9 @@ export default function DashboardScreen() {
     isPermissionDialogVisible,
     setIsPermissionDialogVisible,
     pendingCount,
-    handleTestNotification
+    handleTestNotification,
+    isRefreshing,
+    handleRefresh
   } = useDashboardScreen();
 
   const router = useRouter();
@@ -72,6 +74,9 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: spacing[8] }}
         style={{ backgroundColor: colors.background }}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
       >
         <DashboardHeader
           pendingCount={pendingCount}

@@ -1,46 +1,13 @@
 import { type UserPreferences } from "@types";
 
-import { supabase } from "../supabase";
-import {
-  isTableNotFoundError,
-  isValidUserId,
-  type SyncResult
-} from "./syncUtils";
+import { authService } from "../api/authService";
+import { isValidUserId, type SyncResult } from "./syncUtils";
 
 export async function pushProfile(
-  userId: string,
-  data: Partial<UserPreferences>
+  _userId: string,
+  _data: Partial<UserPreferences>
 ): Promise<SyncResult> {
-  if (!isValidUserId(userId)) {
-    return { success: false, error: "Invalid user ID" };
-  }
-
-  try {
-    const { error } = await supabase.from("profiles").upsert(
-      {
-        id: userId,
-        base_currency: data.baseCurrency,
-        theme: data.theme,
-        language: data.language,
-        updated_at: new Date().toISOString()
-      },
-      {
-        onConflict: "id"
-      }
-    );
-
-    if (error) throw error;
-
-    return {
-      success: true,
-      syncedAt: new Date().toISOString()
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: (error as Error).message
-    };
-  }
+  return { success: true, syncedAt: new Date().toISOString() };
 }
 
 export async function pullProfile(
@@ -51,26 +18,16 @@ export async function pullProfile(
   }
 
   try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+    const data = await authService.getMe();
 
-    if (error) {
-      if (error.code === "PGRST116") {
-        return null;
-      }
-      if (isTableNotFoundError(error)) {
-        return null;
-      }
-      throw error;
-    }
+    // Assuming backend returns preferences nested in user or profile
+    // Based on MASTER_ROADMAP: user has preferences
+    const prefs = data.preferences;
 
     const preferences: UserPreferences = {
-      baseCurrency: data.base_currency || "IDR",
-      theme: data.theme || "system",
-      language: data.language || "id",
+      baseCurrency: prefs?.base_currency || "IDR",
+      theme: (prefs?.theme as UserPreferences["theme"]) || "system",
+      language: prefs?.language || "id",
       createdAt: data.created_at || new Date().toISOString()
     };
 

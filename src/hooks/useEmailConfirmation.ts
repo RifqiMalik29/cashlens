@@ -1,4 +1,4 @@
-import { supabase } from "@services/supabase";
+import { useAuthStore } from "@stores/useAuthStore";
 import { createLogger } from "@utils/logger";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
@@ -8,26 +8,22 @@ const logger = createLogger("[EmailConfirmation]");
 
 export function useEmailConfirmation() {
   const router = useRouter();
+  const { setTokens, setAuthenticated } = useAuthStore();
 
   useEffect(() => {
     const handleUrl = async (url: string) => {
       const { queryParams } = Linking.parse(url);
 
-      if (queryParams?.access_token && queryParams?.type === "signup") {
+      if (queryParams?.access_token) {
         const accessToken = queryParams.access_token as string;
         const refreshToken = queryParams.refresh_token as string;
 
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken
-        });
+        // In the new Go backend flow, we just store the tokens from the magic link
+        setTokens(accessToken, refreshToken);
+        setAuthenticated(true);
 
-        if (!error) {
-          logger.debug("✓ Email confirmed successfully");
-          router.replace("/(tabs)");
-        } else {
-          logger.error("✗ Failed to confirm:", error?.message);
-        }
+        logger.debug("✓ Session restored via magic link");
+        router.replace("/(tabs)");
       }
     };
 
@@ -44,5 +40,5 @@ export function useEmailConfirmation() {
     return () => {
       subscription.remove();
     };
-  }, [router]);
+  }, [router, setAuthenticated, setTokens]);
 }

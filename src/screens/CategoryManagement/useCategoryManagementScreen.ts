@@ -1,5 +1,5 @@
+import { categoryService } from "@services/api/categoryService";
 import { useCategoryStore } from "@stores/useCategoryStore";
-import { generateId } from "@utils/generateId";
 import * as Haptics from "expo-haptics";
 import { useCallback, useMemo, useState } from "react";
 
@@ -52,23 +52,37 @@ export function useCategoryManagementScreen() {
       }
 
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      deleteCategory(id);
+      try {
+        await categoryService.deleteCategory(id);
+        deleteCategory(id);
+      } catch {
+        // silently ignore — pull on next sync will correct state
+      }
     },
     [deleteCategory]
   );
 
   const handleAddCategory = useCallback(async () => {
     await Haptics.selectionAsync();
-    const newCategory = {
-      id: generateId(),
-      name: "Kategori Baru",
-      icon: "MoreHorizontal",
-      color: "#9CA3AF",
-      isDefault: false,
-      isCustom: true,
-      type: "expense" as const
-    };
-    addCategory(newCategory);
+    try {
+      const saved = await categoryService.createCategory({
+        name: "Kategori Baru",
+        icon: "MoreHorizontal",
+        color: "#9CA3AF",
+        type: "expense"
+      });
+      addCategory({
+        id: saved.id,
+        name: saved.name,
+        icon: saved.icon,
+        color: saved.color,
+        isDefault: saved.is_default,
+        isCustom: !saved.is_default,
+        type: saved.type
+      });
+    } catch {
+      // silently ignore
+    }
   }, [addCategory]);
 
   const handleFilterSelect = useCallback(

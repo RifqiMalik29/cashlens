@@ -1,5 +1,6 @@
 import { colors } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { authService } from "@services/api/authService";
 import { notificationService } from "@services/notificationService";
 import {
   SUPPORTED_APPS,
@@ -25,6 +26,8 @@ export function useNotificationSettings() {
 
   const [hasPermission, setHasPermission] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
+  const [isDisconnectDialogVisible, setIsDisconnectDialogVisible] =
+    useState(false);
 
   useHeader({
     title: t("notificationSettings.title"),
@@ -69,7 +72,7 @@ export function useNotificationSettings() {
       // const { token } = await response.json();
 
       const mockToken = `CL-${Math.floor(1000 + Math.random() * 9000)}`;
-      const botUsername = "CashLensBot"; // Change to your real bot username
+      const botUsername = "cashlens_tracker_bot";
       const url = `https://t.me/${botUsername}?start=${mockToken}`;
 
       const canOpen = await Linking.canOpenURL(url);
@@ -91,7 +94,25 @@ export function useNotificationSettings() {
   };
 
   const handleDisconnectTelegram = () => {
-    setTelegramLinked(false);
+    setIsDisconnectDialogVisible(true);
+  };
+
+  const handleConfirmDisconnect = async () => {
+    setIsDisconnectDialogVisible(false);
+    setIsLinking(true);
+    try {
+      await authService.unlinkTelegram();
+      setTelegramLinked(false);
+    } catch (error) {
+      logger.error(
+        "NotificationSettings",
+        "Error unlinking Telegram",
+        error as Error
+      );
+      Alert.alert(t("common.error"), t("notificationSettings.linkingError"));
+    } finally {
+      setIsLinking(false);
+    }
   };
 
   return {
@@ -110,6 +131,9 @@ export function useNotificationSettings() {
     isTelegramLinked,
     isLinking,
     handleConnectTelegram,
-    handleDisconnectTelegram
+    handleDisconnectTelegram,
+    isDisconnectDialogVisible,
+    setIsDisconnectDialogVisible,
+    handleConfirmDisconnect
   };
 }

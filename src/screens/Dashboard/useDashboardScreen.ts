@@ -1,3 +1,4 @@
+import { useCloudSync } from "@hooks/useCloudSync";
 import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
@@ -6,7 +7,7 @@ import { useDraftStore } from "@stores/useDraftStore";
 import { useNotificationStore } from "@stores/useNotificationStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PermissionsAndroid, Platform } from "react-native";
 
@@ -32,6 +33,14 @@ export function useDashboardScreen() {
   const { isFeatureEnabled, enabledPackages } = useNotificationStore();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { pullData } = useCloudSync();
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await pullData();
+    setIsRefreshing(false);
+  }, [pullData]);
 
   const pendingCount = useMemo(
     () => drafts.filter((d) => d.status === "pending").length,
@@ -210,6 +219,8 @@ export function useDashboardScreen() {
     isPermissionDialogVisible,
     setIsPermissionDialogVisible,
     pendingCount,
-    handleTestNotification
+    handleTestNotification,
+    isRefreshing,
+    handleRefresh
   };
 }

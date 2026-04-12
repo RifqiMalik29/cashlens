@@ -6,6 +6,8 @@ import { Eye, EyeOff } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
 
 interface RegisterFormProps {
+  name: string;
+  setName: (value: string) => void;
   email: string;
   setEmail: (value: string) => void;
   password: string;
@@ -22,6 +24,8 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({
+  name,
+  setName,
   email,
   setEmail,
   password,
@@ -39,18 +43,28 @@ export function RegisterForm({
   return (
     <View className="mt-8">
       <Input
-        label="Email"
-        placeholder="nama@email.com"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
+        label="Nama"
+        placeholder="Nama lengkap"
+        value={name}
+        onChangeText={setName}
+        autoCapitalize="words"
       />
 
       <View style={{ marginTop: spacing[4] }}>
         <Input
+          label="Email"
+          placeholder="nama@email.com"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
+
+      <View style={{ marginTop: spacing[4] }}>
+        <Input
           label="Kata Sandi"
-          placeholder="Minimal 6 karakter"
+          placeholder="Minimal 8 karakter"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}

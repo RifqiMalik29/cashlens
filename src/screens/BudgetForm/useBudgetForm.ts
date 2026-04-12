@@ -1,8 +1,8 @@
+import { budgetService } from "@services/api/budgetService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
-import { type BudgetPeriod } from "@types";
-import { generateId } from "@utils/generateId";
+import { type Budget, type BudgetPeriod } from "@types";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 
@@ -73,20 +73,37 @@ export function useBudgetForm() {
     setIsLoading(true);
 
     try {
-      const budgetData = {
-        id: existingBudget?.id ?? generateId(),
+      const payload: Partial<Budget> = {
         categoryId: selectedCategoryId,
         amount: parseFloat(rawAmount),
         currency: baseCurrency,
         period,
-        startDate: startDate + "T00:00:00",
-        updatedAt: new Date().toISOString()
+        startDate: startDate + "T00:00:00"
       };
 
       if (isEditMode) {
-        updateBudget(budgetData.id, budgetData);
+        const saved = await budgetService.updateBudget(
+          existingBudget.id,
+          payload
+        );
+        updateBudget(existingBudget.id, {
+          ...payload,
+          id: saved.id,
+          period: saved.period_type as BudgetPeriod,
+          startDate: saved.start_date,
+          endDate: saved.end_date
+        });
       } else {
-        addBudget(budgetData);
+        const saved = await budgetService.createBudget(payload);
+        addBudget({
+          id: saved.id,
+          categoryId: saved.category_id,
+          amount: saved.amount,
+          currency: baseCurrency,
+          period: saved.period_type as BudgetPeriod,
+          startDate: saved.start_date,
+          endDate: saved.end_date
+        });
       }
 
       router.back();
@@ -114,6 +131,7 @@ export function useBudgetForm() {
     setIsLoading(true);
 
     try {
+      await budgetService.deleteBudget(id);
       deleteBudget(id);
       router.back();
     } catch (err) {

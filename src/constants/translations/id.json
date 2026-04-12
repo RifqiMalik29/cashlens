@@ -52,7 +52,10 @@
     "recentTransactions": "Transaksi Terakhir",
     "seeAll": "Lihat Semua",
     "noTransactions": "Belum Ada Transaksi",
-    "noTransactionsDesc": "Mulai catat transaksi keuanganmu untuk melihat ringkasan dan analisis pengeluaran di dashboard."
+    "noTransactionsDesc": "Mulai catat transaksi keuanganmu untuk melihat ringkasan dan analisis pengeluaran di dashboard.",
+    "transactionQuota": "Kuota Transaksi",
+    "transactionQuotaDesc": "{{count}} / {{limit}} transaksi bulan ini",
+    "upgradeToUnlimited": "Upgrade untuk tanpa batas"
   },
   "transactions": {
     "title": "Transaksi",
@@ -194,6 +197,8 @@
     "telegramNotLinked": "Belum Terhubung",
     "connectTelegram": "Hubungkan Telegram",
     "disconnectTelegram": "Putus Koneksi",
+    "disconnectTitle": "Putus Koneksi Telegram",
+    "disconnectMessage": "Apakah kamu yakin ingin memutus koneksi akun Telegram? Kamu tidak akan menerima notifikasi lagi.",
     "linkingLoading": "Menghubungkan...",
     "linkingError": "Gagal mendapatkan token linking. Pastikan backend aktif."
   },

@@ -1,3 +1,4 @@
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
@@ -27,7 +28,10 @@ export default function NotificationSettingsScreen() {
     isTelegramLinked,
     isLinking,
     handleConnectTelegram,
-    handleDisconnectTelegram
+    handleDisconnectTelegram,
+    isDisconnectDialogVisible,
+    setIsDisconnectDialogVisible,
+    handleConfirmDisconnect
   } = useNotificationSettings();
 
   return (
@@ -117,6 +121,18 @@ export default function NotificationSettingsScreen() {
           />
         )}
       </ScrollView>
+
+      <BaseDialog
+        isVisible={isDisconnectDialogVisible}
+        type="error"
+        title={t("notificationSettings.disconnectTitle")}
+        message={t("notificationSettings.disconnectMessage")}
+        primaryButtonText={t("notificationSettings.disconnectTelegram")}
+        onPrimaryButtonPress={handleConfirmDisconnect}
+        secondaryButtonText={t("common.cancel")}
+        onSecondaryButtonPress={() => setIsDisconnectDialogVisible(false)}
+        onClose={() => setIsDisconnectDialogVisible(false)}
+      />
     </SafeAreaView>
   );
 }

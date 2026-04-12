@@ -52,7 +52,10 @@
     "recentTransactions": "Recent Transactions",
     "seeAll": "See All",
     "noTransactions": "No Transactions Yet",
-    "noTransactionsDesc": "Start recording your transactions to see summary and spending analysis on the dashboard."
+    "noTransactionsDesc": "Start recording your financial transactions to see a summary and analysis on your dashboard.",
+    "transactionQuota": "Transaction Quota",
+    "transactionQuotaDesc": "{{count}} / {{limit}} transactions this month",
+    "upgradeToUnlimited": "Upgrade for unlimited"
   },
   "transactions": {
     "title": "Transactions",
@@ -192,6 +195,8 @@
     "telegramNotLinked": "Not Connected",
     "connectTelegram": "Connect Telegram",
     "disconnectTelegram": "Disconnect",
+    "disconnectTitle": "Disconnect Telegram",
+    "disconnectMessage": "Are you sure you want to disconnect your Telegram account? You will stop receiving notifications.",
     "linkingLoading": "Connecting...",
     "linkingError": "Failed to get linking token. Ensure backend is active."
   },
