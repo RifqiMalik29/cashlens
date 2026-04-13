@@ -2,6 +2,8 @@ import { Button, Card, Typography } from "@components/ui";
 import React from "react";
 import { View } from "react-native";
 
+import { BudgetSummary } from "./BudgetSummary";
+
 interface FinancialOverviewProps {
   count: number;
   limit: number;
@@ -60,14 +62,12 @@ export function FinancialOverview({
         </Card>
       )}
 
-      <Card>
-        <Typography variant="h4" weight="bold" className="mb-2">
+      <View>
+        <Typography variant="h4" weight="bold" className="mb-2 px-4">
           Ringkasan Anggaran
         </Typography>
-        <Button variant="ghost" size="sm" onPress={onPressBudget}>
-          Lihat Detail
-        </Button>
-      </Card>
+        <BudgetSummary currency={currency} onPressBudget={onPressBudget} />
+      </View>
     </View>
   );
 }
