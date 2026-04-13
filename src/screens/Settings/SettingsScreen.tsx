@@ -16,8 +16,7 @@ import {
   LayoutGrid,
   LogOut,
   Palette,
-  RefreshCcw,
-  Zap
+  RefreshCcw
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -42,12 +41,12 @@ export default function SettingsScreen() {
     handleThemePress,
     handleHelpPress,
     handleNotificationSettingsPress,
+    handleUpgradePress,
     subscriptionTier,
-    setSubscriptionTier,
+    expiresAt,
     stealthScansUsed,
     resetStealthScans
   } = useSettingsScreen();
-
   return (
     <SafeAreaView
       className="flex-1"
@@ -71,7 +70,8 @@ export default function SettingsScreen() {
         <ProfileSection
           userEmail={userEmail}
           subscriptionTier={subscriptionTier}
-          onUpgradePress={() => setSubscriptionTier("premium")}
+          expiresAt={expiresAt}
+          onUpgradePress={handleUpgradePress}
           t={t}
         />
 
@@ -127,15 +127,6 @@ export default function SettingsScreen() {
         {__DEV__ && (
           <SettingsSection title={t("settings.developer")}>
             <View className="bg-white border border-border rounded-xl overflow-hidden">
-              <SettingsItem
-                icon={<Zap size={20} color="#F59E0B" />}
-                label={`Toggle Tier (${subscriptionTier})`}
-                onPress={() =>
-                  setSubscriptionTier(
-                    subscriptionTier === "premium" ? "free" : "premium"
-                  )
-                }
-              />
               <View style={{ marginTop: spacing[3] }}>
                 <SettingsItem
                   icon={<RefreshCcw size={20} color="#3B82F6" />}

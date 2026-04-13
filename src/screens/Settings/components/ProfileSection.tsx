@@ -8,6 +8,7 @@ import { TouchableOpacity, View } from "react-native";
 interface ProfileSectionProps {
   userEmail: string | null;
   subscriptionTier: "free" | "premium";
+  expiresAt?: string | null;
   onUpgradePress: () => void;
   t: (key: string) => string;
 }
@@ -15,6 +16,7 @@ interface ProfileSectionProps {
 export function ProfileSection({
   userEmail,
   subscriptionTier,
+  expiresAt,
   onUpgradePress,
   t
 }: ProfileSectionProps) {
@@ -30,13 +32,25 @@ export function ProfileSection({
               <Typography variant="body" weight="bold">
                 {userEmail || "User"}
               </Typography>
-              <View className="flex-row items-center mt-1">
-                <Badge
-                  label={subscriptionTier === "premium" ? "PREMIUM" : "FREE"}
-                  variant={
-                    subscriptionTier === "premium" ? "success" : "secondary"
-                  }
-                />
+              <View className="flex-col mt-1">
+                <View className="self-start">
+                  <Badge
+                    label={
+                      subscriptionTier === "premium" ? "PREMIUM ✓" : "Free Plan"
+                    }
+                    variant={
+                      subscriptionTier === "premium" ? "success" : "secondary"
+                    }
+                  />
+                </View>
+                {subscriptionTier === "premium" && expiresAt && (
+                  <View className="mt-1">
+                    <Typography variant="caption" color="secondary">
+                      Berlaku s/d:{" "}
+                      {new Date(expiresAt).toLocaleDateString("id-ID")}
+                    </Typography>
+                  </View>
+                )}
               </View>
             </View>
           </View>

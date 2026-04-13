@@ -4,6 +4,7 @@ import { useCloudSync } from "@hooks/useCloudSync";
 import { useHeader } from "@hooks/useHeader";
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { useAuthStore } from "@stores/useAuthStore";
+import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
@@ -22,15 +23,9 @@ export interface SettingsDialogState {
 
 export function useSettingsScreen() {
   const router = useRouter();
-  const {
-    reset,
-    preferences,
-    userEmail,
-    subscriptionTier,
-    setSubscriptionTier,
-    stealthScansUsed,
-    resetStealthScans
-  } = useAuthStore();
+  const { reset, preferences, userEmail, stealthScansUsed, resetStealthScans } =
+    useAuthStore();
+  const { tier: subscriptionTier, expiresAt } = useSubscriptionStore();
   const { pullData } = useCloudSync();
   const { setLogoutSyncing, setManualSyncing } = useSyncStatus();
   const { t } = useTranslation();
@@ -142,6 +137,11 @@ export function useSettingsScreen() {
     router.push("/(tabs)/settings/notifications");
   };
 
+  const handleUpgradePress = async () => {
+    await Haptics.selectionAsync();
+    router.push("/upgrade" as never);
+  };
+
   return {
     t,
     userEmail,
@@ -158,8 +158,9 @@ export function useSettingsScreen() {
     handleThemePress,
     handleHelpPress,
     handleNotificationSettingsPress,
+    handleUpgradePress,
     subscriptionTier,
-    setSubscriptionTier,
+    expiresAt,
     stealthScansUsed,
     resetStealthScans
   };
