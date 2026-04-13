@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react-native";
 import { useAuthStore } from "@stores/useAuthStore";
 import { logger } from "@utils/logger";
 
@@ -179,6 +180,12 @@ export async function request<T>(
         `Error in ${options.method ?? "GET"} ${endpoint}:`,
         error as Error
       );
+      Sentry.captureException(error, {
+        tags: {
+          endpoint,
+          method: options.method ?? "GET"
+        }
+      });
     }
     throw error;
   }

@@ -6,6 +6,7 @@ import { useEmailConfirmation } from "@hooks/useEmailConfirmation";
 import { useSessionRestore } from "@hooks/useSessionRestore";
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { useTelegramRealtime } from "@hooks/useTelegramRealtime";
+import * as Sentry from "@sentry/react-native";
 import i18n, { initI18n } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
@@ -15,10 +16,16 @@ import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  enabled: process.env.NODE_ENV === "production",
+  tracesSampleRate: 0.2
+});
+
 // Initialize i18n
 initI18n();
 
-export default function RootLayout() {
+function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
   const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
@@ -119,3 +126,5 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
+
+export default Sentry.wrap(RootLayout);
