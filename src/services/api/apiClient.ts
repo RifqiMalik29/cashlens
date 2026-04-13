@@ -43,15 +43,28 @@ async function refreshAccessToken(): Promise<string | null> {
         reset();
         return null;
       }
-      const json = (await response.json()) as Record<string, unknown>;
-      const data = (json.data as Record<string, string>) || json;
-      if (!data?.access_token) {
-        logger.error("API", "Refresh response missing access_token");
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        logger.error("API", "Refresh failed: Response is not JSON");
         reset();
         return null;
       }
-      setTokens(data.access_token, data.refresh_token);
-      return data.access_token;
+
+      const json = (await response.json()) as Record<string, unknown>;
+      const data = (json.data as Record<string, string>) || json;
+
+      const newAccessToken =
+        data.access_token || data.accessToken || data.token;
+      const newRefreshToken = data.refresh_token || data.refreshToken;
+
+      if (!newAccessToken) {
+        logger.error("API", "Refresh response missing access_token", data);
+        reset();
+        return null;
+      }
+      setTokens(newAccessToken as string, newRefreshToken as string);
+      return newAccessToken as string;
     } catch {
       reset();
       return null;
@@ -88,25 +101,37 @@ async function executeRequest<T>(
     body: body !== undefined ? JSON.stringify(body) : undefined
   });
 
+  const contentType = response.headers.get("content-type");
   let data: unknown;
-  try {
-    data = await response.json();
-  } catch {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+
+  if (contentType && contentType.includes("application/json")) {
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+  } else {
+    data = await response.text();
   }
 
   if (!response.ok) {
-    const err = data as Record<string, unknown> | null;
-    const details = err?.details;
-    if (details && typeof details === "object") {
-      const firstDetail = Object.values(details as Record<string, string>)[0];
-      if (firstDetail) throw new Error(firstDetail);
+    if (typeof data === "object" && data !== null) {
+      const err = data as Record<string, unknown>;
+      const details = err.details;
+      if (details && typeof details === "object") {
+        const firstDetail = Object.values(details as Record<string, string>)[0];
+        if (firstDetail) throw new Error(firstDetail);
+      }
+      throw new Error(
+        (err.message as string) ||
+          (err.error as string) ||
+          `HTTP ${response.status}: ${response.statusText}`
+      );
+    } else {
+      throw new Error(
+        `HTTP ${response.status}: ${typeof data === "string" ? data : response.statusText}`
+      );
     }
-    throw new Error(
-      (err?.message as string) ||
-        (err?.error as string) ||
-        `HTTP ${response.status}`
-    );
   }
 
   return data as T;

@@ -22,11 +22,14 @@ export function useTelegramRealtime() {
           setTelegramLinked(false);
         }
       } catch (error) {
-        logger.error(
-          "TelegramRealtime",
-          "Error checking status:",
-          error as Error
-        );
+        const msg = (error as Error).message;
+        if (!msg.includes("404")) {
+          logger.error(
+            "TelegramRealtime",
+            "Error checking status:",
+            error as Error
+          );
+        }
         setTelegramLinked(false);
       }
     };
