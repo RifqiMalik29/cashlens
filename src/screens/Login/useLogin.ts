@@ -49,7 +49,15 @@ export function useLogin() {
       useCategoryStore.getState().resetToDefault();
       resetSyncStatus();
 
-      setTokens(data.access_token, data.refresh_token);
+      const accessToken =
+        data.access_token ||
+        (data as unknown as Record<string, string>).accessToken ||
+        (data as unknown as Record<string, string>).token;
+      const refreshToken =
+        data.refresh_token ||
+        (data as unknown as Record<string, string>).refreshToken;
+
+      setTokens(accessToken, refreshToken);
       setUserId(data.user.id, data.user.email);
       setAuthenticated(true);
 
