@@ -49,9 +49,9 @@ export function useLogin() {
       useCategoryStore.getState().resetToDefault();
       resetSyncStatus();
 
-      setAuthenticated(true);
-      setUserId(data.user.id, data.user.email);
       setTokens(data.access_token, data.refresh_token);
+      setUserId(data.user.id, data.user.email);
+      setAuthenticated(true);
 
       router.replace("/(tabs)");
     } catch (err) {
