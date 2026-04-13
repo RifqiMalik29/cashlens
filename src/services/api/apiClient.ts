@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/react-native";
+import i18n from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { logger } from "@utils/logger";
 
@@ -87,6 +88,7 @@ async function executeRequest<T>(
   const url = `${BASE_URL}${endpoint}`;
   const requestHeaders: Record<string, string> = {
     "Content-Type": "application/json",
+    "Accept-Language": i18n.language || "id",
     ...headers
   };
 

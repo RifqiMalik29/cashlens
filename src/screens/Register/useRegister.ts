@@ -1,4 +1,5 @@
 import { authService } from "@services/api/authService";
+import i18n, { normalizeLanguage } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
@@ -11,7 +12,8 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useRegister() {
   const router = useRouter();
-  const { setAuthenticated, setUserId, setTokens, reset } = useAuthStore();
+  const { setAuthenticated, setUserId, setTokens, updatePreferences, reset } =
+    useAuthStore();
   const resetSyncStatus = useSyncStore((state) => state.reset);
 
   const [name, setName] = useState("");
@@ -72,6 +74,14 @@ export function useRegister() {
 
       setTokens(accessToken, refreshToken);
       setUserId(data.user.id, data.user.email);
+
+      // Save language preference from backend, fallback to current i18n language
+      const backendLang = data.user.preferences?.language;
+      if (backendLang && normalizeLanguage(backendLang) === backendLang) {
+        updatePreferences({ language: backendLang });
+        i18n.changeLanguage(backendLang);
+      }
+
       setAuthenticated(true);
 
       router.replace("/(tabs)");

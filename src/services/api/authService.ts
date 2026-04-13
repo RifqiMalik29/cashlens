@@ -1,3 +1,5 @@
+import i18n, { normalizeLanguage } from "@services/i18n";
+
 import { api } from "./apiClient";
 
 export interface BackendUser {
@@ -39,7 +41,7 @@ export const authService = {
   login: async (email: string, password: string): Promise<AuthData> => {
     const res = await api.post<AuthResponse | AuthData>(
       "/api/v1/auth/login",
-      { email, password },
+      { email, password, language: normalizeLanguage(i18n.language) },
       { isAuth: false }
     );
     return "data" in res && res.data ? res.data : (res as unknown as AuthData);
@@ -52,10 +54,14 @@ export const authService = {
   ): Promise<AuthData> => {
     const res = await api.post<AuthResponse | AuthData>(
       "/api/v1/auth/register",
-      { email, password, name },
+      { email, password, name, language: normalizeLanguage(i18n.language) },
       { isAuth: false }
     );
     return "data" in res && res.data ? res.data : (res as unknown as AuthData);
+  },
+
+  updateLanguage: async (language: string): Promise<void> => {
+    await api.patch("/api/v1/auth/language", { language });
   },
 
   logout: async (refreshToken: string): Promise<void> => {

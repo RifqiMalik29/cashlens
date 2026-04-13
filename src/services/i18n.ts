@@ -10,10 +10,23 @@ const resources = {
   id: { translation: id }
 };
 
-const getDeviceLanguage = (): string => {
+export type SupportedLanguage = "id" | "en";
+
+/**
+ * Normalize locale code to supported language.
+ * Handles Android returning "in" for Indonesian instead of "id".
+ */
+export function normalizeLanguage(
+  code: string | null | undefined
+): SupportedLanguage {
+  if (code === "id" || code === "in") return "id";
+  if (code === "en") return "en";
+  return "id";
+}
+
+const getDeviceLanguage = (): SupportedLanguage => {
   const locales = getLocales();
-  const deviceLang = locales[0]?.languageCode || "id";
-  return deviceLang === "id" ? "id" : "en";
+  return normalizeLanguage(locales[0]?.languageCode);
 };
 
 export function initI18n() {

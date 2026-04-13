@@ -1,9 +1,11 @@
 import { useHeader } from "@hooks/useHeader";
+import { authService } from "@services/api/authService";
 import i18n from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
+import { logger } from "@utils/logger";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface LanguageOption {
@@ -32,6 +34,7 @@ export function useLanguageSelector() {
   const router = useRouter();
   const { preferences, updatePreferences } = useAuthStore();
   const { t } = useTranslation();
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useHeader({
     title: t("settings.language"),
@@ -40,14 +43,30 @@ export function useLanguageSelector() {
 
   const handleSelectLanguage = useCallback(
     async (code: string) => {
-      if (code === preferences.language) return;
+      if (code === preferences.language || isUpdating) return;
 
       await Haptics.selectionAsync();
-      updatePreferences({ language: code });
-      i18n.changeLanguage(code);
-      router.back();
+      setIsUpdating(true);
+
+      try {
+        // Update backend first, then local state on success
+        await authService.updateLanguage(code);
+        updatePreferences({ language: code });
+        i18n.changeLanguage(code);
+        router.back();
+      } catch (error) {
+        logger.error(
+          "LanguageSelector",
+          "Failed to update language:",
+          error as Error
+        );
+        // Revert to previous language on failure
+        i18n.changeLanguage(preferences.language);
+      } finally {
+        setIsUpdating(false);
+      }
     },
-    [preferences.language, updatePreferences, router]
+    [preferences.language, updatePreferences, router, isUpdating]
   );
 
   return {
