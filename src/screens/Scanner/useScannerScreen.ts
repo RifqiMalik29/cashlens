@@ -1,4 +1,4 @@
-import { useScanQuota } from "@hooks/useScanQuota";
+import { useQuota } from "@hooks/useQuota";
 import { useIsFocused } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 
@@ -8,7 +8,9 @@ import { useScannerProcessor } from "./hooks/useScannerProcessor";
 export function useScannerScreen() {
   const { t } = useTranslation();
   const isFocused = useIsFocused();
-  const { remaining, limit, isLimitReached, recordScan } = useScanQuota();
+  const { scanCount, scanLimit, isScanLimitReached, recordScan, isPremium } =
+    useQuota();
+  const remaining = Math.max(0, scanLimit - scanCount);
 
   const {
     isScanning,
@@ -22,7 +24,7 @@ export function useScannerScreen() {
     processingMethod,
     showPaywall,
     setShowPaywall
-  } = useScannerProcessor({ isLimitReached, recordScan });
+  } = useScannerProcessor({ isLimitReached: isScanLimitReached, recordScan });
 
   const {
     cameraRef,
@@ -61,11 +63,12 @@ export function useScannerScreen() {
     handleRefreshCamera,
     isOffline,
     remainingScans: remaining,
-    scanLimit: limit,
-    isLimitReached,
+    scanLimit,
+    isLimitReached: isScanLimitReached,
     processingStatus,
     processingMethod,
     showPaywall,
-    setShowPaywall
+    setShowPaywall,
+    isPremium
   };
 }

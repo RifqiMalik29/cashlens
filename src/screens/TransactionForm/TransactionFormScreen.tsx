@@ -2,15 +2,18 @@ import { AmountInput } from "@components/transaction/AmountInput";
 import { CategoryPicker } from "@components/transaction/CategoryPicker";
 import { DateInput } from "@components/transaction/DateInput";
 import { TypeSelector } from "@components/transaction/TypeSelector";
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { useRouter } from "expo-router";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
 import { useTransactionForm } from "./useTransactionForm";
 
 export default function TransactionFormScreen() {
+  const router = useRouter();
   const {
     amount,
     setAmount,
@@ -28,7 +31,9 @@ export default function TransactionFormScreen() {
     categories,
     baseCurrency,
     handleSave,
-    handleDelete
+    handleDelete,
+    showPaywall,
+    setShowPaywall
   } = useTransactionForm();
 
   useHeader({
@@ -117,6 +122,20 @@ export default function TransactionFormScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <BaseDialog
+        isVisible={showPaywall}
+        title="Batas Transaksi Tercapai"
+        message="Kamu telah mencapai batas 50 transaksi gratis bulan ini. Upgrade ke Premium untuk transaksi tanpa batas!"
+        type="warning"
+        primaryButtonText="Upgrade ke Premium"
+        onPrimaryButtonPress={() => {
+          setShowPaywall(false);
+          router.push("/upgrade" as never);
+        }}
+        secondaryButtonText="Nanti Saja"
+        onSecondaryButtonPress={() => setShowPaywall(false)}
+        onClose={() => setShowPaywall(false)}
+      />
     </View>
   );
 }

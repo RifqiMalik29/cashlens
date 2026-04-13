@@ -1,4 +1,5 @@
 import { useCloudSync } from "@hooks/useCloudSync";
+import { useQuota } from "@hooks/useQuota";
 import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
@@ -9,7 +10,6 @@ import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PermissionsAndroid, Platform } from "react-native";
 
 interface CategorySpending {
   categoryId: string;
@@ -35,6 +35,8 @@ export function useDashboardScreen() {
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { pullData } = useCloudSync();
+
+  const { transactionCount, transactionLimit, isPremium } = useQuota();
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -83,33 +85,6 @@ export function useDashboardScreen() {
 
     return unsubscribe;
   }, [addDraft, isFeatureEnabled, enabledPackages]);
-
-  const handleTestNotification = async () => {
-    // Request permission to POST notifications on Android 13+
-    if (Platform.OS === "android" && Platform.Version >= 33) {
-      const hasPostNotif = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-      );
-      if (!hasPostNotif) {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-        );
-      }
-    }
-
-    const granted = await notificationService.isPermissionGranted();
-    if (!granted) {
-      setIsPermissionDialogVisible(true);
-      return;
-    }
-
-    logger.debug("Dashboard", t("notifications.testSent"));
-    notificationService.sendTestNotification(
-      "BCA Mobile",
-      "Transfer Rp 150.000 ke TOKOPEDIA BERHASIL",
-      "com.bca.mobile"
-    );
-  };
 
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -219,8 +194,10 @@ export function useDashboardScreen() {
     isPermissionDialogVisible,
     setIsPermissionDialogVisible,
     pendingCount,
-    handleTestNotification,
     isRefreshing,
-    handleRefresh
+    handleRefresh,
+    transactionCount,
+    transactionLimit,
+    isPremium
   };
 }

@@ -1,9 +1,9 @@
 import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
-import { BaseDialog } from "@components/ui";
+import { BaseDialog, Typography } from "@components/ui";
 import { CameraView } from "expo-camera";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StatusBar, StyleSheet,View } from "react-native";
+import { StatusBar, StyleSheet, View } from "react-native";
 
 import {
   AIProcessingIndicator,
@@ -38,7 +38,10 @@ export default function ScannerScreen() {
     processingStatus,
     processingMethod,
     showPaywall,
-    setShowPaywall
+    setShowPaywall,
+    remainingScans,
+    scanLimit,
+    isPremium
   } = useScannerScreen();
 
   if (!permission) {
@@ -83,6 +86,13 @@ export default function ScannerScreen() {
 
       {/* 3. Controls Layer (Bottom) */}
       <View style={styles.controlsContainer}>
+        {!isPremium && (
+          <View className="bg-amber-500/90 px-4 py-1.5 rounded-full mb-6 flex-row items-center border border-amber-300">
+            <Typography variant="body" weight="bold" color="white">
+              ✨ Premium AI ({remainingScans}/{scanLimit})
+            </Typography>
+          </View>
+        )}
         <ScannerControls
           onTakePhoto={handleTakePhoto}
           onPickFromGallery={handlePickFromGallery}

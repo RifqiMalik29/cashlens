@@ -118,7 +118,13 @@ export function useTransactionForm() {
     existingDraft
   ]);
 
+  const [showPaywall, setShowPaywall] = useState(false);
+
   const onSave = async () => {
+    if (!isEditMode && !canAddTransaction) {
+      setShowPaywall(true);
+      return;
+    }
     await handleSave({
       setAmount,
       setType,
@@ -194,6 +200,8 @@ export function useTransactionForm() {
     categories,
     baseCurrency,
     handleSave: onSave,
-    handleDelete: onDelete
+    handleDelete: onDelete,
+    showPaywall,
+    setShowPaywall
   };
 }
