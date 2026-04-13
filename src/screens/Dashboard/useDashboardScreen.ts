@@ -1,4 +1,5 @@
 import { useCloudSync } from "@hooks/useCloudSync";
+import { useQuota } from "@hooks/useQuota";
 import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
@@ -18,12 +19,6 @@ interface CategorySpending {
   amount: number;
 }
 
-interface DailySpending {
-  day: string;
-  amount: number;
-  date: string;
-}
-
 export function useDashboardScreen() {
   const { t } = useTranslation();
   const { baseCurrency } = useAuthStore((state) => state.preferences);
@@ -35,6 +30,8 @@ export function useDashboardScreen() {
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { pullData } = useCloudSync();
+
+  const { transactionCount, transactionLimit, isPremium } = useQuota();
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -85,7 +82,8 @@ export function useDashboardScreen() {
   }, [addDraft, isFeatureEnabled, enabledPackages]);
 
   const handleTestNotification = async () => {
-    // Request permission to POST notifications on Android 13+
+    if (!__DEV__) return;
+
     if (Platform.OS === "android" && Platform.Version >= 33) {
       const hasPostNotif = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
@@ -164,7 +162,7 @@ export function useDashboardScreen() {
       .sort((a, b) => b.amount - a.amount);
   }, [currentMonthTransactions, categories]);
 
-  const dailySpending = useMemo<DailySpending[]>(() => {
+  const dailySpending = useMemo(() => {
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const dailyData: Record<string, number> = {};
 
@@ -221,6 +219,9 @@ export function useDashboardScreen() {
     pendingCount,
     handleTestNotification,
     isRefreshing,
-    handleRefresh
+    handleRefresh,
+    transactionCount,
+    transactionLimit,
+    isPremium
   };
 }

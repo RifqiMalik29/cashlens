@@ -8,6 +8,7 @@ import { useSyncStatus } from "@hooks/useSyncStatus";
 import { useTelegramRealtime } from "@hooks/useTelegramRealtime";
 import i18n, { initI18n } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
+import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
@@ -23,6 +24,7 @@ export default function RootLayout() {
   const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
   const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
     useSyncStatus();
+  const { fetchSubscription } = useSubscriptionStore();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   // Restore session on app startup
@@ -47,6 +49,12 @@ export default function RootLayout() {
   useEffect(() => {
     setIsLayoutReady(true);
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchSubscription();
+    }
+  }, [isAuthenticated, fetchSubscription]);
 
   useEffect(() => {
     if (!isLayoutReady) return;

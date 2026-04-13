@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuthStore } from "@stores/useAuthStore";
+import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { createLogger } from "@utils/logger";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -22,9 +23,13 @@ const getCurrentMonth = () => {
 };
 
 export function useQuota() {
-  const { subscriptionTier, stealthScansUsed, incrementStealthScans } =
-    useAuthStore();
+  const { stealthScansUsed, incrementStealthScans } = useAuthStore();
   const { transactions } = useTransactionStore();
+  const { tier: subscriptionTier, quota } = useSubscriptionStore();
+
+  const actualTransactionLimit =
+    quota.transactionsLimit ?? FREE_TRANSACTION_LIMIT;
+  const actualScanLimit = quota.scansLimit ?? FREE_SCAN_LIMIT;
 
   const [scanQuota, setScanQuota] = useState<ScanQuota>({
     count: 0,
@@ -46,8 +51,14 @@ export function useQuota() {
   }, [transactions, currentMonth]);
 
   const transactionCount = currentMonthTransactions.length;
+  // Use the backend quota count if local count is lower, otherwise local count
+  const effectiveTransactionCount = Math.max(
+    transactionCount,
+    quota.transactionsUsed
+  );
   const isTransactionLimitReached =
-    subscriptionTier === "free" && transactionCount >= FREE_TRANSACTION_LIMIT;
+    subscriptionTier === "free" &&
+    effectiveTransactionCount >= actualTransactionLimit;
 
   // 2. Load and Manage Scan Quota
   useEffect(() => {
@@ -82,9 +93,10 @@ export function useQuota() {
     })();
   }, [currentMonth]);
 
-  const scanCount = scanQuota.count;
+  // Use backend scan usage if local count is lower
+  const scanCount = Math.max(scanQuota.count, quota.scansUsed);
   const isScanLimitReached =
-    subscriptionTier === "free" && scanCount >= FREE_SCAN_LIMIT;
+    subscriptionTier === "free" && scanCount >= actualScanLimit;
 
   // Magic Scans logic: If free and hasn't used up 5 magic scans yet
   const hasMagicScansRemaining =
@@ -116,15 +128,15 @@ export function useQuota() {
 
   return {
     // Transaction Quota
-    transactionCount,
-    transactionLimit: FREE_TRANSACTION_LIMIT,
+    transactionCount: effectiveTransactionCount,
+    transactionLimit: actualTransactionLimit,
     isTransactionLimitReached,
     canAddTransaction:
       subscriptionTier === "premium" || !isTransactionLimitReached,
 
     // Scan Quota
     scanCount,
-    scanLimit: FREE_SCAN_LIMIT,
+    scanLimit: actualScanLimit,
     isScanLimitReached,
     hasMagicScansRemaining,
     stealthScansUsed,

@@ -7,7 +7,7 @@ import { Typography } from "../ui/Typography";
 
 interface DashboardHeaderProps {
   pendingCount: number;
-  handleTestNotification: () => void;
+  handleTestNotification?: () => void;
   onPressBell: () => void;
 }
 
@@ -33,12 +33,14 @@ export function DashboardHeader({
       </View>
 
       <View className="flex-row items-center gap-x-4">
-        <TouchableOpacity
-          onPress={handleTestNotification}
-          className="p-2 rounded-full bg-white/20"
-        >
-          <TestTube size={24} color="#FFFFFF" />
-        </TouchableOpacity>
+        {__DEV__ && handleTestNotification && (
+          <TouchableOpacity
+            onPress={handleTestNotification}
+            className="p-2 rounded-full bg-white/20"
+          >
+            <TestTube size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity
           onPress={onPressBell}

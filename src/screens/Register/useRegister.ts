@@ -62,9 +62,17 @@ export function useRegister() {
       useCategoryStore.getState().resetToDefault();
       resetSyncStatus();
 
-      setAuthenticated(true);
+      const accessToken =
+        data.access_token ||
+        (data as unknown as Record<string, string>).accessToken ||
+        (data as unknown as Record<string, string>).token;
+      const refreshToken =
+        data.refresh_token ||
+        (data as unknown as Record<string, string>).refreshToken;
+
+      setTokens(accessToken, refreshToken);
       setUserId(data.user.id, data.user.email);
-      setTokens(data.access_token, data.refresh_token);
+      setAuthenticated(true);
 
       router.replace("/(tabs)");
     } catch (err) {

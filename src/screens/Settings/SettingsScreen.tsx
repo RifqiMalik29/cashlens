@@ -42,12 +42,13 @@ export default function SettingsScreen() {
     handleThemePress,
     handleHelpPress,
     handleNotificationSettingsPress,
+    handleUpgradePress,
     subscriptionTier,
     setSubscriptionTier,
+    expiresAt,
     stealthScansUsed,
     resetStealthScans
   } = useSettingsScreen();
-
   return (
     <SafeAreaView
       className="flex-1"
@@ -71,7 +72,8 @@ export default function SettingsScreen() {
         <ProfileSection
           userEmail={userEmail}
           subscriptionTier={subscriptionTier}
-          onUpgradePress={() => setSubscriptionTier("premium")}
+          expiresAt={expiresAt}
+          onUpgradePress={handleUpgradePress}
           t={t}
         />
 

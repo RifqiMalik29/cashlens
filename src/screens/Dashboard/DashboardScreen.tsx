@@ -1,12 +1,13 @@
 import {
   BudgetSummary,
   DashboardHeader,
+  QuotaBanner,
   RecentTransactions,
   SpendingChart,
   SummaryCard
 } from "@components/dashboard";
 import { EmptyState } from "@components/transaction/EmptyState";
-import { BaseDialog } from "@components/ui/BaseDialog";
+import { BaseDialog } from "@components/ui";
 import { colors, spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import { notificationService } from "@services/notificationService";
@@ -32,7 +33,10 @@ export default function DashboardScreen() {
     pendingCount,
     handleTestNotification,
     isRefreshing,
-    handleRefresh
+    handleRefresh,
+    transactionCount,
+    transactionLimit,
+    isPremium
   } = useDashboardScreen();
 
   const router = useRouter();
@@ -80,7 +84,6 @@ export default function DashboardScreen() {
       >
         <DashboardHeader
           pendingCount={pendingCount}
-          handleTestNotification={handleTestNotification}
           onPressBell={() => router.push("/drafts")}
         />
 
@@ -92,6 +95,14 @@ export default function DashboardScreen() {
             currency={baseCurrency}
           />
         </View>
+
+        {!isPremium && (
+          <QuotaBanner
+            count={transactionCount}
+            limit={transactionLimit}
+            onPressUpgrade={() => router.push("/upgrade" as never)}
+          />
+        )}
 
         <BudgetSummary
           currency={baseCurrency}
