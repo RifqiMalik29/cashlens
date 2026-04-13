@@ -1,5 +1,5 @@
 import { colors } from "@constants/theme";
-import { Bell } from "lucide-react-native";
+import { Bell, TestTube } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
@@ -7,11 +7,13 @@ import { Typography } from "../ui/Typography";
 
 interface DashboardHeaderProps {
   pendingCount: number;
+  handleTestNotification?: () => void;
   onPressBell: () => void;
 }
 
 export function DashboardHeader({
   pendingCount,
+  handleTestNotification,
   onPressBell
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
@@ -31,6 +33,15 @@ export function DashboardHeader({
       </View>
 
       <View className="flex-row items-center gap-x-4">
+        {__DEV__ && handleTestNotification && (
+          <TouchableOpacity
+            onPress={handleTestNotification}
+            className="p-2 rounded-full bg-white/20"
+          >
+            <TestTube size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
           onPress={onPressBell}
           className="p-2 rounded-full bg-white/20"

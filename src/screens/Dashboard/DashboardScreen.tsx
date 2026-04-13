@@ -31,6 +31,7 @@ export default function DashboardScreen() {
     isPermissionDialogVisible,
     setIsPermissionDialogVisible,
     pendingCount,
+    handleTestNotification,
     isRefreshing,
     handleRefresh,
     transactionCount,
@@ -54,6 +55,7 @@ export default function DashboardScreen() {
       >
         <DashboardHeader
           pendingCount={pendingCount}
+          handleTestNotification={handleTestNotification}
           onPressBell={() => router.push("/drafts")}
         />
         <EmptyState

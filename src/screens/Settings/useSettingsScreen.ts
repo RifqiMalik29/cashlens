@@ -25,7 +25,11 @@ export function useSettingsScreen() {
   const router = useRouter();
   const { reset, preferences, userEmail, stealthScansUsed, resetStealthScans } =
     useAuthStore();
-  const { tier: subscriptionTier, expiresAt } = useSubscriptionStore();
+  const {
+    tier: subscriptionTier,
+    expiresAt,
+    setSubscriptionTier
+  } = useSubscriptionStore();
   const { pullData } = useCloudSync();
   const { setLogoutSyncing, setManualSyncing } = useSyncStatus();
   const { t } = useTranslation();
@@ -160,6 +164,7 @@ export function useSettingsScreen() {
     handleNotificationSettingsPress,
     handleUpgradePress,
     subscriptionTier,
+    setSubscriptionTier,
     expiresAt,
     stealthScansUsed,
     resetStealthScans

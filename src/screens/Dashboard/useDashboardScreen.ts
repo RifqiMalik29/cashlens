@@ -10,18 +10,13 @@ import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PermissionsAndroid, Platform } from "react-native";
 
 interface CategorySpending {
   categoryId: string;
   categoryName: string;
   color: string;
   amount: number;
-}
-
-interface DailySpending {
-  day: string;
-  amount: number;
-  date: string;
 }
 
 export function useDashboardScreen() {
@@ -86,6 +81,34 @@ export function useDashboardScreen() {
     return unsubscribe;
   }, [addDraft, isFeatureEnabled, enabledPackages]);
 
+  const handleTestNotification = async () => {
+    if (!__DEV__) return;
+
+    if (Platform.OS === "android" && Platform.Version >= 33) {
+      const hasPostNotif = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+      if (!hasPostNotif) {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
+      }
+    }
+
+    const granted = await notificationService.isPermissionGranted();
+    if (!granted) {
+      setIsPermissionDialogVisible(true);
+      return;
+    }
+
+    logger.debug("Dashboard", t("notifications.testSent"));
+    notificationService.sendTestNotification(
+      "BCA Mobile",
+      "Transfer Rp 150.000 ke TOKOPEDIA BERHASIL",
+      "com.bca.mobile"
+    );
+  };
+
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
@@ -139,7 +162,7 @@ export function useDashboardScreen() {
       .sort((a, b) => b.amount - a.amount);
   }, [currentMonthTransactions, categories]);
 
-  const dailySpending = useMemo<DailySpending[]>(() => {
+  const dailySpending = useMemo(() => {
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const dailyData: Record<string, number> = {};
 
@@ -194,6 +217,7 @@ export function useDashboardScreen() {
     isPermissionDialogVisible,
     setIsPermissionDialogVisible,
     pendingCount,
+    handleTestNotification,
     isRefreshing,
     handleRefresh,
     transactionCount,

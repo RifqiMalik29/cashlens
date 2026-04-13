@@ -16,6 +16,7 @@ interface SubscriptionState {
   isLoading: boolean;
   error: string | null;
   fetchSubscription: () => Promise<void>;
+  setSubscriptionTier: (tier: "free" | "premium") => void;
   reset: () => void;
 }
 
@@ -60,6 +61,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           set({ isLoading: false, error: (error as Error).message });
         }
       },
+      setSubscriptionTier: (tier: "free" | "premium") => set({ tier }),
       reset: () => set(defaultState)
     }),
     {
