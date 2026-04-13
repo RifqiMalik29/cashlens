@@ -37,12 +37,12 @@ interface TelegramStatusResponse {
 
 export const authService = {
   login: async (email: string, password: string): Promise<AuthData> => {
-    const res = await api.post<AuthResponse>(
+    const res = await api.post<AuthResponse | AuthData>(
       "/api/v1/auth/login",
       { email, password },
       { isAuth: false }
     );
-    return res.data;
+    return "data" in res && res.data ? res.data : (res as unknown as AuthData);
   },
 
   register: async (
@@ -50,12 +50,12 @@ export const authService = {
     password: string,
     name: string
   ): Promise<AuthData> => {
-    const res = await api.post<AuthResponse>(
+    const res = await api.post<AuthResponse | AuthData>(
       "/api/v1/auth/register",
       { email, password, name },
       { isAuth: false }
     );
-    return res.data;
+    return "data" in res && res.data ? res.data : (res as unknown as AuthData);
   },
 
   logout: async (refreshToken: string): Promise<void> => {

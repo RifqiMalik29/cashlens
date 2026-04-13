@@ -43,16 +43,15 @@ async function refreshAccessToken(): Promise<string | null> {
         reset();
         return null;
       }
-      const json = (await response.json()) as {
-        data: { access_token: string; refresh_token: string };
-      };
-      if (!json.data?.access_token) {
+      const json = (await response.json()) as Record<string, unknown>;
+      const data = (json.data as Record<string, string>) || json;
+      if (!data?.access_token) {
         logger.error("API", "Refresh response missing access_token");
         reset();
         return null;
       }
-      setTokens(json.data.access_token, json.data.refresh_token);
-      return json.data.access_token;
+      setTokens(data.access_token, data.refresh_token);
+      return data.access_token;
     } catch {
       reset();
       return null;
