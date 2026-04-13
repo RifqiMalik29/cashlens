@@ -1,7 +1,6 @@
 import {
-  BudgetSummary,
   DashboardHeader,
-  QuotaBanner,
+  FinancialOverview,
   RecentTransactions,
   SpendingChart,
   SummaryCard
@@ -96,17 +95,13 @@ export default function DashboardScreen() {
           />
         </View>
 
-        {!isPremium && (
-          <QuotaBanner
-            count={transactionCount}
-            limit={transactionLimit}
-            onPressUpgrade={() => router.push("/upgrade" as never)}
-          />
-        )}
-
-        <BudgetSummary
+        <FinancialOverview
+          count={transactionCount}
+          limit={transactionLimit}
           currency={baseCurrency}
+          onPressUpgrade={() => router.push("/upgrade" as never)}
           onPressBudget={() => router.replace("/(tabs)/budget")}
+          isPremium={isPremium}
         />
 
         {hasCurrentMonthData && (
