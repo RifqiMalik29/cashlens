@@ -1,5 +1,6 @@
 import { Button, Card, Typography } from "@components/ui";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { BudgetSummary } from "./BudgetSummary";
@@ -21,6 +22,7 @@ export function FinancialOverview({
   onPressBudget,
   isPremium
 }: FinancialOverviewProps) {
+  const { t } = useTranslation();
   const percentage = Math.min(100, Math.round((count / limit) * 100));
   const isNearLimit = percentage >= 80;
 
@@ -34,7 +36,7 @@ export function FinancialOverview({
               weight="medium"
               color={isNearLimit ? "warning" : "secondary"}
             >
-              {count} / {limit} transaksi {currency} bulan ini
+              {t("dashboard.transactionQuotaDesc", { count, limit })}
             </Typography>
             <Typography
               variant="caption"
@@ -56,7 +58,7 @@ export function FinancialOverview({
               fullWidth
               onPress={onPressUpgrade}
             >
-              Upgrade ke Premium
+              {t("dashboard.upgradeToUnlimited")}
             </Button>
           )}
         </Card>
@@ -64,7 +66,7 @@ export function FinancialOverview({
 
       <View>
         <Typography variant="h4" weight="bold" className="mb-2 px-4">
-          Ringkasan Anggaran
+          {t("budget.title")}
         </Typography>
         <BudgetSummary currency={currency} onPressBudget={onPressBudget} />
       </View>

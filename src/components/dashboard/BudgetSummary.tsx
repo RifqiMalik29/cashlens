@@ -87,9 +87,8 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
     });
   }, [budgets, categories, transactions]);
 
-  if (budgetData.length === 0) {
-    return null;
-  }
+  const hasBudgets = budgetData.length > 0;
+  if (!hasBudgets) return null;
 
   const periodLabels: Record<string, string> = {
     weekly: "/minggu",
