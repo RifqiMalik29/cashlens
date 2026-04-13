@@ -171,11 +171,15 @@ export async function request<T>(
       }
       return await executeRequest<T>(endpoint, options, newToken);
     }
-    logger.error(
-      "API",
-      `Error in ${options.method ?? "GET"} ${endpoint}:`,
-      error as Error
-    );
+
+    // Suppress 404 logs for polling endpoints like telegram status
+    if (!(endpoint.includes("/telegram/status") && message.includes("404"))) {
+      logger.error(
+        "API",
+        `Error in ${options.method ?? "GET"} ${endpoint}:`,
+        error as Error
+      );
+    }
     throw error;
   }
 }

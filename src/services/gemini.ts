@@ -63,7 +63,7 @@ export async function parseReceiptImage(
       currency: "IDR",
       date: result.date,
       merchant: result.merchant,
-      category: result.category,
+      category: result.category_id,
       items: result.items || [],
       confidence: result.confidence
     };

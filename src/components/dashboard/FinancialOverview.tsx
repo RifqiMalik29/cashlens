@@ -1,4 +1,5 @@
 import { Button, Card, Typography } from "@components/ui";
+import { useBudgetStore } from "@stores/useBudgetStore";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -23,11 +24,12 @@ export function FinancialOverview({
   isPremium
 }: FinancialOverviewProps) {
   const { t } = useTranslation();
+  const budgets = useBudgetStore((state) => state.budgets);
   const percentage = Math.min(100, Math.round((count / limit) * 100));
   const isNearLimit = percentage >= 80;
 
   return (
-    <View className="px-6 mb-4 gap-4">
+    <View className="px-4 mb-4 gap-4">
       {!isPremium && (
         <Card className={isNearLimit ? "border-warning bg-warning/10" : ""}>
           <View className="flex-row justify-between items-center mb-2">
@@ -64,12 +66,14 @@ export function FinancialOverview({
         </Card>
       )}
 
-      <View>
-        <Typography variant="h4" weight="bold" className="mb-2 px-4">
-          {t("budget.title")}
-        </Typography>
-        <BudgetSummary currency={currency} onPressBudget={onPressBudget} />
-      </View>
+      {budgets.length > 0 && (
+        <View>
+          <Typography variant="h4" weight="bold" className="mb-2">
+            {t("budget.title")}
+          </Typography>
+          <BudgetSummary currency={currency} onPressBudget={onPressBudget} />
+        </View>
+      )}
     </View>
   );
 }

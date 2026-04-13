@@ -7,7 +7,7 @@ export interface ScanResponse {
   currency: string;
   merchant: string;
   date: string;
-  category: string;
+  category_id: string;
   confidence: number;
   items?: {
     name: string;

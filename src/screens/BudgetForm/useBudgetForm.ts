@@ -73,12 +73,24 @@ export function useBudgetForm() {
     setIsLoading(true);
 
     try {
+      // Calculate end date based on period
+      const start = new Date(startDate);
+      const end = new Date(start);
+      if (period === "weekly") {
+        end.setDate(start.getDate() + 6);
+      } else if (period === "monthly") {
+        end.setMonth(start.getMonth() + 1, 0);
+      } else if (period === "yearly") {
+        end.setFullYear(start.getFullYear() + 1, 0, 0);
+      }
+
       const payload: Partial<Budget> = {
         categoryId: selectedCategoryId,
         amount: parseFloat(rawAmount),
         currency: baseCurrency,
         period,
-        startDate: startDate + "T00:00:00"
+        startDate: start.toISOString(),
+        endDate: end.toISOString()
       };
 
       if (isEditMode) {

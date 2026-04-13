@@ -1,6 +1,7 @@
 import { processReceiptIntelligence } from "@services/receiptParser";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
+import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { createLogger } from "@utils/logger";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -42,12 +43,21 @@ export function useScannerProcessor({
   const [showPaywall, setShowPaywall] = useState(false);
 
   const { subscriptionTier, stealthScansUsed } = useAuthStore();
+  const premiumQuota = useSubscriptionStore((state) => state.quota);
   const categories = useCategoryStore((state) => state.categories);
 
   const processScannedData = useCallback(
     async (imageUri: string) => {
-      // PAYWALL CHECK: If free user and already used 5 magic scans
-      if (subscriptionTier === "free" && stealthScansUsed >= 5) {
+      // PAYWALL CHECK
+      const isFreeUser = subscriptionTier === "free";
+      const isPremiumUser = subscriptionTier === "premium";
+      const freeTrialExhausted = isFreeUser && stealthScansUsed >= 5;
+      const premiumExhausted =
+        isPremiumUser &&
+        premiumQuota.scansLimit !== null &&
+        premiumQuota.scansUsed >= premiumQuota.scansLimit;
+
+      if (freeTrialExhausted || premiumExhausted) {
         setShowPaywall(true);
         return;
       }
@@ -73,9 +83,12 @@ export function useScannerProcessor({
 
         const geminiCategoryRaw = result.data.categoryId || "";
         const isUuid = /^[0-9a-f-]{36}$/i.test(geminiCategoryRaw);
+
+        // Try to match by ID first, then by name
         const resolvedCategory = isUuid
           ? categories.find((c) => c.id === geminiCategoryRaw)
-          : categories.find(
+          : categories.find((c) => c.id === geminiCategoryRaw) ||
+            categories.find(
               (c) => c.name.toLowerCase() === geminiCategoryRaw.toLowerCase()
             );
         const fallbackCategory =
@@ -114,7 +127,15 @@ export function useScannerProcessor({
         setIsScanning(false);
       }
     },
-    [router, recordScan, subscriptionTier, stealthScansUsed, categories]
+    [
+      router,
+      recordScan,
+      subscriptionTier,
+      stealthScansUsed,
+      categories,
+      premiumQuota.scansLimit,
+      premiumQuota.scansUsed
+    ]
   );
 
   const handlePickFromGallery = useCallback(async () => {

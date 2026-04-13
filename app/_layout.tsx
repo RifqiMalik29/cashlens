@@ -24,7 +24,9 @@ export default function RootLayout() {
   const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
   const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
     useSyncStatus();
-  const { fetchSubscription } = useSubscriptionStore();
+  const fetchSubscription = useSubscriptionStore(
+    (state) => state.fetchSubscription
+  );
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   // Restore session on app startup

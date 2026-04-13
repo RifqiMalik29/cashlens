@@ -1,5 +1,6 @@
 export { BudgetSummary } from "./BudgetSummary";
 export { DashboardHeader } from "./DashboardHeader";
+export { FinancialOverview } from "./FinancialOverview";
 export { QuotaBanner } from "./QuotaBanner";
 export { RecentTransactions } from "./RecentTransactions";
 export { SpendingChart } from "./SpendingChart";

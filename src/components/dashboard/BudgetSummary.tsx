@@ -97,7 +97,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
   };
 
   return (
-    <Card className="mx-4 mb-4" style={{ shadowOpacity: 0.08 }}>
+    <Card className="mb-4" style={{ shadowOpacity: 0.08 }}>
       <View className="flex-row items-center justify-between mb-3">
         <Typography variant="label" weight="medium" color="#6B7280">
           {t("budget.activeBudgets")}

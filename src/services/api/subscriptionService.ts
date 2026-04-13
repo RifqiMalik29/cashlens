@@ -37,5 +37,9 @@ export const subscriptionService = {
       { plan }
     );
     return res.data;
+  },
+
+  verifySubscription: async (invoiceId: string): Promise<void> => {
+    await api.post("/api/v1/subscription/verify", { invoice_id: invoiceId });
   }
 };

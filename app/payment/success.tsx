@@ -1,6 +1,8 @@
 import { Button, Card, Typography } from "@components/ui";
+import { subscriptionService } from "@services/api/subscriptionService";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
-import { useRouter } from "expo-router";
+import { logger } from "@utils/logger";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { CheckCircle2 } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -8,16 +10,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PaymentSuccessScreen() {
   const router = useRouter();
-  const { fetchSubscription } = useSubscriptionStore();
+  const { invoice_id } = useLocalSearchParams<{ invoice_id?: string }>();
+  const fetchSubscription = useSubscriptionStore(
+    (state) => state.fetchSubscription
+  );
   const [isRefreshing, setIsRefreshing] = useState(true);
 
   useEffect(() => {
     const refreshStatus = async () => {
+      if (invoice_id) {
+        try {
+          await subscriptionService.verifySubscription(invoice_id);
+        } catch (err) {
+          logger.warn(
+            "PaymentSuccess",
+            "Verify returned error, fetching subscription anyway:",
+            err as Error
+          );
+        }
+      }
       await fetchSubscription();
       setIsRefreshing(false);
     };
     refreshStatus();
-  }, [fetchSubscription]);
+  }, [fetchSubscription, invoice_id]);
 
   return (
     <SafeAreaView className="flex-1 bg-background justify-center px-6">

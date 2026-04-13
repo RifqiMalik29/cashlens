@@ -54,7 +54,7 @@
     "noTransactions": "Belum Ada Transaksi",
     "noTransactionsDesc": "Mulai catat transaksi keuanganmu untuk melihat ringkasan dan analisis pengeluaran di dashboard.",
     "transactionQuota": "Kuota Transaksi",
-    "transactionQuotaDesc": "{{count}} / {{limit}} transaksi bulan ini",
+    "transactionQuotaDesc": "{{count}} / {{limit}} transaksi",
     "upgradeToUnlimited": "Upgrade untuk tanpa batas"
   },
   "transactions": {
