@@ -18,7 +18,6 @@ const features = [
   "Scan struk AI tanpa batas",
   "Deteksi notifikasi bank otomatis",
   "Kategori kustom tanpa batas",
-  "Ekspor data ke CSV/Excel",
   "Dukungan prioritas"
 ];
 
