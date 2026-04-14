@@ -3,6 +3,7 @@ import { createLogger } from "@utils/logger";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
+import { Alert } from "react-native";
 
 const logger = createLogger("[EmailConfirmation]");
 
@@ -12,18 +13,38 @@ export function useEmailConfirmation() {
 
   useEffect(() => {
     const handleUrl = async (url: string) => {
-      const { queryParams } = Linking.parse(url);
+      logger.debug("Handling URL:", url);
 
-      if (queryParams?.access_token) {
-        const accessToken = queryParams.access_token as string;
-        const refreshToken = queryParams.refresh_token as string;
+      // Handle magic link with tokens (existing flow)
+      if (url.includes("access_token")) {
+        const { queryParams } = Linking.parse(url);
+        const accessToken = queryParams?.access_token as string;
+        const refreshToken = queryParams?.refresh_token as string;
 
-        // In the new Go backend flow, we just store the tokens from the magic link
-        setTokens(accessToken, refreshToken);
-        setAuthenticated(true);
+        if (accessToken) {
+          setTokens(accessToken, refreshToken);
+          setAuthenticated(true);
 
-        logger.debug("✓ Session restored via magic link");
-        router.replace("/(tabs)");
+          logger.debug("✓ Session restored via magic link");
+          router.replace("/(tabs)");
+        }
+        return;
+      }
+
+      // Handle email confirmation deep link: cashlens://auth/confirm
+      // Backend has already confirmed the email and redirected to this URL
+      if (url.includes("auth/confirm")) {
+        logger.debug("✓ Email confirmed via deep link");
+
+        // Show success message
+        Alert.alert(
+          "Success!",
+          "Your email has been confirmed. You can now log in to your account.",
+          [{ text: "OK" }]
+        );
+
+        // Navigate to login screen
+        router.push("/(auth)/login");
       }
     };
 

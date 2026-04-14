@@ -1,5 +1,4 @@
 import { authService } from "@services/api/authService";
-import i18n, { normalizeLanguage } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
@@ -12,8 +11,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useRegister() {
   const router = useRouter();
-  const { setAuthenticated, setUserId, setTokens, updatePreferences, reset } =
-    useAuthStore();
+  const { reset } = useAuthStore();
   const resetSyncStatus = useSyncStore((state) => state.reset);
 
   const [name, setName] = useState("");
@@ -55,7 +53,7 @@ export function useRegister() {
     setError(null);
 
     try {
-      const data = await authService.register(email, password, name);
+      await authService.register(email, password, name);
 
       // Clear all stores to prevent data leakage from previous users
       reset();
@@ -64,27 +62,11 @@ export function useRegister() {
       useCategoryStore.getState().resetToDefault();
       resetSyncStatus();
 
-      const accessToken =
-        data.access_token ||
-        (data as unknown as Record<string, string>).accessToken ||
-        (data as unknown as Record<string, string>).token;
-      const refreshToken =
-        data.refresh_token ||
-        (data as unknown as Record<string, string>).refreshToken;
-
-      setTokens(accessToken, refreshToken);
-      setUserId(data.user.id, data.user.email);
-
-      // Save language preference from backend, fallback to current i18n language
-      const backendLang = data.user.preferences?.language;
-      if (backendLang && normalizeLanguage(backendLang) === backendLang) {
-        updatePreferences({ language: backendLang });
-        i18n.changeLanguage(backendLang);
-      }
-
-      setAuthenticated(true);
-
-      router.replace("/(tabs)");
+      // Navigate to check email screen instead of auto-login
+      router.push({
+        pathname: "/(auth)/check-email",
+        params: { email }
+      });
     } catch (err) {
       setError((err as Error).message || "Terjadi kesalahan");
     } finally {
