@@ -26,26 +26,45 @@ export const receiptService = {
       name: "receipt.jpg"
     } as unknown as Blob);
 
-    const response = await fetch(`${BASE_URL}/api/v1/receipts/scan`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: formData
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s timeout to be safe
 
-    let json: unknown;
     try {
-      json = await response.json();
-    } catch {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+      const response = await fetch(`${BASE_URL}/api/v1/receipts/scan`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: formData,
+        signal: controller.signal
+      });
 
-    if (!response.ok) {
-      const err = json as Record<string, string> | null;
-      throw new Error(err?.message || err?.error || `HTTP ${response.status}`);
-    }
+      let json: unknown;
+      try {
+        json = await response.json();
+      } catch {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
-    return (json as { data: ScanResponse }).data;
+      if (!response.ok) {
+        const err = json as Record<string, string> | null;
+        throw new Error(
+          err?.message ||
+            err?.error ||
+            `Gagal memindai (HTTP ${response.status})`
+        );
+      }
+
+      return (json as { data: ScanResponse }).data;
+    } catch (error) {
+      if ((error as Error).name === "AbortError") {
+        throw new Error(
+          "Permintaan waktu habis. AI sedang sibuk, silakan coba lagi."
+        );
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 };

@@ -17,6 +17,7 @@ interface UseScannerProcessorResult {
   handlePickFromGallery: () => Promise<void>;
   dismissError: () => void;
   setError: (msg: string) => void;
+  retryScan: () => Promise<void>;
   recordScan: () => Promise<void>;
   processingStatus: string;
   processingMethod?: "local_ocr" | "gemini_text" | "gemini_vision";
@@ -41,6 +42,7 @@ export function useScannerProcessor({
     "local_ocr" | "gemini_text" | "gemini_vision" | undefined
   >();
   const [showPaywall, setShowPaywall] = useState(false);
+  const [lastImageUri, setLastImageUri] = useState<string | null>(null);
 
   const { subscriptionTier, stealthScansUsed } = useAuthStore();
   const premiumQuota = useSubscriptionStore((state) => state.quota);
@@ -63,10 +65,11 @@ export function useScannerProcessor({
       }
 
       logger.debug("START INTELLIGENT SCAN");
+      setLastImageUri(imageUri);
       setIsScanning(true);
       setError(null);
       setIsOffline(false);
-      setProcessingStatus("Menyiapkan pemindaian...");
+      setProcessingStatus("AI sedang memproses...");
 
       try {
         const result = await processReceiptIntelligence(imageUri, (status) =>
@@ -122,7 +125,16 @@ export function useScannerProcessor({
         }, 500);
       } catch (err) {
         logger.error("✗ Intelligent processing failed:", err);
-        setError((err as Error).message || "Gagal memproses struk");
+        const message = (err as Error).message || "";
+        if (
+          message.includes("403") ||
+          message.toLowerCase().includes("limit") ||
+          message.toLowerCase().includes("quota")
+        ) {
+          setShowPaywall(true);
+        } else {
+          setError(message || "Gagal memproses struk");
+        }
       } finally {
         setIsScanning(false);
       }
@@ -165,6 +177,12 @@ export function useScannerProcessor({
     setError(null);
   }, []);
 
+  const retryScan = useCallback(async () => {
+    if (lastImageUri) {
+      await processScannedData(lastImageUri);
+    }
+  }, [lastImageUri, processScannedData]);
+
   return {
     isScanning,
     error,
@@ -173,6 +191,7 @@ export function useScannerProcessor({
     handlePickFromGallery,
     dismissError,
     setError,
+    retryScan,
     recordScan,
     processingStatus,
     processingMethod,

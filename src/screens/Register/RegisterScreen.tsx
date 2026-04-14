@@ -31,7 +31,8 @@ export default function RegisterScreen() {
     <SafeAreaView className="flex-1 bg-background">
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 100}
       >
         <ScrollView
           className="flex-1"

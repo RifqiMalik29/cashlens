@@ -33,6 +33,7 @@ export default function ScannerScreen() {
     handlePickFromGallery,
     toggleFlash,
     dismissError,
+    retryScan,
     handleCameraReady,
     handleRefreshCamera,
     processingStatus,
@@ -104,7 +105,11 @@ export default function ScannerScreen() {
       </View>
 
       {/* 4. Feedback Layer (Top Toast) */}
-      <ErrorMessage error={error} onDismiss={dismissError} />
+      <ErrorMessage
+        error={error}
+        onDismiss={dismissError}
+        onRetry={retryScan}
+      />
 
       {/* 5. Modals / Overlays */}
       {isScanning && (
