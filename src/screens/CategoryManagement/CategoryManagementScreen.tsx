@@ -14,7 +14,9 @@ export default function CategoryManagementScreen() {
     incomeCategories,
     handleDeleteCategory,
     handleAddCategory,
-    handleFilterSelect
+    handleUpdateCategory,
+    handleFilterSelect,
+    error
   } = useCategoryManagementScreen();
 
   return (
@@ -39,6 +41,16 @@ export default function CategoryManagementScreen() {
             </TouchableOpacity>
           ))}
         </View>
+
+        {error && (
+          <Typography
+            variant="caption"
+            color="#EF4444"
+            style={{ marginTop: spacing[2], textAlign: "center" }}
+          >
+            {error}
+          </Typography>
+        )}
       </View>
 
       <ScrollView className="flex-1 px-6">
@@ -58,6 +70,7 @@ export default function CategoryManagementScreen() {
                   key={category.id}
                   category={category}
                   onDelete={handleDeleteCategory}
+                  onUpdate={handleUpdateCategory}
                 />
               ))}
             </View>
@@ -80,6 +93,7 @@ export default function CategoryManagementScreen() {
                   key={category.id}
                   category={category}
                   onDelete={handleDeleteCategory}
+                  onUpdate={handleUpdateCategory}
                 />
               ))}
             </View>

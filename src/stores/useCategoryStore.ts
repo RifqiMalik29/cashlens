@@ -10,6 +10,7 @@ interface CategoryState {
   deleteCategory: (id: string) => void;
   resetToDefault: () => void;
   setCategories: (categories: Category[]) => void;
+  syncCategories: (categories: Category[]) => void;
   _syncVersion: number;
 }
 
@@ -45,6 +46,9 @@ export const useCategoryStore = create<CategoryState>()(
         });
       },
       setCategories: (categories) => {
+        set({ categories, _syncVersion: get()._syncVersion + 1 });
+      },
+      syncCategories: (categories) => {
         set({ categories, _syncVersion: get()._syncVersion + 1 });
       }
     }),

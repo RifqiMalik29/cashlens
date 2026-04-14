@@ -1,16 +1,61 @@
-import { categoryService } from "@services/api/categoryService";
+import {
+  type CategoryResponse,
+  categoryService
+} from "@services/api/categoryService";
 import { useCategoryStore } from "@stores/useCategoryStore";
+import { type Category } from "@types";
 import * as Haptics from "expo-haptics";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 
 export function useCategoryManagementScreen() {
   const categories = useCategoryStore((state) => state.categories);
   const addCategory = useCategoryStore((state) => state.addCategory);
+  const updateCategory = useCategoryStore((state) => state.updateCategory);
   const deleteCategory = useCategoryStore((state) => state.deleteCategory);
+  const syncCategories = useCategoryStore((state) => state.syncCategories);
 
   const [selectedType, setSelectedType] = useState<
     "all" | "expense" | "income"
   >("all");
+  const [error, setError] = useState<string | null>(null);
+
+  const transformCategory = useCallback(
+    (cat: CategoryResponse): Category => ({
+      id: cat?.id || "",
+      name: cat?.name || "",
+      icon: cat?.icon || "MoreHorizontal",
+      color: cat?.color || "#9CA3AF",
+      isDefault: cat?.is_default || false,
+      isCustom: !cat?.is_default,
+      type:
+        cat?.type === "income"
+          ? "income"
+          : cat?.type === "expense"
+            ? "expense"
+            : "both"
+    }),
+    []
+  );
+
+  const syncWithBackend = useCallback(async () => {
+    try {
+      const categories = await categoryService.getCategories();
+      if (categories && Array.isArray(categories)) {
+        const transformed = categories.map(transformCategory);
+        syncCategories(transformed);
+      }
+    } catch (err) {
+      setError((err as Error).message || "Gagal menyinkronkan kategori");
+    }
+  }, [syncCategories, transformCategory]);
+
+  // Sync categories when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      syncWithBackend();
+    }, [syncWithBackend])
+  );
 
   const filterTypes = useMemo(
     () => [
@@ -48,15 +93,17 @@ export function useCategoryManagementScreen() {
     async (id: string, isDefault: boolean) => {
       if (isDefault) {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        setError("Tidak bisa menghapus kategori default.");
         return;
       }
 
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       try {
+        setError(null);
         await categoryService.deleteCategory(id);
         deleteCategory(id);
-      } catch {
-        // silently ignore — pull on next sync will correct state
+      } catch (err) {
+        setError((err as Error).message || "Gagal menghapus kategori");
       }
     },
     [deleteCategory]
@@ -65,6 +112,7 @@ export function useCategoryManagementScreen() {
   const handleAddCategory = useCallback(async () => {
     await Haptics.selectionAsync();
     try {
+      setError(null);
       const saved = await categoryService.createCategory({
         name: "Kategori Baru",
         icon: "MoreHorizontal",
@@ -80,10 +128,28 @@ export function useCategoryManagementScreen() {
         isCustom: !saved.is_default,
         type: saved.type
       });
-    } catch {
-      // silently ignore
+    } catch (err) {
+      setError((err as Error).message || "Gagal menambah kategori");
     }
   }, [addCategory]);
+
+  const handleUpdateCategory = useCallback(
+    async (id: string, newName: string) => {
+      await Haptics.selectionAsync();
+      try {
+        setError(null);
+        await categoryService.updateCategory(id, {
+          name: newName
+        });
+        // Optimistic update with the new name
+        // The useFocusEffect will sync when you return to ensure consistency
+        updateCategory(id, { name: newName });
+      } catch (err) {
+        setError((err as Error).message || "Gagal memperbarui kategori");
+      }
+    },
+    [updateCategory]
+  );
 
   const handleFilterSelect = useCallback(
     (type: "all" | "expense" | "income") => {
@@ -101,6 +167,9 @@ export function useCategoryManagementScreen() {
     incomeCategories,
     handleDeleteCategory,
     handleAddCategory,
-    handleFilterSelect
+    handleUpdateCategory,
+    handleFilterSelect,
+    syncWithBackend,
+    error
   };
 }

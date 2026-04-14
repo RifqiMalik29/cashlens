@@ -40,11 +40,12 @@ export const categoryService = {
     id: string,
     data: Partial<Category>
   ): Promise<CategoryResponse> => {
-    const res = await api.put<{ data: CategoryResponse }>(
+    const res = await api.put<Record<string, unknown>>(
       `/api/v1/categories/${id}`,
       data
     );
-    return res.data;
+    // PUT endpoint returns success message, extract data if available
+    return (res?.data || res) as CategoryResponse;
   },
 
   deleteCategory: async (id: string): Promise<void> => {
