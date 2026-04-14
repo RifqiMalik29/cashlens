@@ -37,6 +37,20 @@ interface TelegramStatusResponse {
   };
 }
 
+interface RegisterResponse {
+  message: string;
+  data: {
+    user: BackendUser;
+  };
+}
+
+interface ConfirmEmailResponse {
+  message: string;
+  data: {
+    user: BackendUser;
+  };
+}
+
 export const authService = {
   login: async (email: string, password: string): Promise<AuthData> => {
     const res = await api.post<AuthResponse | AuthData>(
@@ -51,13 +65,29 @@ export const authService = {
     email: string,
     password: string,
     name: string
-  ): Promise<AuthData> => {
-    const res = await api.post<AuthResponse | AuthData>(
+  ): Promise<RegisterResponse> => {
+    const res = await api.post<RegisterResponse>(
       "/api/v1/auth/register",
       { email, password, name, language: normalizeLanguage(i18n.language) },
       { isAuth: false }
     );
-    return "data" in res && res.data ? res.data : (res as unknown as AuthData);
+    return res;
+  },
+
+  confirmEmail: async (token: string): Promise<ConfirmEmailResponse> => {
+    const res = await api.get<ConfirmEmailResponse>(
+      `/api/v1/auth/confirm?token=${token}`,
+      { isAuth: false }
+    );
+    return res;
+  },
+
+  resendConfirmation: async (email: string): Promise<void> => {
+    await api.post(
+      "/api/v1/auth/resend-confirmation",
+      { email },
+      { isAuth: false }
+    );
   },
 
   updateLanguage: async (language: string): Promise<void> => {
