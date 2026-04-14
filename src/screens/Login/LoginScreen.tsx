@@ -26,7 +26,6 @@ export default function LoginScreen() {
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : "padding"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 100}
       >
         <ScrollView
           className="flex-1"
