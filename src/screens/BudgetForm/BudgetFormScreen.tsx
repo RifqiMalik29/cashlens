@@ -1,3 +1,4 @@
+import { DateInput } from "@components/transaction/DateInput";
 import {
   BudgetFormActions,
   BudgetFormHeader,
@@ -78,18 +79,7 @@ export default function BudgetFormScreen() {
               >
                 Tanggal Mulai
               </Typography>
-              <Input
-                value={startDate}
-                onChangeText={setStartDate}
-                placeholder="YYYY-MM-DD"
-              />
-              <Typography
-                variant="caption"
-                color="#6B7280"
-                style={{ marginTop: spacing[1] }}
-              >
-                Format: YYYY-MM-DD (contoh: 2024-01-01)
-              </Typography>
+              <DateInput date={startDate} setDate={setStartDate} />
             </View>
 
             <BudgetFormActions
