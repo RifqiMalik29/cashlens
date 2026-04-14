@@ -93,6 +93,14 @@ export function useTransactionForm() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!selectedCategoryId || isEditMode) return;
+    const cat = categories.find((c) => c.id === selectedCategoryId);
+    if (cat && (cat.type === "income" || cat.type === "expense")) {
+      setType(cat.type);
+    }
+  }, [selectedCategoryId, categories, isEditMode]);
+
+  useEffect(() => {
     if (scannedAmount && !existingTransaction && !existingDraft) {
       setAmount(scannedAmount);
     }

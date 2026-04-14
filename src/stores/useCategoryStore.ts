@@ -1,4 +1,3 @@
-import { defaultCategories } from "@constants/defaultCategories";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { type Category } from "@types";
 import { create } from "zustand";
@@ -17,7 +16,7 @@ interface CategoryState {
 export const useCategoryStore = create<CategoryState>()(
   persist(
     (set, get) => ({
-      categories: defaultCategories,
+      categories: [],
       _syncVersion: 0,
       addCategory: (category) => {
         set((state) => ({
@@ -41,7 +40,7 @@ export const useCategoryStore = create<CategoryState>()(
       },
       resetToDefault: () => {
         set({
-          categories: defaultCategories,
+          categories: [],
           _syncVersion: get()._syncVersion + 1
         });
       },
@@ -51,7 +50,8 @@ export const useCategoryStore = create<CategoryState>()(
     }),
     {
       name: "category-storage",
-      storage: createJSONStorage(() => AsyncStorage)
+      storage: createJSONStorage(() => AsyncStorage),
+      version: 2
     }
   )
 );
