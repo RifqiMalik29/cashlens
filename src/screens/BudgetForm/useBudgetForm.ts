@@ -70,6 +70,11 @@ export function useBudgetForm() {
       return;
     }
 
+    if (isEditMode && !existingBudget?.id) {
+      setError("Data anggaran tidak ditemukan");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -93,7 +98,7 @@ export function useBudgetForm() {
         endDate: end.toISOString()
       };
 
-      if (isEditMode) {
+      if (isEditMode && existingBudget) {
         const saved = await budgetService.updateBudget(
           existingBudget.id,
           payload
