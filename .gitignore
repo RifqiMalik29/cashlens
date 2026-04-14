@@ -48,4 +48,4 @@ docs/
 
 # ai
 .qwen/
-# .gemini/
+# .gemini/.worktrees/
