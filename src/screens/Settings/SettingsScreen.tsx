@@ -125,29 +125,7 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* Developer Section (DEV only) */}
-        {__DEV__ && (
-          <SettingsSection title={t("settings.developer")}>
-            <View className="bg-white border border-border rounded-xl overflow-hidden">
-              <SettingsItem
-                icon={<Zap size={20} color="#F59E0B" />}
-                label={`Toggle Tier (${subscriptionTier})`}
-                onPress={() =>
-                  setSubscriptionTier(
-                    subscriptionTier === "premium" ? "free" : "premium"
-                  )
-                }
-              />
-              <View style={{ marginTop: spacing[3] }}>
-                <SettingsItem
-                  icon={<RefreshCcw size={20} color="#3B82F6" />}
-                  label={`Reset Stealth Scans (${stealthScansUsed}/5)`}
-                  onPress={resetStealthScans}
-                />
-              </View>
-            </View>
-          </SettingsSection>
-        )}
+        
 
         <SettingsSection title={t("settings.account")}>
           <SettingsItem
