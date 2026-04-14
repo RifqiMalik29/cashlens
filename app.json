@@ -25,6 +25,22 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "cashlens",
+              "pathPrefix": "/auth/confirm"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
       ]
     },
     "web": {
