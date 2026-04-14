@@ -14,7 +14,7 @@ export function BudgetFormHeader({ isEditMode }: BudgetFormHeaderProps) {
     >
       <View>
         <Typography variant="h2" weight="bold" color="#FFFFFF">
-          {isEditMode ? "Edit Anggaran" : "Tambah Anggaran"}
+          {isEditMode ? "Ubah Anggaran" : "Tambah Anggaran"}
         </Typography>
         <Typography variant="body" color="#FFFFFF">
           {isEditMode
