@@ -1,7 +1,5 @@
-import { ICON_MAP } from "@constants/iconMap";
 import { spacing } from "@constants/theme";
 import { type Category, type TransactionType } from "@types";
-import { MoreHorizontal } from "lucide-react-native";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -36,7 +34,6 @@ export function CategoryPicker({
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-2">
           {filteredCategories.map((category) => {
-            const IconComponent = ICON_MAP[category.icon] ?? MoreHorizontal;
             const isSelected = selectedCategoryId === category.id;
 
             return (
@@ -51,13 +48,17 @@ export function CategoryPicker({
                 style={{ minWidth: 80 }}
               >
                 <View
-                  className="items-center justify-center rounded-full mb-2"
+                  className="items-center justify-center mb-2"
                   style={{
                     width: 40,
-                    height: 40
+                    height: 40,
+                    backgroundColor: category.color,
+                    borderRadius: 9999 // Explicitly make it fully rounded
                   }}
                 >
-                  <IconComponent size={24} color={category.color} />
+                  <Typography variant="h5" weight="bold" color="#FFFFFF">
+                    {category.name.charAt(0).toUpperCase()}
+                  </Typography>
                 </View>
                 <Typography
                   variant="caption"

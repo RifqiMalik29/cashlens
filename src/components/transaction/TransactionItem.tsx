@@ -1,7 +1,5 @@
-import { ICON_MAP } from "@constants/iconMap";
 import { type Category, type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
-import { MoreHorizontal } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -19,7 +17,6 @@ export function TransactionItem({
   onPress,
   baseCurrency
 }: TransactionItemProps) {
-  const IconComponent = category ? ICON_MAP[category.icon] : MoreHorizontal;
   const amountColor = transaction.type === "expense" ? "#EF4444" : "#10B981";
   const amountPrefix = transaction.type === "expense" ? "-" : "+";
 
@@ -37,7 +34,9 @@ export function TransactionItem({
           backgroundColor: category?.color ?? "#E5E7EB"
         }}
       >
-        {IconComponent && <IconComponent size={20} color="#FFFFFF" />}
+        <Typography variant="h4" weight="bold" color="#FFFFFF">
+          {category ? category.name.charAt(0).toUpperCase() : "?"}
+        </Typography>
       </View>
 
       <View className="flex-1">
