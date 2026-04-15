@@ -1,5 +1,6 @@
 import "../global.css";
 
+import { ErrorBoundary } from "@components/ErrorBoundary";
 import { CustomHeader, SyncOverlay, SyncProgressBar } from "@components/ui";
 import { useCloudSync } from "@hooks/useCloudSync";
 import { useEmailConfirmation } from "@hooks/useEmailConfirmation";
@@ -121,10 +122,19 @@ function RootLayout() {
   );
 }
 
+// Wrap the entire app with ErrorBoundary for crash protection
+function App() {
+  return (
+    <ErrorBoundary>
+      <RootLayout />
+    </ErrorBoundary>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
   }
 });
 
-export default Sentry.wrap(RootLayout);
+export default Sentry.wrap(App);
