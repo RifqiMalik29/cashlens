@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "229668836733",
+    "project_id": "cashlens-ef686",
+    "storage_bucket": "cashlens-ef686.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229668836733:android:6f791719e468525c38e814",
+        "android_client_info": {
+          "package_name": "com.rifqi2173.cashlens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVlSVZgk_2Md6Udy1fKE2y4EDUoRHU0Ss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
