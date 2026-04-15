@@ -56,7 +56,7 @@ export function CategoryPicker({
                     borderRadius: 9999 // Explicitly make it fully rounded
                   }}
                 >
-                  <Typography variant="h5" weight="bold" color="#FFFFFF">
+                  <Typography variant="h4" weight="bold" color="#FFFFFF">
                     {category.name.charAt(0).toUpperCase()}
                   </Typography>
                 </View>
