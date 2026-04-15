@@ -3,6 +3,7 @@ import { colors } from "@constants/theme";
 import { useCloudSync } from "@hooks/useCloudSync";
 import { useHeader } from "@hooks/useHeader";
 import { useSyncStatus } from "@hooks/useSyncStatus";
+import { authService } from "@services/api/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import * as Haptics from "expo-haptics";
@@ -81,12 +82,19 @@ export function useSettingsScreen() {
         setDialogState((prev) => ({ ...prev, isVisible: false }));
         setLogoutSyncing(true);
         try {
+          const { refreshToken } = useAuthStore.getState();
+          // Call backend logout to revoke refresh token
+          if (refreshToken) {
+            await authService.logout(refreshToken);
+          }
+        } catch (error) {
+          // Continue with local logout even if backend logout fails
+          // eslint-disable-next-line no-console
+          console.error("Backend logout failed:", error);
+        } finally {
+          // Always reset local state regardless of backend logout success
           reset();
           router.replace("/(auth)/login");
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error("Sign out error:", error);
-        } finally {
           setLogoutSyncing(false);
         }
       },
