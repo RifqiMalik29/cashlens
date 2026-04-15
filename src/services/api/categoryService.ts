@@ -15,37 +15,30 @@ export interface CategoryResponse {
 
 export const categoryService = {
   getCategories: async (): Promise<CategoryResponse[]> => {
-    const res = await api.get<{ data: CategoryResponse[] }>(
-      "/api/v1/categories"
-    );
-    return res.data;
+    return api.get<CategoryResponse[]>("/api/v1/categories");
   },
 
   createCategory: async (
     data: Partial<Category>
   ): Promise<CategoryResponse> => {
-    const res = await api.post<{ data: CategoryResponse }>(
-      "/api/v1/categories",
-      {
-        name: data.name,
-        icon: data.icon,
-        color: data.color,
-        type: data.type
-      }
-    );
-    return res.data;
+    return api.post<CategoryResponse>("/api/v1/categories", {
+      name: data.name,
+      icon: data.icon,
+      color: data.color,
+      type: data.type
+    });
   },
 
   updateCategory: async (
     id: string,
     data: Partial<Category>
   ): Promise<CategoryResponse> => {
-    const res = await api.put<Record<string, unknown>>(
-      `/api/v1/categories/${id}`,
-      data
-    );
-    // PUT endpoint returns success message, extract data if available
-    return (res?.data || res) as CategoryResponse;
+    return api.put<CategoryResponse>(`/api/v1/categories/${id}`, {
+      name: data.name,
+      icon: data.icon,
+      color: data.color,
+      type: data.type
+    });
   },
 
   deleteCategory: async (id: string): Promise<void> => {

@@ -7,7 +7,7 @@ export interface BudgetResponse {
   user_id: string;
   category_id: string;
   amount: number;
-  period_type: "weekly" | "monthly" | "yearly";
+  period: "weekly" | "monthly" | "yearly";
   start_date: string;
   end_date: string;
   alert_threshold?: number;
@@ -26,7 +26,7 @@ export const budgetService = {
     return await api.post<BudgetResponse>("/api/v1/budgets", {
       category_id: data.categoryId,
       amount: data.amount,
-      period_type: data.period,
+      period: data.period,
       start_date: data.startDate,
       end_date: data.endDate
     });
@@ -39,7 +39,7 @@ export const budgetService = {
     return await api.put<BudgetResponse>(`/api/v1/budgets/${id}`, {
       category_id: data.categoryId,
       amount: data.amount,
-      period_type: data.period,
+      period: data.period,
       start_date: data.startDate,
       end_date: data.endDate
     });

@@ -22,42 +22,6 @@ interface AuthData {
   user: BackendUser;
 }
 
-interface AuthResponse {
-  data: AuthData;
-}
-
-interface RefreshResponse {
-  data: {
-    access_token: string;
-    refresh_token?: string;
-  };
-}
-
-interface MeResponse {
-  data: BackendUser;
-}
-
-interface TelegramStatusResponse {
-  data: {
-    is_linked: boolean;
-    chat_id?: string;
-  };
-}
-
-interface RegisterResponse {
-  message: string;
-  data: {
-    user: BackendUser;
-  };
-}
-
-interface ConfirmEmailResponse {
-  message: string;
-  data: {
-    user: BackendUser;
-  };
-}
-
 export const authService = {
   login: async (email: string, password: string): Promise<AuthData> => {
     const res = await api.post<AuthData>(
@@ -82,12 +46,8 @@ export const authService = {
     return res;
   },
 
-  confirmEmail: async (token: string): Promise<{ user: BackendUser }> => {
-    const res = await api.get<{ user: BackendUser }>(
-      `/api/v1/auth/confirm?token=${token}`,
-      { isAuth: false }
-    );
-    return res;
+  confirmEmail: async (email: string, otp: string): Promise<void> => {
+    await api.post("/api/v1/auth/confirm", { email, otp }, { isAuth: false });
   },
 
   resendConfirmation: async (email: string): Promise<void> => {
@@ -125,5 +85,9 @@ export const authService = {
 
   unlinkTelegram: async (): Promise<void> => {
     await api.delete("/api/v1/auth/telegram/status");
+  },
+
+  deleteAccount: async (): Promise<void> => {
+    await api.delete("/api/v1/auth/me");
   }
 };

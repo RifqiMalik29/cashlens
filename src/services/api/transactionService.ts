@@ -13,16 +13,24 @@ interface TransactionCategory {
   updated_at: string;
 }
 
-interface TransactionResponse {
+export interface TransactionResponse {
   id: string;
   user_id: string;
   category_id: string | null;
   amount: number;
+  type?: "income" | "expense";
   description: string;
   transaction_date: string;
   created_at: string;
   updated_at: string;
   category?: TransactionCategory;
+}
+
+interface PaginatedTransactionResponse {
+  transactions: TransactionResponse[];
+  total: number;
+  limit: number;
+  offset: number;
 }
 
 interface SummaryResponse {
@@ -42,21 +50,16 @@ interface SummaryResponse {
 
 export const transactionService = {
   getTransactions: async (params?: {
-    month?: string;
-    category_id?: string;
+    limit?: number;
+    offset?: number;
   }): Promise<TransactionResponse[]> => {
-    let query = "";
-    if (params?.month || params?.category_id) {
-      const parts = [];
-      if (params.month) parts.push(`month=${params.month}`);
-      if (params.category_id) parts.push(`category_id=${params.category_id}`);
-      query = `?${parts.join("&")}`;
-    }
-
+    const parts = [];
+    if (params?.limit !== undefined) parts.push(`limit=${params.limit}`);
+    if (params?.offset !== undefined) parts.push(`offset=${params.offset}`);
+    const query = parts.length ? `?${parts.join("&")}` : "";
     const endpoint = `/api/v1/transactions${query}`;
-
-    const res = await api.get<{ data: TransactionResponse[] }>(endpoint);
-    return res.data;
+    const res = await api.get<PaginatedTransactionResponse>(endpoint);
+    return res.transactions ?? [];
   },
 
   createTransaction: async (
@@ -72,17 +75,15 @@ export const transactionService = {
       id: data.id,
       category_id: data.categoryId,
       amount: data.amount,
+      currency: data.currency ?? "IDR",
+      type: data.type ?? "expense",
       description: data.note || "",
       transaction_date: data.date
         ? data.date.split("T")[0] + "T00:00:00Z"
         : new Date().toISOString().split("T")[0] + "T00:00:00Z"
     };
 
-    const res = await api.post<{ data: TransactionResponse }>(
-      "/api/v1/transactions",
-      payload
-    );
-    return res.data;
+    return api.post<TransactionResponse>("/api/v1/transactions", payload);
   },
 
   updateTransaction: async (
@@ -92,16 +93,13 @@ export const transactionService = {
     const payload = {
       category_id: data.categoryId,
       amount: data.amount,
+      currency: data.currency ?? "IDR",
       description: data.note || "",
       transaction_date: data.date
         ? data.date.split("T")[0] + "T00:00:00Z"
         : new Date().toISOString().split("T")[0] + "T00:00:00Z"
     };
-    const res = await api.put<{ data: TransactionResponse }>(
-      `/api/v1/transactions/${id}`,
-      payload
-    );
-    return res.data;
+    return api.put<TransactionResponse>(`/api/v1/transactions/${id}`, payload);
   },
 
   deleteTransaction: async (id: string): Promise<void> => {
