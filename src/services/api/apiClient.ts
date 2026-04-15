@@ -24,6 +24,19 @@ interface RequestOptions {
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
+/**
+ * Unwraps the data wrapper from API responses.
+ * The backend wraps all successful responses in a data object.
+ * Before: response.user.id
+ * Now: response.data.user.id
+ */
+function unwrapResponseData<T>(data: unknown): T {
+  if (typeof data === "object" && data !== null && "data" in data) {
+    return (data as { data: T }).data;
+  }
+  return data as T;
+}
+
 async function refreshAccessToken(): Promise<string | null> {
   if (isRefreshing && refreshPromise) return refreshPromise;
 
@@ -54,11 +67,11 @@ async function refreshAccessToken(): Promise<string | null> {
       }
 
       const json = (await response.json()) as Record<string, unknown>;
+      // Backend wraps refresh response in data object
       const data = (json.data as Record<string, string>) || json;
 
-      const newAccessToken =
-        data.access_token || data.accessToken || data.token;
-      const newRefreshToken = data.refresh_token || data.refreshToken;
+      const newAccessToken = data.access_token || (data as Record<string, string>).accessToken;
+      const newRefreshToken = data.refresh_token || (data as Record<string, string>).refreshToken;
 
       if (!newAccessToken) {
         logger.error("API", "Refresh response missing access_token", data);
@@ -137,7 +150,7 @@ async function executeRequest<T>(
     }
   }
 
-  return data as T;
+  return unwrapResponseData<T>(data as T);
 }
 
 export async function request<T>(
