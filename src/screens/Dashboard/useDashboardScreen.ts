@@ -13,12 +13,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PermissionsAndroid, Platform } from "react-native";
 
-interface CategorySpending {
+type CategorySpending = {
   categoryId: string;
   categoryName: string;
   color: string;
   amount: number;
-}
+};
 
 export function useDashboardScreen() {
   const { t } = useTranslation();
@@ -26,8 +26,8 @@ export function useDashboardScreen() {
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
   const { addDraft, drafts } = useDraftStore();
+  const { isInitialPull } = useSyncStatus();
   const { isFeatureEnabled, enabledPackages } = useNotificationStore();
-  const { isInitialPulling } = useSyncStatus();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -128,16 +128,10 @@ export function useDashboardScreen() {
     const allTimeIncome = transactions
       .filter((t) => t.type === "income")
       .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-
     const allTimeExpense = transactions
       .filter((t) => t.type === "expense")
       .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-
-    return {
-      balance: allTimeIncome - allTimeExpense,
-      income: allTimeIncome,
-      expense: allTimeExpense
-    };
+    return { balance: allTimeIncome - allTimeExpense, income: allTimeIncome, expense: allTimeExpense };
   }, [transactions]);
 
   const categorySpending = useMemo<CategorySpending[]>(() => {
@@ -200,31 +194,20 @@ export function useDashboardScreen() {
       }));
   }, [currentMonthTransactions, currentMonth, currentYear]);
 
-  const recentTransactions = useMemo(() => {
-    return [...transactions]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 5);
-  }, [transactions]);
+  const recentTransactions = useMemo(
+    () =>
+      [...transactions].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      ).slice(0, 5),
+    [transactions]
+  );
 
   return {
-    t,
-    summary,
-    categorySpending,
-    dailySpending,
-    recentTransactions,
-    baseCurrency,
-    categories,
-    hasTransactions: transactions.length > 0,
+    t, summary, categorySpending, dailySpending, recentTransactions, baseCurrency,
+    categories, hasTransactions: transactions.length > 0,
     hasCurrentMonthData: currentMonthTransactions.length > 0,
-    isPermissionDialogVisible,
-    setIsPermissionDialogVisible,
-    pendingCount,
-    handleTestNotification,
-    isRefreshing,
-    handleRefresh,
-    transactionCount,
-    transactionLimit,
-    isPremium,
-    isInitialPulling
+    isPermissionDialogVisible, setIsPermissionDialogVisible, pendingCount,
+    handleTestNotification, isRefreshing, handleRefresh, transactionCount,
+    transactionLimit, isPremium, isInitialPull
   };
 }
