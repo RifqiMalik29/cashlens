@@ -26,6 +26,13 @@ interface AuthResponse {
   data: AuthData;
 }
 
+interface RefreshResponse {
+  data: {
+    access_token: string;
+    refresh_token?: string;
+  };
+}
+
 interface MeResponse {
   data: BackendUser;
 }
@@ -53,20 +60,21 @@ interface ConfirmEmailResponse {
 
 export const authService = {
   login: async (email: string, password: string): Promise<AuthData> => {
-    const res = await api.post<AuthResponse | AuthData>(
+    const res = await api.post<AuthData>(
       "/api/v1/auth/login",
       { email, password, language: normalizeLanguage(i18n.language) },
       { isAuth: false }
     );
-    return "data" in res && res.data ? res.data : (res as unknown as AuthData);
+    // API client auto-unwraps data wrapper
+    return res;
   },
 
   register: async (
     email: string,
     password: string,
     name: string
-  ): Promise<RegisterResponse> => {
-    const res = await api.post<RegisterResponse>(
+  ): Promise<{ user: BackendUser }> => {
+    const res = await api.post<{ user: BackendUser }>(
       "/api/v1/auth/register",
       { email, password, name, language: normalizeLanguage(i18n.language) },
       { isAuth: false }
@@ -74,8 +82,8 @@ export const authService = {
     return res;
   },
 
-  confirmEmail: async (token: string): Promise<ConfirmEmailResponse> => {
-    const res = await api.get<ConfirmEmailResponse>(
+  confirmEmail: async (token: string): Promise<{ user: BackendUser }> => {
+    const res = await api.get<{ user: BackendUser }>(
       `/api/v1/auth/confirm?token=${token}`,
       { isAuth: false }
     );
@@ -94,23 +102,25 @@ export const authService = {
     await api.patch("/api/v1/auth/language", { language });
   },
 
+  updatePushToken: async (pushToken: string): Promise<void> => {
+    await api.patch("/api/v1/auth/push-token", { push_token: pushToken });
+  },
+
   logout: async (refreshToken: string): Promise<void> => {
     return api.post("/api/v1/auth/logout", { refresh_token: refreshToken });
   },
 
   getMe: async (): Promise<BackendUser> => {
-    const res = await api.get<MeResponse>("/api/v1/auth/me");
-    return res.data;
+    return await api.get<BackendUser>("/api/v1/auth/me");
   },
 
   getTelegramStatus: async (): Promise<{
     is_linked: boolean;
     chat_id?: string;
   }> => {
-    const res = await api.get<TelegramStatusResponse>(
+    return await api.get<{ is_linked: boolean; chat_id?: string }>(
       "/api/v1/auth/telegram/status"
     );
-    return res.data;
   },
 
   unlinkTelegram: async (): Promise<void> => {
