@@ -23,20 +23,16 @@ export interface CreateInvoiceResponse {
 
 export const subscriptionService = {
   getSubscription: async (): Promise<SubscriptionData> => {
-    const res = await api.get<{ data: SubscriptionData }>(
-      "/api/v1/subscription"
-    );
-    return res.data;
+    return await api.get<SubscriptionData>("/api/v1/subscription");
   },
 
   createInvoice: async (
     plan: CreateInvoiceRequest["plan"]
   ): Promise<CreateInvoiceResponse> => {
-    const res = await api.post<{ data: CreateInvoiceResponse }>(
+    return await api.post<CreateInvoiceResponse>(
       "/api/v1/payments/create-invoice",
       { plan }
     );
-    return res.data;
   },
 
   verifySubscription: async (invoiceId: string): Promise<void> => {
