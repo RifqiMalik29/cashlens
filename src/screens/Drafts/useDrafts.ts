@@ -1,5 +1,6 @@
 import { colors } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { draftService } from "@services/api/draftService";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { type DraftTransaction, useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
@@ -54,11 +55,38 @@ export function useDrafts() {
 
     confirmDraft(draft.id);
     setShowSuccessDialog(true);
+
+    if (draft.backendId) {
+      draftService
+        .confirmDraft(draft.backendId, {
+          category_id: defaultCategory.id,
+          amount: draft.amount,
+          currency: draft.currency,
+          description: translatedNote,
+          transaction_date: draft.date
+        })
+        .catch((err) => {
+          logger.warn(
+            "Drafts",
+            `Failed to confirm draft on backend: ${(err as Error).message}`
+          );
+        });
+    }
   };
 
   const handleDismiss = (id: string) => {
     logger.debug("Drafts", `Dismissing draft: ${id}`);
+    const draft = useDraftStore.getState().drafts.find((d) => d.id === id);
     dismissDraft(id);
+
+    if (draft?.backendId) {
+      draftService.deleteDraft(draft.backendId).catch((err) => {
+        logger.warn(
+          "Drafts",
+          `Failed to delete draft on backend: ${(err as Error).message}`
+        );
+      });
+    }
   };
 
   const handleEdit = (draft: DraftTransaction) => {

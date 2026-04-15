@@ -1,3 +1,4 @@
+import { draftService } from "@services/api/draftService";
 import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useDraftStore } from "@stores/useDraftStore";
@@ -43,7 +44,7 @@ export function useNotificationSubscription() {
 
       if (parsed) {
         logger.debug("Dashboard", `Parsed successfully: ${parsed.description}`);
-        addDraft({
+        const localId = addDraft({
           source: parsed.source,
           amount: parsed.amount,
           currency: parsed.currency,
@@ -52,6 +53,27 @@ export function useNotificationSubscription() {
           type: parsed.type,
           date: parsed.date
         });
+
+        draftService
+          .createDraft({
+            source: parsed.source,
+            currency: parsed.currency,
+            fields: {
+              amount: parsed.amount,
+              description: parsed.description,
+              type: parsed.type,
+              date: parsed.date
+            }
+          })
+          .then((res) => {
+            useDraftStore.getState().setBackendId(localId, res.id);
+          })
+          .catch((err) => {
+            logger.warn(
+              "Dashboard",
+              `Failed to sync draft to backend: ${(err as Error).message}`
+            );
+          });
       } else {
         logger.warn("Dashboard", `Failed to parse: ${raw.text}`);
       }
