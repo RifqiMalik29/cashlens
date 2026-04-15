@@ -1,15 +1,14 @@
 import { useCloudSync } from "@hooks/useCloudSync";
+import { useNotificationSubscription } from "@hooks/useNotificationSubscription";
 import { useQuota } from "@hooks/useQuota";
 import { useSyncStatus } from "@hooks/useSyncStatus";
-import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useDraftStore } from "@stores/useDraftStore";
-import { useNotificationStore } from "@stores/useNotificationStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PermissionsAndroid, Platform } from "react-native";
 
@@ -25,13 +24,15 @@ export function useDashboardScreen() {
   const { baseCurrency } = useAuthStore((state) => state.preferences);
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
-  const { addDraft, drafts } = useDraftStore();
+  const { drafts } = useDraftStore();
   const { isInitialPull } = useSyncStatus();
-  const { isFeatureEnabled, enabledPackages } = useNotificationStore();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { pullData } = useCloudSync();
+
+  // Subscribe to notifications
+  useNotificationSubscription();
 
   const { transactionCount, transactionLimit, isPremium } = useQuota();
 
@@ -45,43 +46,6 @@ export function useDashboardScreen() {
     () => drafts.filter((d) => d.status === "pending").length,
     [drafts]
   );
-
-  useEffect(() => {
-    if (!isFeatureEnabled) return;
-
-    logger.debug("Dashboard", "Subscribing to notifications...");
-    const unsubscribe = notificationService.subscribe((raw) => {
-      // Filter by enabled packages (ignoring the test package check which is handled in the parser)
-      const isTestPackage = raw.packageName === "com.rifqi2173.cashlens";
-      if (!isTestPackage && !enabledPackages.includes(raw.packageName)) {
-        logger.debug(
-          "Dashboard",
-          `Ignoring notification from disabled package: ${raw.packageName}`
-        );
-        return;
-      }
-
-      logger.debug("Dashboard", `Raw notification received: ${raw.text}`);
-      const parsed = parseNotification(raw.text, raw.packageName);
-
-      if (parsed) {
-        logger.debug("Dashboard", `Parsed successfully: ${parsed.description}`);
-        addDraft({
-          source: parsed.source,
-          amount: parsed.amount,
-          currency: parsed.currency,
-          description: parsed.description,
-          descriptionParams: parsed.descriptionParams,
-          type: parsed.type,
-          date: parsed.date
-        });
-      } else {
-        logger.warn("Dashboard", `Failed to parse: ${raw.text}`);
-      }
-    });
-
-    return unsubscribe;
-  }, [addDraft, isFeatureEnabled, enabledPackages]);
 
   const handleTestNotification = async () => {
     if (!__DEV__) return;
@@ -131,7 +95,11 @@ export function useDashboardScreen() {
     const allTimeExpense = transactions
       .filter((t) => t.type === "expense")
       .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-    return { balance: allTimeIncome - allTimeExpense, income: allTimeIncome, expense: allTimeExpense };
+    return {
+      balance: allTimeIncome - allTimeExpense,
+      income: allTimeIncome,
+      expense: allTimeExpense
+    };
   }, [transactions]);
 
   const categorySpending = useMemo<CategorySpending[]>(() => {
@@ -196,18 +164,31 @@ export function useDashboardScreen() {
 
   const recentTransactions = useMemo(
     () =>
-      [...transactions].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      ).slice(0, 5),
+      [...transactions]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 5),
     [transactions]
   );
 
   return {
-    t, summary, categorySpending, dailySpending, recentTransactions, baseCurrency,
-    categories, hasTransactions: transactions.length > 0,
+    t,
+    summary,
+    categorySpending,
+    dailySpending,
+    recentTransactions,
+    baseCurrency,
+    categories,
+    hasTransactions: transactions.length > 0,
     hasCurrentMonthData: currentMonthTransactions.length > 0,
-    isPermissionDialogVisible, setIsPermissionDialogVisible, pendingCount,
-    handleTestNotification, isRefreshing, handleRefresh, transactionCount,
-    transactionLimit, isPremium, isInitialPull
+    isPermissionDialogVisible,
+    setIsPermissionDialogVisible,
+    pendingCount,
+    handleTestNotification,
+    isRefreshing,
+    handleRefresh,
+    transactionCount,
+    transactionLimit,
+    isPremium,
+    isInitialPull
   };
 }

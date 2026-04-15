@@ -200,7 +200,15 @@
     "disconnectTitle": "Putus Koneksi Telegram",
     "disconnectMessage": "Apakah kamu yakin ingin memutus koneksi akun Telegram? Kamu tidak akan menerima notifikasi lagi.",
     "linkingLoading": "Menghubungkan...",
-    "linkingError": "Gagal mendapatkan token linking. Pastikan backend aktif."
+    "linkingError": "Gagal mendapatkan token linking. Pastikan backend aktif.",
+    "history": "Riwayat Notifikasi",
+    "historyDesc": "Lihat notifikasi yang terdeteksi dalam 7 hari terakhir.",
+    "noHistory": "Belum ada riwayat",
+    "clearHistory": "Hapus Riwayat",
+    "copyText": "Salin Teks Asli",
+    "parsed": "Terdeteksi",
+    "ignored": "Diabaikan",
+    "textCopied": "Teks disalin ke papan klip"
   },
   "paywall": {
     "title": "Limit AI Tercapai",
