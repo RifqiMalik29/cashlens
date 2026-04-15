@@ -1,5 +1,6 @@
 import { useCloudSync } from "@hooks/useCloudSync";
 import { useQuota } from "@hooks/useQuota";
+import { useSyncStatus } from "@hooks/useSyncStatus";
 import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
@@ -26,6 +27,7 @@ export function useDashboardScreen() {
   const categories = useCategoryStore((state) => state.categories);
   const { addDraft, drafts } = useDraftStore();
   const { isFeatureEnabled, enabledPackages } = useNotificationStore();
+  const { isInitialPulling } = useSyncStatus();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -222,6 +224,7 @@ export function useDashboardScreen() {
     handleRefresh,
     transactionCount,
     transactionLimit,
-    isPremium
+    isPremium,
+    isInitialPulling
   };
 }
