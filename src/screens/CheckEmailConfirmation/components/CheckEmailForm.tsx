@@ -1,19 +1,28 @@
 import { Button } from "@components/ui/Button";
+import { Input } from "@components/ui/Input";
 import { spacing } from "@constants/theme";
 import { Text, View } from "react-native";
 
 interface CheckEmailFormProps {
+  otp: string;
+  onOtpChange: (value: string) => void;
   isLoading: boolean;
+  isResending: boolean;
   error: string | null;
   successMessage: string | null;
-  onResendConfirmation: () => void;
+  onVerify: () => void;
+  onResend: () => void;
 }
 
 export function CheckEmailForm({
+  otp,
+  onOtpChange,
   isLoading,
+  isResending,
   error,
   successMessage,
-  onResendConfirmation
+  onVerify,
+  onResend
 }: CheckEmailFormProps) {
   return (
     <View className="gap-4">
@@ -30,28 +39,32 @@ export function CheckEmailForm({
         </View>
       )}
 
-      <View
-        className="bg-card rounded-lg p-4"
-        style={{ gap: spacing[4] }}
-      >
-        <Text className="text-sm text-muted-foreground text-center">
-          Click the link in the email to confirm your account. The link will open
-          in your browser and confirm your email automatically.
-        </Text>
+      <Input
+        label="Kode Verifikasi"
+        placeholder="123456"
+        value={otp}
+        onChangeText={(text) =>
+          onOtpChange(text.replace(/[^0-9]/g, "").slice(0, 6))
+        }
+        keyboardType="numeric"
+        autoCapitalize="none"
+      />
 
-        <Text className="text-xs text-muted-foreground text-center">
-          Didn&apos;t receive the email? Check your spam folder or click the button
-          below to resend.
-        </Text>
-      </View>
-
-      <Button
-        onPress={onResendConfirmation}
-        loading={isLoading}
-        variant="secondary"
-      >
-        Resend Confirmation Email
+      <Button onPress={onVerify} loading={isLoading}>
+        Verifikasi Email
       </Button>
+
+      <View
+        className="flex-row justify-center items-center"
+        style={{ gap: spacing[1] }}
+      >
+        <Text className="text-sm text-muted-foreground">
+          Belum terima kode?
+        </Text>
+        <Button variant="ghost" onPress={onResend} loading={isResending}>
+          Kirim ulang
+        </Button>
+      </View>
     </View>
   );
 }

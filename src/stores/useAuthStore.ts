@@ -5,7 +5,8 @@ import {
   getAuthTokens,
   getUserData,
   saveAuthTokens,
-  saveUserData} from "@services/secureStorage";
+  saveUserData
+} from "@services/secureStorage";
 import type { UserPreferences } from "@types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -31,7 +32,7 @@ interface AuthState {
   resetStealthScans: () => void;
   updatePreferences: (data: Partial<UserPreferences>) => void;
   setPreferences: (preferences: UserPreferences) => void;
-  reset: () => void;
+  reset: () => Promise<void>;
   initializeFromSecureStorage: () => Promise<void>;
 }
 

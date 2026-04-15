@@ -44,11 +44,8 @@ export function useNetworkStatus(): UseNetworkStatusResult {
       const message = (error as Error).message.toLowerCase();
       // Only mark as offline for network-related errors
       if (
-        message.includes("network") ||
-        message.includes("fetch") ||
-        message.includes("connection") ||
-        message.includes("timeout") ||
-        message.includes("abort") ||
+        message.includes("network request failed") ||
+        message.includes("network is unreachable") ||
         message.includes("offline")
       ) {
         logger.debug("Network connection lost");

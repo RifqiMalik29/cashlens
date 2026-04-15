@@ -106,7 +106,7 @@ export function useBudgetForm() {
         updateBudget(existingBudget.id, {
           ...payload,
           id: saved.id,
-          period: saved.period_type as BudgetPeriod,
+          period: saved.period as BudgetPeriod,
           startDate: saved.start_date,
           endDate: saved.end_date
         });
@@ -117,7 +117,7 @@ export function useBudgetForm() {
           categoryId: saved.category_id,
           amount: saved.amount,
           currency: baseCurrency,
-          period: saved.period_type as BudgetPeriod,
+          period: saved.period as BudgetPeriod,
           startDate: saved.start_date,
           endDate: saved.end_date
         });

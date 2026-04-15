@@ -154,6 +154,33 @@ export function useSettingsScreen() {
     router.push("/upgrade" as never);
   };
 
+  const handleDeleteAccount = async () => {
+    await Haptics.selectionAsync();
+
+    setDialogState({
+      isVisible: true,
+      title: "Hapus Akun",
+      message:
+        "Akun dan semua data Anda akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.",
+      type: "error",
+      primaryButtonText: "Hapus Akun",
+      onPrimaryButtonPress: async () => {
+        setDialogState((prev) => ({ ...prev, isVisible: false }));
+        try {
+          await authService.deleteAccount();
+        } catch {
+          // Continue with local reset even if backend call fails
+        } finally {
+          await reset();
+          router.replace("/(auth)/login");
+        }
+      },
+      secondaryButtonText: t("common.cancel"),
+      onSecondaryButtonPress: () =>
+        setDialogState((prev) => ({ ...prev, isVisible: false }))
+    });
+  };
+
   return {
     t,
     userEmail,
@@ -163,6 +190,7 @@ export function useSettingsScreen() {
     dialogState,
     setDialogState,
     handleSignOut,
+    handleDeleteAccount,
     handleForceSync,
     handleCurrencyPress,
     handleCategoriesPress,

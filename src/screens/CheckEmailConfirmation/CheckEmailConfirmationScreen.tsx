@@ -1,5 +1,4 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
-import { AuthLogo } from "@components/auth/AuthLogo";
 import { useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,24 +10,26 @@ export default function CheckEmailConfirmationScreen() {
   const { email } = useLocalSearchParams<{ email: string }>();
 
   const {
+    otp,
+    setOtp,
     isLoading,
+    isResending,
     error,
     successMessage,
-    handleResendConfirmation,
+    handleVerifyOtp,
+    handleResendOtp,
     handleGoToLogin
   } = useCheckEmailConfirmation(email);
 
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 justify-center px-6">
-        <AuthLogo />
-
         <View className="mt-8">
           <Text className="text-2xl font-bold text-foreground text-center mb-2">
-            Check Your Email
+            Cek Email Kamu
           </Text>
-          <Text className="text-base text-muted-foreground text-center mb-6">
-            We&apos;ve sent a confirmation email to
+          <Text className="text-base text-muted-foreground text-center mb-2">
+            Kami telah mengirim kode 6 digit ke
           </Text>
           {email && (
             <Text className="text-base font-semibold text-primary text-center mb-6">
@@ -38,15 +39,19 @@ export default function CheckEmailConfirmationScreen() {
         </View>
 
         <CheckEmailForm
+          otp={otp}
+          onOtpChange={setOtp}
           isLoading={isLoading}
+          isResending={isResending}
           error={error}
           successMessage={successMessage}
-          onResendConfirmation={handleResendConfirmation}
+          onVerify={handleVerifyOtp}
+          onResend={handleResendOtp}
         />
 
         <AuthFooter
-          questionText="Already confirmed? "
-          actionText="Log In"
+          questionText="Sudah punya akun? "
+          actionText="Masuk"
           onActionPress={handleGoToLogin}
         />
       </View>

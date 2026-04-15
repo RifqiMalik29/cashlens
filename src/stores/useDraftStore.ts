@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 export interface DraftTransaction {
   id: string;
+  backendId?: string;
   source: string;
   amount: number;
   currency: string;
@@ -16,7 +17,8 @@ export interface DraftTransaction {
 
 interface DraftState {
   drafts: DraftTransaction[];
-  addDraft: (draft: Omit<DraftTransaction, "id" | "status">) => void;
+  addDraft: (draft: Omit<DraftTransaction, "id" | "status">) => string;
+  setBackendId: (localId: string, backendId: string) => void;
   confirmDraft: (id: string) => void;
   dismissDraft: (id: string) => void;
   clearAll: () => void;
@@ -26,16 +28,18 @@ export const useDraftStore = create<DraftState>()(
   persist(
     (set) => ({
       drafts: [],
-      addDraft: (draft) =>
+      addDraft: (draft) => {
+        const id = Math.random().toString(36).substring(7);
         set((state) => ({
-          drafts: [
-            {
-              ...draft,
-              id: Math.random().toString(36).substring(7),
-              status: "pending"
-            },
-            ...state.drafts
-          ]
+          drafts: [{ ...draft, id, status: "pending" }, ...state.drafts]
+        }));
+        return id;
+      },
+      setBackendId: (localId, backendId) =>
+        set((state) => ({
+          drafts: state.drafts.map((d) =>
+            d.id === localId ? { ...d, backendId } : d
+          )
         })),
       confirmDraft: (id) =>
         set((state) => ({

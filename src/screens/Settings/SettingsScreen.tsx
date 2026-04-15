@@ -16,8 +16,7 @@ import {
   LayoutGrid,
   LogOut,
   Palette,
-  RefreshCcw,
-  Zap
+  Trash2
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -35,6 +34,7 @@ export default function SettingsScreen() {
     dialogState,
     setDialogState,
     handleSignOut,
+    handleDeleteAccount,
     handleForceSync,
     handleCurrencyPress,
     handleCategoriesPress,
@@ -44,10 +44,7 @@ export default function SettingsScreen() {
     handleNotificationSettingsPress,
     handleUpgradePress,
     subscriptionTier,
-    setSubscriptionTier,
-    expiresAt,
-    stealthScansUsed,
-    resetStealthScans
+    expiresAt
   } = useSettingsScreen();
   return (
     <SafeAreaView
@@ -125,8 +122,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        
-
         <SettingsSection title={t("settings.account")}>
           <SettingsItem
             icon={<LogOut size={20} color="#EF4444" />}
@@ -134,10 +129,13 @@ export default function SettingsScreen() {
             danger
             onPress={handleSignOut}
           />
-          <View className="bg-surface-secondary rounded-lg p-4 mt-3">
-            <Typography variant="caption" color="#6B7280">
-              {t("auth.logoutConfirm")}
-            </Typography>
+          <View style={{ marginTop: spacing[3] }}>
+            <SettingsItem
+              icon={<Trash2 size={20} color="#EF4444" />}
+              label="Hapus Akun"
+              danger
+              onPress={handleDeleteAccount}
+            />
           </View>
         </SettingsSection>
 

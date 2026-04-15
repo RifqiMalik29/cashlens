@@ -2,49 +2,71 @@ import { authService } from "@services/api/authService";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export function useCheckEmailConfirmation(email?: string) {
   const router = useRouter();
 
+  const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleResendConfirmation = async () => {
+  const handleVerifyOtp = async () => {
     if (!email) {
       setError("Email not provided");
       return;
     }
 
-    if (!EMAIL_REGEX.test(email)) {
-      setError("Invalid email format");
+    if (otp.length !== 6) {
+      setError("Masukkan kode 6 digit");
       return;
     }
 
     setIsLoading(true);
     setError(null);
-    setSuccessMessage(null);
 
     try {
-      await authService.resendConfirmation(email);
-      setSuccessMessage("Confirmation email resent successfully. Please check your inbox.");
+      await authService.confirmEmail(email, otp);
+      router.replace("/(auth)/login");
     } catch (err) {
-      setError((err as Error).message || "Failed to resend confirmation email");
+      setError(
+        (err as Error).message || "Kode tidak valid atau sudah kadaluarsa"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleResendOtp = async () => {
+    if (!email) return;
+
+    setIsResending(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      await authService.resendConfirmation(email);
+      setSuccessMessage("Kode baru telah dikirim ke email kamu.");
+    } catch (err) {
+      setError((err as Error).message || "Gagal mengirim ulang kode");
+    } finally {
+      setIsResending(false);
+    }
+  };
+
   const handleGoToLogin = () => {
-    router.push("/(auth)/login");
+    router.replace("/(auth)/login");
   };
 
   return {
+    otp,
+    setOtp,
     isLoading,
+    isResending,
     error,
     successMessage,
-    handleResendConfirmation,
+    handleVerifyOtp,
+    handleResendOtp,
     handleGoToLogin
   };
 }

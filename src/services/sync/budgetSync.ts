@@ -21,7 +21,7 @@ export async function pullBudgets(userId: string): Promise<Budget[]> {
       categoryId: item.category_id,
       amount: item.amount,
       currency: "IDR",
-      period: item.period_type as Budget["period"],
+      period: item.period as Budget["period"],
       startDate: item.start_date,
       endDate: item.end_date
     }));

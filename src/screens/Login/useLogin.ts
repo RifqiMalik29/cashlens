@@ -7,7 +7,6 @@ import { useSyncStore } from "@stores/useSyncStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -22,22 +21,6 @@ export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleResendConfirmation = async (userEmail: string) => {
-    try {
-      await authService.resendConfirmation(userEmail);
-      Alert.alert(
-        "Email Terkirim",
-        "Email konfirmasi telah dikirim ulang. Silakan cek inbox Anda.",
-        [{ text: "OK" }]
-      );
-    } catch (err) {
-      Alert.alert(
-        "Gagal Mengirim Ulang",
-        (err as Error).message || "Terjadi kesalahan saat mengirim ulang email."
-      );
-    }
-  };
 
   const handleLogin = async () => {
     if (!email.trim()) {
@@ -62,7 +45,7 @@ export function useLogin() {
       const data = await authService.login(email, password);
 
       // Clear all stores before setting new user to prevent data leakage
-      reset();
+      await reset();
       useTransactionStore.getState().clearTransactions();
       useBudgetStore.getState().clearBudgets();
       useCategoryStore.getState().resetToDefault();
@@ -90,29 +73,21 @@ export function useLogin() {
 
       router.replace("/(tabs)");
     } catch (err) {
-      const errorMessage = (err as Error).message || "Terjadi kesalahan";
-      
-      // Check for unconfirmed email error
-      if (errorMessage.includes("please confirm your email before logging in")) {
-        setError("Email belum dikonfirmasi");
-        // Show alert with option to resend confirmation
-        Alert.alert(
-          "Email Belum Dikonfirmasi",
-          "Silakan konfirmasi email Anda sebelum login. Klik tombol di bawah untuk mengirim ulang email konfirmasi.",
-          [
-            {
-              text: "Kirim Ulang Email",
-              onPress: () => handleResendConfirmation(email)
-            },
-            {
-              text: "OK",
-              style: "cancel"
-            }
-          ]
-        );
-      } else {
-        setError(errorMessage);
+      const error = err as Error & {
+        requiresConfirmation?: boolean;
+        email?: string | undefined;
+      };
+
+      if (error.requiresConfirmation) {
+        router.push({
+          // @ts-ignore - expo-router route type not generated for this path
+          pathname: "/(auth)/check-email",
+          params: { email: error.email ?? email }
+        });
+        return;
       }
+
+      setError(error.message || "Terjadi kesalahan");
     } finally {
       setIsLoading(false);
     }
