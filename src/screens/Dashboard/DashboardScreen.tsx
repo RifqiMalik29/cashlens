@@ -11,7 +11,12 @@ import { colors, spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import { notificationService } from "@services/notificationService";
 import { useRouter } from "expo-router";
-import { RefreshControl, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  View
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useDashboardScreen } from "./useDashboardScreen";
@@ -35,7 +40,8 @@ export default function DashboardScreen() {
     handleRefresh,
     transactionCount,
     transactionLimit,
-    isPremium
+    isPremium,
+    isInitialPull
   } = useDashboardScreen();
 
   const router = useRouter();
@@ -44,6 +50,15 @@ export default function DashboardScreen() {
     showHeader: false,
     statusBarColor: colors.success
   });
+
+  // Show loading indicator during initial data pull
+  if (isInitialPull) {
+    return (
+      <SafeAreaView className="flex-1 bg-background justify-center items-center">
+        <ActivityIndicator size="large" color={colors.success} />
+      </SafeAreaView>
+    );
+  }
 
   if (!hasTransactions) {
     return (

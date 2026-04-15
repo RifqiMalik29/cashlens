@@ -50,8 +50,8 @@ export function useLogin() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Kata sandi minimal 6 karakter");
+    if (password.length < 8) {
+      setError("Kata sandi minimal 8 karakter");
       return;
     }
 

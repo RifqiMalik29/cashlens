@@ -24,6 +24,19 @@ interface RequestOptions {
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
+/**
+ * Unwraps the data wrapper from API responses.
+ * The backend wraps all successful responses in a data object.
+ * Before: response.user.id
+ * Now: response.data.user.id
+ */
+function unwrapResponseData<T>(data: unknown): T {
+  if (typeof data === "object" && data !== null && "data" in data) {
+    return (data as { data: T }).data;
+  }
+  return data as T;
+}
+
 async function refreshAccessToken(): Promise<string | null> {
   if (isRefreshing && refreshPromise) return refreshPromise;
 
@@ -42,33 +55,35 @@ async function refreshAccessToken(): Promise<string | null> {
       });
       if (!response.ok) {
         logger.error("API", `Refresh failed: HTTP ${response.status}`);
-        reset();
+        await reset();
         return null;
       }
 
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         logger.error("API", "Refresh failed: Response is not JSON");
-        reset();
+        await reset();
         return null;
       }
 
       const json = (await response.json()) as Record<string, unknown>;
+      // Backend wraps refresh response in data object
       const data = (json.data as Record<string, string>) || json;
 
       const newAccessToken =
-        data.access_token || data.accessToken || data.token;
-      const newRefreshToken = data.refresh_token || data.refreshToken;
+        data.access_token || (data as Record<string, string>).accessToken;
+      const newRefreshToken =
+        data.refresh_token || (data as Record<string, string>).refreshToken;
 
       if (!newAccessToken) {
         logger.error("API", "Refresh response missing access_token", data);
-        reset();
+        await reset();
         return null;
       }
       setTokens(newAccessToken as string, newRefreshToken as string);
       return newAccessToken as string;
     } catch {
-      reset();
+      await reset();
       return null;
     } finally {
       isRefreshing = false;
@@ -137,7 +152,7 @@ async function executeRequest<T>(
     }
   }
 
-  return data as T;
+  return unwrapResponseData<T>(data as T);
 }
 
 export async function request<T>(

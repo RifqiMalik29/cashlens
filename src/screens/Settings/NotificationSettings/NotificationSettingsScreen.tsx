@@ -3,7 +3,9 @@ import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
 import { type SupportedApp } from "@stores/useNotificationStore";
-import { ScrollView, Switch, View } from "react-native";
+import { type Href, useRouter } from "expo-router";
+import { ChevronRight } from "lucide-react-native";
+import { ScrollView, Switch, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -14,6 +16,7 @@ import {
 import { useNotificationSettings } from "./useNotificationSettings";
 
 export default function NotificationSettingsScreen() {
+  const router = useRouter();
   const {
     t,
     isFeatureEnabled,
@@ -64,6 +67,28 @@ export default function NotificationSettingsScreen() {
             />
           </View>
         </Card>
+
+        {/* Notification History Link */}
+        {isFeatureEnabled && (
+          <Card className="p-4 mb-4">
+            <TouchableOpacity
+              className="flex-row items-center justify-between"
+              onPress={() =>
+                router.push("/(tabs)/settings/notification-history" as Href)
+              }
+            >
+              <View className="flex-1 mr-4">
+                <Typography variant="body" weight="bold">
+                  {t("notificationSettings.history")}
+                </Typography>
+                <Typography variant="caption" color={colors.textSecondary}>
+                  {t("notificationSettings.historyDesc")}
+                </Typography>
+              </View>
+              <ChevronRight size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          </Card>
+        )}
 
         {/* Telegram Bot Toggle */}
         <Card className="p-4 mb-6">

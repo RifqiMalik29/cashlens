@@ -1,35 +1,38 @@
 import { useCloudSync } from "@hooks/useCloudSync";
+import { useNotificationSubscription } from "@hooks/useNotificationSubscription";
 import { useQuota } from "@hooks/useQuota";
-import { parseNotification } from "@services/notificationParser";
+import { useSyncStatus } from "@hooks/useSyncStatus";
 import { notificationService } from "@services/notificationService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useDraftStore } from "@stores/useDraftStore";
-import { useNotificationStore } from "@stores/useNotificationStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PermissionsAndroid, Platform } from "react-native";
 
-interface CategorySpending {
+type CategorySpending = {
   categoryId: string;
   categoryName: string;
   color: string;
   amount: number;
-}
+};
 
 export function useDashboardScreen() {
   const { t } = useTranslation();
   const { baseCurrency } = useAuthStore((state) => state.preferences);
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
-  const { addDraft, drafts } = useDraftStore();
-  const { isFeatureEnabled, enabledPackages } = useNotificationStore();
+  const { drafts } = useDraftStore();
+  const { isInitialPull } = useSyncStatus();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { pullData } = useCloudSync();
+
+  // Subscribe to notifications
+  useNotificationSubscription();
 
   const { transactionCount, transactionLimit, isPremium } = useQuota();
 
@@ -43,43 +46,6 @@ export function useDashboardScreen() {
     () => drafts.filter((d) => d.status === "pending").length,
     [drafts]
   );
-
-  useEffect(() => {
-    if (!isFeatureEnabled) return;
-
-    logger.debug("Dashboard", "Subscribing to notifications...");
-    const unsubscribe = notificationService.subscribe((raw) => {
-      // Filter by enabled packages (ignoring the test package check which is handled in the parser)
-      const isTestPackage = raw.packageName === "com.rifqi2173.cashlens";
-      if (!isTestPackage && !enabledPackages.includes(raw.packageName)) {
-        logger.debug(
-          "Dashboard",
-          `Ignoring notification from disabled package: ${raw.packageName}`
-        );
-        return;
-      }
-
-      logger.debug("Dashboard", `Raw notification received: ${raw.text}`);
-      const parsed = parseNotification(raw.text, raw.packageName);
-
-      if (parsed) {
-        logger.debug("Dashboard", `Parsed successfully: ${parsed.description}`);
-        addDraft({
-          source: parsed.source,
-          amount: parsed.amount,
-          currency: parsed.currency,
-          description: parsed.description,
-          descriptionParams: parsed.descriptionParams,
-          type: parsed.type,
-          date: parsed.date
-        });
-      } else {
-        logger.warn("Dashboard", `Failed to parse: ${raw.text}`);
-      }
-    });
-
-    return unsubscribe;
-  }, [addDraft, isFeatureEnabled, enabledPackages]);
 
   const handleTestNotification = async () => {
     if (!__DEV__) return;
@@ -126,11 +92,9 @@ export function useDashboardScreen() {
     const allTimeIncome = transactions
       .filter((t) => t.type === "income")
       .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-
     const allTimeExpense = transactions
       .filter((t) => t.type === "expense")
       .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
-
     return {
       balance: allTimeIncome - allTimeExpense,
       income: allTimeIncome,
@@ -198,11 +162,13 @@ export function useDashboardScreen() {
       }));
   }, [currentMonthTransactions, currentMonth, currentYear]);
 
-  const recentTransactions = useMemo(() => {
-    return [...transactions]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 5);
-  }, [transactions]);
+  const recentTransactions = useMemo(
+    () =>
+      [...transactions]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 5),
+    [transactions]
+  );
 
   return {
     t,
@@ -222,6 +188,7 @@ export function useDashboardScreen() {
     handleRefresh,
     transactionCount,
     transactionLimit,
-    isPremium
+    isPremium,
+    isInitialPull
   };
 }

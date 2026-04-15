@@ -198,7 +198,15 @@
     "disconnectTitle": "Disconnect Telegram",
     "disconnectMessage": "Are you sure you want to disconnect your Telegram account? You will stop receiving notifications.",
     "linkingLoading": "Connecting...",
-    "linkingError": "Failed to get linking token. Ensure backend is active."
+    "linkingError": "Failed to get linking token. Ensure backend is active.",
+    "history": "Notification History",
+    "historyDesc": "View the last 7 days of captured notifications.",
+    "noHistory": "No history found",
+    "clearHistory": "Clear History",
+    "copyText": "Copy Raw Text",
+    "parsed": "Parsed",
+    "ignored": "Ignored",
+    "textCopied": "Copied to clipboard"
   },
   "paywall": {
     "title": "AI Limit Reached",

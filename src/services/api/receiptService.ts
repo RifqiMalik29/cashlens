@@ -15,9 +15,26 @@ export interface ScanResponse {
   }[];
 }
 
+export interface ScanReceiptOptions {
+  imageUri: string;
+  ocrText?: string; // Optional OCR text extracted locally for fallback
+}
+
 export const receiptService = {
-  scanReceipt: async (imageUri: string): Promise<ScanResponse> => {
+  scanReceipt: async (
+    imageUriOrOptions: string | ScanReceiptOptions
+  ): Promise<ScanResponse> => {
     const { accessToken } = useAuthStore.getState();
+
+    // Support both old signature (string) and new signature (object)
+    const imageUri =
+      typeof imageUriOrOptions === "string"
+        ? imageUriOrOptions
+        : imageUriOrOptions.imageUri;
+    const ocrText =
+      typeof imageUriOrOptions === "object"
+        ? imageUriOrOptions.ocrText
+        : undefined;
 
     const formData = new FormData();
     formData.append("image", {
@@ -25,6 +42,11 @@ export const receiptService = {
       type: "image/jpeg",
       name: "receipt.jpg"
     } as unknown as Blob);
+
+    // Add optional OCR text fallback if provided
+    if (ocrText) {
+      formData.append("ocr_text", ocrText);
+    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 35000); // 35s timeout to be safe
@@ -55,7 +77,8 @@ export const receiptService = {
         );
       }
 
-      return (json as { data: ScanResponse }).data;
+      const responseData = json as { data: ScanResponse };
+      return responseData.data;
     } catch (error) {
       if ((error as Error).name === "AbortError") {
         throw new Error(

@@ -35,7 +35,8 @@ export class GeminiRateLimitError extends Error {
  * Parses a receipt image directly (Via Go Backend Proxy)
  */
 export async function parseReceiptImage(
-  imageUri: string
+  imageUri: string,
+  ocrText?: string
 ): Promise<GeminiReceiptResponse> {
   logger.debug("Starting receipt parsing via Go Backend Proxy (Vision)...");
 
@@ -56,7 +57,10 @@ export async function parseReceiptImage(
 
     logger.debug("Sending image to Backend...");
 
-    const result = await receiptService.scanReceipt(compressedUri);
+    const result = await receiptService.scanReceipt({
+      imageUri: compressedUri,
+      ocrText
+    });
 
     const parsed: GeminiReceiptResponse = {
       amount: result.amount,

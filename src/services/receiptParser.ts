@@ -196,24 +196,42 @@ export async function processReceiptIntelligence(
   }
 
   // STAGE 3: Final Vision Fallback (The "Superpower")
+  // Now we send the OCR text as fallback to the backend
   if (geminiReady) {
     onStatusUpdate?.("Menganalisis gambar secara mendalam...");
-    const result = await parseReceiptImage(imageUri);
-    return {
-      data: {
-        amount: result.amount,
-        amountInBaseCurrency: result.amount,
-        categoryId: result.category,
-        date: `${result.date}T${result.time || "12:00:00"}`,
-        note: result.merchant,
-        isFromScan: true
-      },
-      method: "gemini_vision",
-      confidence: result.confidence
-    };
+    try {
+      const result = await parseReceiptImage(imageUri, rawText);
+      return {
+        data: {
+          amount: result.amount,
+          amountInBaseCurrency: result.amount,
+          categoryId: result.category,
+          date: `${result.date}T${result.time || "12:00:00"}`,
+          note: result.merchant,
+          isFromScan: true
+        },
+        method: "gemini_vision",
+        confidence: result.confidence
+      };
+    } catch (e) {
+      logger.warn("Vision AI failed, using local OCR as final fallback", e);
+      // STAGE 5: Absolute Fallback - use whatever local OCR extracted
+      return {
+        data: {
+          amount: localResult.amount || 0,
+          amountInBaseCurrency: localResult.amount || 0,
+          categoryId: localResult.categoryId || "cat_other_expense",
+          date: localResult.date || new Date().toISOString(),
+          note: localResult.note,
+          isFromScan: true
+        },
+        method: "local_ocr",
+        confidence: localResult.amount ? 50 : 10
+      };
+    }
   }
 
-  // STAGE 5: Absolute Fallback
+  // STAGE 5: Absolute Fallback (Gemini not available)
   return {
     data: {
       amount: localResult.amount || 0,

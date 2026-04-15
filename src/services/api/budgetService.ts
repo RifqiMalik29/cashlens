@@ -19,36 +19,30 @@ export interface BudgetResponse {
 
 export const budgetService = {
   getBudgets: async (): Promise<BudgetResponse[]> => {
-    const res = await api.get<{ data: BudgetResponse[] }>("/api/v1/budgets");
-    return res.data;
+    return await api.get<BudgetResponse[]>("/api/v1/budgets");
   },
 
   createBudget: async (data: Partial<Budget>): Promise<BudgetResponse> => {
-    const res = await api.post<{ data: BudgetResponse }>("/api/v1/budgets", {
+    return await api.post<BudgetResponse>("/api/v1/budgets", {
       category_id: data.categoryId,
       amount: data.amount,
       period_type: data.period,
       start_date: data.startDate,
       end_date: data.endDate
     });
-    return res.data;
   },
 
   updateBudget: async (
     id: string,
     data: Partial<Budget>
   ): Promise<BudgetResponse> => {
-    const res = await api.put<{ data: BudgetResponse }>(
-      `/api/v1/budgets/${id}`,
-      {
-        category_id: data.categoryId,
-        amount: data.amount,
-        period_type: data.period,
-        start_date: data.startDate,
-        end_date: data.endDate
-      }
-    );
-    return res.data;
+    return await api.put<BudgetResponse>(`/api/v1/budgets/${id}`, {
+      category_id: data.categoryId,
+      amount: data.amount,
+      period_type: data.period,
+      start_date: data.startDate,
+      end_date: data.endDate
+    });
   },
 
   deleteBudget: async (id: string): Promise<void> => {

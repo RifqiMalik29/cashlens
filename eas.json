@@ -23,7 +23,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_APP_ENV": "preview"
+        "EXPO_PUBLIC_APP_ENV": "preview",
+        "EXPO_PUBLIC_BACKEND_URL": "https://cashlens-backend-552315397645.us-central1.run.app"
       }
     },
     "production": {
@@ -34,7 +35,8 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_APP_ENV": "production"
+        "EXPO_PUBLIC_APP_ENV": "production",
+        "EXPO_PUBLIC_BACKEND_URL": "https://cashlens-backend-552315397645.us-central1.run.app"
       },
       "autoIncrement": true
     }

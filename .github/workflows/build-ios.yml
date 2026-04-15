@@ -1,0 +1,58 @@
+name: Build iOS (EAS)
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger only when a tag is pushed (e.g., v1.0.0)
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    name: Build and Submit to TestFlight
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔐 Create .env
+        run: |
+          echo "EXPO_PUBLIC_SUPABASE_URL=${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}" >> .env
+          echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}" >> .env
+          echo "EXPO_PUBLIC_GEMINI_API_KEY=${{ secrets.EXPO_PUBLIC_GEMINI_API_KEY }}" >> .env
+
+      - name: 📱 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🏗 Build iOS with EAS
+        run: eas build --platform ios --profile preview --non-interactive --no-wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: 📝 Build Information
+        run: |
+          echo "✅ iOS build submitted to EAS Build"
+          echo "📱 Check build status at: https://expo.dev/accounts/rifqi2173/projects/cashlens/builds"
+          echo "ℹ️ For App Store submission, run: eas submit --platform ios --latest"

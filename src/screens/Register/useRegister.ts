@@ -64,6 +64,7 @@ export function useRegister() {
 
       // Navigate to check email screen instead of auto-login
       router.push({
+        // @ts-ignore - expo-router route type not generated for this path
         pathname: "/(auth)/check-email",
         params: { email }
       });

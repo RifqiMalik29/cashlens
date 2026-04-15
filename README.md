@@ -14,7 +14,9 @@ Personal finance tracker built with React Native Expo. Features daily/monthly/ye
 | Styling        | NativeWind v4 + Tailwind CSS                      |
 | State          | Zustand + AsyncStorage persist                    |
 | Local Storage  | AsyncStorage (data) + MMKV (preferences)          |
-| Backend        | Supabase (auth + cloud sync)                      |
+| Auth & Sync    | Custom REST API with JWT tokens                   |
+| Secure Storage | react-native-keychain (encrypted token storage)   |
+| Backend        | Custom backend (Google Cloud Run)                 |
 | AI             | Google Gemini 3.1 Flash-Lite                      |
 | OCR            | @react-native-ml-kit/text-recognition (on-device) |
 | Charts         | Victory Native XL                                 |
@@ -42,7 +44,8 @@ Personal finance tracker built with React Native Expo. Features daily/monthly/ye
 - 📊 Budget management with period tracking
 - 🌐 Bilingual support (Indonesian & English)
 - 🎨 Customizable themes
-- ☁️ Cloud sync via Supabase
+- ☁️ Cloud sync via custom REST API
+- 🔐 Secure authentication with JWT tokens + encrypted storage
 - 📱 Android & iOS support
 
 ---
@@ -75,11 +78,24 @@ pnpm start
 
 ### Environment Variables
 
+Create a `.env.local` file in the project root:
+
 ```bash
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Backend API URL (production)
+EXPO_PUBLIC_BACKEND_URL=https://cashlens-backend-552315397645.us-central1.run.app
+
+# For development builds, use:
+# APP_VARIANT=development
+# EXPO_PUBLIC_BACKEND_URL=http://localhost:8080
+
+# AI Services
 EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
+
+# Optional: Sentry for error tracking
+EXPO_PUBLIC_SENTRY_DSN=your_sentry_dsn
 ```
+
+> **Note**: The app uses a custom backend API for authentication and cloud sync. Contact the maintainer for backend access or deploy your own instance.
 
 ### Running on device
 
@@ -116,7 +132,7 @@ cashlens/
     │   ├── Budget/
     │   ├── Settings/
     │   └── ...
-    ├── services/        # Supabase, OCR, Gemini AI, currency, sync, i18n, notifications
+    ├── services/        # API client, auth, Gemini AI, OCR, currency, sync, i18n, notifications
     ├── stores/          # Zustand stores (including useDraftStore)
     ├── types/           # TypeScript types (AI, transactions, etc.)
     └── utils/           # Helper functions

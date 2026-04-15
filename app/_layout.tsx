@@ -1,8 +1,11 @@
 import "../global.css";
 
+import { ErrorBoundary } from "@components/ErrorBoundary";
+import { OfflineBanner } from "@components/OfflineBanner";
 import { CustomHeader, SyncOverlay, SyncProgressBar } from "@components/ui";
 import { useCloudSync } from "@hooks/useCloudSync";
 import { useEmailConfirmation } from "@hooks/useEmailConfirmation";
+import { useNetworkStatus } from "@hooks/useNetworkStatus";
 import { useSessionRestore } from "@hooks/useSessionRestore";
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { useTelegramRealtime } from "@hooks/useTelegramRealtime";
@@ -22,6 +25,17 @@ Sentry.init({
   tracesSampleRate: 0.2
 });
 
+// Set user context for Sentry error reporting
+function setupSentryUserContext() {
+  const { userId, userEmail } = useAuthStore.getState();
+  if (userId && userEmail) {
+    Sentry.setUser({
+      id: userId,
+      email: userEmail
+    });
+  }
+}
+
 // Initialize i18n
 initI18n();
 
@@ -35,6 +49,9 @@ function RootLayout() {
     (state) => state.fetchSubscription
   );
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+
+  // Network status monitoring
+  const { isOnline } = useNetworkStatus();
 
   // Restore session on app startup
   useSessionRestore();
@@ -61,7 +78,13 @@ function RootLayout() {
 
   useEffect(() => {
     if (isAuthenticated) {
+      // Set user context for Sentry
+      setupSentryUserContext();
+      // Fetch subscription data
       fetchSubscription();
+    } else {
+      // Clear user context when logged out
+      Sentry.setUser(null);
     }
   }, [isAuthenticated, fetchSubscription]);
 
@@ -107,6 +130,9 @@ function RootLayout() {
         </Stack>
       </SafeAreaView>
 
+      {/* Offline banner - shown when network is unavailable */}
+      <OfflineBanner isOnline={isOnline} />
+
       <SyncOverlay
         isVisible={showOverlay}
         message={
@@ -121,10 +147,19 @@ function RootLayout() {
   );
 }
 
+// Wrap the entire app with ErrorBoundary for crash protection
+function App() {
+  return (
+    <ErrorBoundary>
+      <RootLayout />
+    </ErrorBoundary>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
   }
 });
 
-export default Sentry.wrap(RootLayout);
+export default Sentry.wrap(App);
