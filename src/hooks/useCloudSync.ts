@@ -5,6 +5,7 @@ import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { useCallback, useEffect, useRef } from "react";
+import { AppState, type AppStateStatus } from "react-native";
 
 import {
   performSyncWithRetry,
@@ -126,6 +127,7 @@ export function useCloudSync() {
   }, [isAuthenticated, userId, lastSyncedAt, pullData]);
 
   // Periodic pull — stable interval, does not restart on lastSyncedAt change
+  // Pauses when app is backgrounded to save battery
   useEffect(() => {
     if (!userId || !isAuthenticated) {
       if (pullIntervalRef.current) {
@@ -137,11 +139,34 @@ export function useCloudSync() {
 
     if (pullIntervalRef.current) return; // already running
 
+    // Only run sync when app is active
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === "active") {
+        // Resume syncing when app becomes active
+        if (!pullIntervalRef.current) {
+          pullIntervalRef.current = setInterval(() => {
+            if (!isSyncingRef.current) pullData();
+          }, SYNC_PULL_INTERVAL_MS);
+        }
+      } else {
+        // Pause syncing when app is backgrounded or inactive
+        if (pullIntervalRef.current) {
+          clearInterval(pullIntervalRef.current);
+          pullIntervalRef.current = null;
+        }
+      }
+    };
+
+    // Start with active interval
     pullIntervalRef.current = setInterval(() => {
       if (!isSyncingRef.current) pullData();
     }, SYNC_PULL_INTERVAL_MS);
 
+    // Subscribe to app state changes
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
+
     return () => {
+      subscription.remove();
       if (pullIntervalRef.current) {
         clearInterval(pullIntervalRef.current);
         pullIntervalRef.current = null;
