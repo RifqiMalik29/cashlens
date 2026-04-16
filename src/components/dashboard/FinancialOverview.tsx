@@ -1,6 +1,5 @@
 import { Button, Card, Typography } from "@components/ui";
 import { useBudgetStore } from "@stores/useBudgetStore";
-import { type Category, type Transaction } from "@types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -14,8 +13,6 @@ interface FinancialOverviewProps {
   onPressUpgrade: () => void;
   onPressBudget: () => void;
   isPremium?: boolean;
-  transactions: Transaction[];
-  categories: Category[];
 }
 
 export function FinancialOverview({
@@ -24,9 +21,7 @@ export function FinancialOverview({
   currency,
   onPressUpgrade,
   onPressBudget,
-  isPremium,
-  transactions,
-  categories
+  isPremium
 }: FinancialOverviewProps) {
   const { t } = useTranslation();
   const budgets = useBudgetStore((state) => state.budgets);
@@ -76,12 +71,7 @@ export function FinancialOverview({
           <Typography variant="h4" weight="bold" className="mb-2">
             {t("budget.title")}
           </Typography>
-          <BudgetSummary
-            currency={currency}
-            onPressBudget={onPressBudget}
-            transactions={transactions}
-            categories={categories}
-          />
+          <BudgetSummary currency={currency} onPressBudget={onPressBudget} />
         </View>
       )}
     </View>

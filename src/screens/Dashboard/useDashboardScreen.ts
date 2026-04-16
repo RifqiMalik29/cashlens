@@ -8,6 +8,7 @@ import { useCategoryStore } from "@stores/useCategoryStore";
 import { useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { logger } from "@utils/logger";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PermissionsAndroid, Platform } from "react-native";
@@ -33,6 +34,13 @@ export function useDashboardScreen() {
 
   // Subscribe to notifications
   useNotificationSubscription();
+
+  // Automatically refresh data when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      pullData();
+    }, [pullData])
+  );
 
   const { transactionCount, transactionLimit, isPremium } = useQuota();
 
@@ -189,7 +197,6 @@ export function useDashboardScreen() {
     transactionCount,
     transactionLimit,
     isPremium,
-    isInitialPull,
-    transactions
+    isInitialPull
   };
 }
