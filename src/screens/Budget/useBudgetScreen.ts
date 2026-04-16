@@ -25,7 +25,7 @@ function getBudgetPeriodDates(budget: Budget) {
   switch (budget.period) {
     case "weekly": {
       const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+      const diff = now.getDate() - (day === 0 ? 6 : day - 1);
       startDate = new Date(todayStart);
       startDate.setDate(diff);
       startDate.setHours(0, 0, 0, 0);

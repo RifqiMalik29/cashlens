@@ -21,8 +21,10 @@ function getPeriodDateRange(period: string) {
 
   switch (period) {
     case "weekly": {
-      const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+      const day = now.getDay(); // 0 is Sunday, 4 is Thursday (today)
+      // If today is Thursday (4), diff = 16 - 4 + 1 = 13 (Monday)
+      // If today is Sunday (0), diff = 16 - 0 + (-6) = 10 (Monday)
+      const diff = now.getDate() - (day === 0 ? 6 : day - 1);
       start.setDate(diff);
       start.setHours(0, 0, 0, 0);
       end.setDate(start.getDate() + 6);
