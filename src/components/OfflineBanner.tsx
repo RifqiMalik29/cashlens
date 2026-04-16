@@ -1,8 +1,8 @@
 import { Typography } from "@components/ui";
+import { WifiOff } from "lucide-react-native";
 import React from "react";
 import { Animated, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { WifiOff } from "lucide-react-native";
 
 interface OfflineBannerProps {
   isOnline: boolean;
@@ -27,7 +27,7 @@ export function OfflineBanner({ isOnline }: OfflineBannerProps) {
         useNativeDriver: true
       }).start();
     }
-  }, [isOnline]);
+  }, [isOnline, fadeAnim]);
 
   if (isOnline) {
     return null;

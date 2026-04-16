@@ -3,6 +3,7 @@ import { pullAll } from "@services/syncService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
+import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { useCallback, useEffect, useRef } from "react";
 import { AppState, type AppStateStatus } from "react-native";
@@ -21,6 +22,9 @@ export function useCloudSync() {
   const setTransactions = useTransactionStore((state) => state.setTransactions);
   const setBudgets = useBudgetStore((state) => state.setBudgets);
   const setCategories = useCategoryStore((state) => state.setCategories);
+  const fetchSubscription = useSubscriptionStore(
+    (state) => state.fetchSubscription
+  );
 
   const isSyncingRef = useRef(false);
   const hasInitialPullRef = useRef(false);
@@ -31,6 +35,7 @@ export function useCloudSync() {
   const setBudgetsRef = useRef(setBudgets);
   const setCategoriesRef = useRef(setCategories);
   const setPreferencesRef = useRef(setPreferences);
+  const fetchSubscriptionRef = useRef(fetchSubscription);
   const setSyncingRef = useRef(setSyncing);
   const setSyncedRef = useRef(setSynced);
   const setErrorRef = useRef(setError);
@@ -51,6 +56,9 @@ export function useCloudSync() {
   useEffect(() => {
     setPreferencesRef.current = setPreferences;
   }, [setPreferences]);
+  useEffect(() => {
+    fetchSubscriptionRef.current = fetchSubscription;
+  }, [fetchSubscription]);
   useEffect(() => {
     setSyncingRef.current = setSyncing;
   }, [setSyncing]);
@@ -86,9 +94,12 @@ export function useCloudSync() {
     else await setSyncingRef.current(true);
 
     try {
-      const data = await performSyncWithRetry<PullDataResult>(() =>
-        pullAll(currentUserId)
-      );
+      // Fetch main data and subscription data in parallel
+      const [data] = await Promise.all([
+        performSyncWithRetry<PullDataResult>(() => pullAll(currentUserId)),
+        fetchSubscriptionRef.current()
+      ]);
+
       if (data) {
         setTransactionsRef.current(data.transactions);
         setBudgetsRef.current(data.budgets);
@@ -163,7 +174,10 @@ export function useCloudSync() {
     }, SYNC_PULL_INTERVAL_MS);
 
     // Subscribe to app state changes
-    const subscription = AppState.addEventListener("change", handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
 
     return () => {
       subscription.remove();

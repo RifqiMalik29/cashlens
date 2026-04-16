@@ -1,5 +1,5 @@
 import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
-import { BaseDialog, Typography } from "@components/ui";
+import { Typography } from "@components/ui";
 import { CameraView } from "expo-camera";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -11,6 +11,7 @@ import {
   CameraInactiveView,
   CameraLoadingView,
   ErrorMessage,
+  LimitReachedView,
   PermissionDeniedView,
   ScannerControls
 } from "./components";
@@ -19,7 +20,6 @@ import { useScannerScreen } from "./useScannerScreen";
 export default function ScannerScreen() {
   const router = useRouter();
   const {
-    t,
     cameraRef,
     permission,
     requestPermissionHandler,
@@ -38,12 +38,15 @@ export default function ScannerScreen() {
     handleRefreshCamera,
     processingStatus,
     processingMethod,
-    showPaywall,
-    setShowPaywall,
     remainingScans,
     scanLimit,
-    isPremium
+    isPremium,
+    isLimitReached
   } = useScannerScreen();
+
+  if (isLimitReached) {
+    return <LimitReachedView onUpgrade={() => router.push("/upgrade")} />;
+  }
 
   if (!permission) {
     return <CameraLoadingView />;
@@ -118,21 +121,6 @@ export default function ScannerScreen() {
           method={processingMethod}
         />
       )}
-
-      <BaseDialog
-        isVisible={showPaywall}
-        title={t("paywall.title")}
-        message={t("paywall.message")}
-        type="warning"
-        primaryButtonText={t("paywall.upgrade")}
-        onPrimaryButtonPress={() => {
-          setShowPaywall(false);
-          router.push("/(tabs)/settings");
-        }}
-        secondaryButtonText={t("paywall.later")}
-        onSecondaryButtonPress={() => setShowPaywall(false)}
-        onClose={() => setShowPaywall(false)}
-      />
     </View>
   );
 }
