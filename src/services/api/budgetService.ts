@@ -26,7 +26,7 @@ export const budgetService = {
     return await api.post<BudgetResponse>("/api/v1/budgets", {
       category_id: data.categoryId,
       amount: data.amount,
-      period: data.period,
+      period_type: data.period,
       start_date: data.startDate,
       end_date: data.endDate
     });
@@ -39,7 +39,7 @@ export const budgetService = {
     return await api.put<BudgetResponse>(`/api/v1/budgets/${id}`, {
       category_id: data.categoryId,
       amount: data.amount,
-      period: data.period,
+      period_type: data.period,
       start_date: data.startDate,
       end_date: data.endDate
     });
