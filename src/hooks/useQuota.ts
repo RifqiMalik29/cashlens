@@ -42,11 +42,13 @@ export function useQuota() {
   // 1. Calculate Transaction Quota (Monthly)
   const currentMonthTransactions = useMemo(() => {
     return transactions.filter((t) => {
-      const transDate = new Date(t.date);
-      const transMonth = `${transDate.getFullYear()}-${String(
-        transDate.getMonth() + 1
+      // Use createdAt to count how many transactions were ADDED this month
+      // rather than the effective transaction date
+      const createDate = new Date(t.createdAt || t.date);
+      const createMonth = `${createDate.getFullYear()}-${String(
+        createDate.getMonth() + 1
       ).padStart(2, "0")}`;
-      return transMonth === currentMonth;
+      return createMonth === currentMonth;
     });
   }, [transactions, currentMonth]);
 

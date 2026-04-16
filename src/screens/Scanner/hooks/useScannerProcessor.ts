@@ -1,7 +1,5 @@
 import { processReceiptIntelligence } from "@services/receiptParser";
-import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
-import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { createLogger } from "@utils/logger";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -31,6 +29,7 @@ interface UseScannerProcessorOptions {
 }
 
 export function useScannerProcessor({
+  isLimitReached,
   recordScan
 }: UseScannerProcessorOptions): UseScannerProcessorResult {
   const router = useRouter();
@@ -44,22 +43,12 @@ export function useScannerProcessor({
   const [showPaywall, setShowPaywall] = useState(false);
   const [lastImageUri, setLastImageUri] = useState<string | null>(null);
 
-  const { subscriptionTier, stealthScansUsed } = useAuthStore();
-  const premiumQuota = useSubscriptionStore((state) => state.quota);
   const categories = useCategoryStore((state) => state.categories);
 
   const processScannedData = useCallback(
     async (imageUri: string) => {
       // PAYWALL CHECK
-      const isFreeUser = subscriptionTier === "free";
-      const isPremiumUser = subscriptionTier === "premium";
-      const freeTrialExhausted = isFreeUser && stealthScansUsed >= 5;
-      const premiumExhausted =
-        isPremiumUser &&
-        premiumQuota.scansLimit !== null &&
-        premiumQuota.scansUsed >= premiumQuota.scansLimit;
-
-      if (freeTrialExhausted || premiumExhausted) {
+      if (isLimitReached) {
         setShowPaywall(true);
         return;
       }
@@ -139,15 +128,7 @@ export function useScannerProcessor({
         setIsScanning(false);
       }
     },
-    [
-      router,
-      recordScan,
-      subscriptionTier,
-      stealthScansUsed,
-      categories,
-      premiumQuota.scansLimit,
-      premiumQuota.scansUsed
-    ]
+    [router, recordScan, isLimitReached, categories]
   );
 
   const handlePickFromGallery = useCallback(async () => {
