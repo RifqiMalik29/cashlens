@@ -19,7 +19,6 @@ export function CategoryCard({
   const [editedName, setEditedName] = useState(category?.name || "");
   const [inputWidth, setInputWidth] = useState(100);
 
-  // Sync editedName when category.name changes from parent (after sync)
   useEffect(() => {
     if (category?.name) {
       setEditedName(category.name);
@@ -39,7 +38,6 @@ export function CategoryCard({
     setInputWidth(estimatedWidth);
   }, []);
 
-  // Guard against undefined category
   if (!category) {
     return null;
   }
@@ -54,6 +52,7 @@ export function CategoryCard({
           {category.name.charAt(0)}
         </Typography>
       </View>
+
       {isEditing ? (
         <View
           style={{
@@ -104,6 +103,7 @@ export function CategoryCard({
           >
             <Check size={14} color="#4CAF82" />
           </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => {
               setEditedName(category.name);
