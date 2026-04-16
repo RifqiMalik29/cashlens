@@ -1,7 +1,9 @@
 import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
-import { spacing } from "@constants/theme";
-import { Text, View } from "react-native";
+import { Typography } from "@components/ui/Typography";
+import { colors, spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 
 interface CheckEmailFormProps {
   otp: string;
@@ -24,24 +26,36 @@ export function CheckEmailForm({
   onVerify,
   onResend
 }: CheckEmailFormProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="gap-4">
       {error && (
         <View className="bg-red-50 border border-red-200 rounded-lg p-3">
-          <Text className="text-red-700 text-sm text-center">{error}</Text>
+          <Typography
+            variant="caption"
+            color={colors.error}
+            style={{ textAlign: "center" }}
+          >
+            {error}
+          </Typography>
         </View>
       )}
       {successMessage && (
         <View className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <Text className="text-green-700 text-sm text-center">
+          <Typography
+            variant="caption"
+            color="#10B981"
+            style={{ textAlign: "center" }}
+          >
             {successMessage}
-          </Text>
+          </Typography>
         </View>
       )}
 
       <Input
-        label="Kode Verifikasi"
-        placeholder="123456"
+        label={t("auth.verificationCode")}
+        placeholder={t("auth.otpPlaceholder")}
         value={otp}
         onChangeText={(text) =>
           onOtpChange(text.replace(/[^0-9]/g, "").slice(0, 6))
@@ -51,18 +65,18 @@ export function CheckEmailForm({
       />
 
       <Button onPress={onVerify} loading={isLoading}>
-        Verifikasi Email
+        {t("auth.verifyEmail")}
       </Button>
 
       <View
         className="flex-row justify-center items-center"
         style={{ gap: spacing[1] }}
       >
-        <Text className="text-sm text-muted-foreground">
-          Belum terima kode?
-        </Text>
+        <Typography variant="caption" color={colors.textSecondary}>
+          {t("auth.notReceivedCode")}
+        </Typography>
         <Button variant="ghost" onPress={onResend} loading={isResending}>
-          Kirim ulang
+          {t("auth.resend")}
         </Button>
       </View>
     </View>

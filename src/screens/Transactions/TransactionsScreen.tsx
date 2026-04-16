@@ -4,12 +4,14 @@ import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import { Plus } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTransactionsScreen } from "./useTransactionsScreen";
 
 export default function TransactionsScreen() {
+  const { t } = useTranslation();
   const {
     transactions,
     categories,
@@ -38,10 +40,10 @@ export default function TransactionsScreen() {
         >
           <View>
             <Typography variant="h2" weight="bold" color="#FFFFFF">
-              Transaksi
+              {t("transactions.title")}
             </Typography>
             <Typography variant="body" color="#FFFFFF">
-              Riwayat pengeluaran & pemasukan
+              {t("transactions.subtitle")}
             </Typography>
           </View>
           <TouchableOpacity
@@ -61,9 +63,9 @@ export default function TransactionsScreen() {
           />
         ) : (
           <EmptyState
-            title="Belum Ada Transaksi"
-            description="Mulai catat transaksi keuanganmu untuk melihat riwayat transaksi di sini."
-            actionLabel="Tambah Transaksi"
+            title={t("transactions.noTransactions")}
+            description={t("transactions.noTransactionsDesc")}
+            actionLabel={t("transactions.addTransaction")}
             onAction={handleAddTransaction}
           />
         )}

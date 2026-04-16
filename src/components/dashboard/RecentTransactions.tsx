@@ -1,6 +1,7 @@
 import { type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -16,6 +17,7 @@ export function RecentTransactions({
   categories,
   baseCurrency
 }: RecentTransactionsProps) {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const handleSeeAll = () => {
@@ -34,11 +36,11 @@ export function RecentTransactions({
     <View className="mx-4">
       <View className="flex-row items-center justify-between mb-3">
         <Typography variant="h4" weight="semibold">
-          Transaksi Terakhir
+          {t("dashboard.recentTransactions")}
         </Typography>
         <TouchableOpacity onPress={handleSeeAll}>
           <Typography variant="caption" weight="semibold" color="#4CAF82">
-            Lihat Semua
+            {t("dashboard.seeAll")}
           </Typography>
         </TouchableOpacity>
       </View>
@@ -68,7 +70,7 @@ export function RecentTransactions({
 
               <View className="flex-1">
                 <Typography variant="body" weight="medium" numberOfLines={1}>
-                  {category?.name || "Transaksi"}
+                  {category?.name || t("transactions.title")}
                 </Typography>
                 <Typography variant="caption" color="#6B7280" numberOfLines={1}>
                   {new Date(transaction.date).toLocaleDateString("id-ID", {

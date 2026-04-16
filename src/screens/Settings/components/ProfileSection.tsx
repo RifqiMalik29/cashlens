@@ -46,7 +46,7 @@ export function ProfileSection({
                 {subscriptionTier === "premium" && expiresAt && (
                   <View className="mt-1">
                     <Typography variant="caption" color="secondary">
-                      Berlaku s/d:{" "}
+                      {t("settings.validUntil")}{" "}
                       {new Date(expiresAt).toLocaleDateString("id-ID")}
                     </Typography>
                   </View>

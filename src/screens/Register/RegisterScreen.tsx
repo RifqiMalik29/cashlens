@@ -1,6 +1,7 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { AuthLogo } from "@components/auth/AuthLogo";
 import { spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -8,6 +9,7 @@ import { RegisterForm } from "./components/RegisterForm";
 import { useRegister } from "./useRegister";
 
 export default function RegisterScreen() {
+  const { t } = useTranslation();
   const {
     name,
     setName,
@@ -62,8 +64,8 @@ export default function RegisterScreen() {
               onToggleConfirmPassword={toggleShowConfirmPassword}
             />
             <AuthFooter
-              questionText="Sudah punya akun? "
-              actionText="Masuk"
+              questionText={t("auth.hasAccount") + " "}
+              actionText={t("auth.login")}
               onActionPress={handleGoToLogin}
             />
           </View>

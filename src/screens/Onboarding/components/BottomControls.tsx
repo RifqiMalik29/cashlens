@@ -1,5 +1,6 @@
 import { Typography } from "@components/ui/Typography";
 import { heights, spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 interface BottomControlsProps {
@@ -8,6 +9,8 @@ interface BottomControlsProps {
 }
 
 export function BottomControls({ activeIndex, onNext }: BottomControlsProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={{ alignItems: "center", paddingBottom: spacing[8] }}>
       <TouchableOpacity
@@ -21,7 +24,7 @@ export function BottomControls({ activeIndex, onNext }: BottomControlsProps) {
           color="#FFFFFF"
           style={{ fontSize: 16 }}
         >
-          {activeIndex === 2 ? "Mulai Sekarang" : "Selanjutnya"}
+          {activeIndex === 2 ? t("onboarding.startNow") : t("common.next")}
         </Typography>
       </TouchableOpacity>
     </View>

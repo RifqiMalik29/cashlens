@@ -36,10 +36,10 @@ export default function BudgetScreen() {
             style={{ backgroundColor: colors.primary }}
           >
             <Typography variant="h2" weight="bold" color="#FFFFFF">
-              Anggaran
+              {t("budget.title")}
             </Typography>
             <Typography variant="body" color="#FFFFFF">
-              Kelola batas pengeluaran per kategori
+              {t("budget.subtitle")}
             </Typography>
           </View>
           <EmptyState
@@ -72,10 +72,10 @@ export default function BudgetScreen() {
           <View className="flex-row items-center justify-between">
             <View>
               <Typography variant="h2" weight="bold" color="#FFFFFF">
-                Anggaran
+                {t("budget.title")}
               </Typography>
               <Typography variant="body" color="#FFFFFF">
-                Kelola batas pengeluaran per kategori
+                {t("budget.subtitle")}
               </Typography>
             </View>
             <TouchableOpacity
@@ -83,7 +83,7 @@ export default function BudgetScreen() {
               className="bg-white/20 px-4 py-2 rounded-lg"
             >
               <Typography variant="body" weight="semibold" color="#FFFFFF">
-                + Baru
+                {t("budget.newBudget")}
               </Typography>
             </TouchableOpacity>
           </View>
@@ -95,7 +95,7 @@ export default function BudgetScreen() {
             color="#6B7280"
             style={{ marginBottom: 8 }}
           >
-            Total Anggaran
+            {t("budget.totalBudget")}
           </Typography>
           <Typography variant="h3" weight="bold">
             {formatCurrency(totalBudget, baseCurrency)}
@@ -103,7 +103,7 @@ export default function BudgetScreen() {
           <View className="flex-row justify-between mt-4">
             <View>
               <Typography variant="caption" color="#6B7280">
-                Terpakai
+                {t("budget.spent")}
               </Typography>
               <Typography variant="body" weight="semibold" color="#EF4444">
                 {formatCurrency(totalSpent, baseCurrency)}
@@ -111,7 +111,7 @@ export default function BudgetScreen() {
             </View>
             <View className="items-end">
               <Typography variant="caption" color="#6B7280">
-                Sisa
+                {t("budget.remaining")}
               </Typography>
               <Typography variant="body" weight="semibold" color="#10B981">
                 {formatCurrency(totalBudget - totalSpent, baseCurrency)}

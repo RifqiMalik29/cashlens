@@ -1,11 +1,13 @@
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
 import { Search } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
 
 import { useCurrencySelectorScreen } from "./useCurrencySelectorScreen";
 
 export default function CurrencySelectorScreen() {
+  const { t } = useTranslation();
   const {
     searchQuery,
     setSearchQuery,
@@ -23,7 +25,7 @@ export default function CurrencySelectorScreen() {
             className="flex-1 ml-3"
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder="Cari mata uang..."
+            placeholder={t("currency.searchPlaceholder")}
             placeholderTextColor="#9CA3AF"
             autoCapitalize="none"
             autoCorrect={false}
@@ -68,7 +70,7 @@ export default function CurrencySelectorScreen() {
               color="#6B7280"
               style={{ textAlign: "center" }}
             >
-              Tidak ada mata uang yang ditemukan
+              {t("currency.noResults")}
             </Typography>
           </View>
         )}

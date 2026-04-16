@@ -1,19 +1,21 @@
-import { DateInput } from "@components/transaction/DateInput";
 import {
   BudgetFormActions,
   BudgetFormHeader,
   CategorySelector,
   PeriodSelector
 } from "@components/budget";
+import { DateInput } from "@components/transaction/DateInput";
 import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useBudgetForm } from "./useBudgetForm";
 
 export default function BudgetFormScreen() {
+  const { t } = useTranslation();
   const {
     displayAmount,
     handleAmountChange,
@@ -50,7 +52,7 @@ export default function BudgetFormScreen() {
               color="#6B7280"
               style={{ marginBottom: spacing[2] }}
             >
-              Jumlah Anggaran
+              {t("budget.budgetAmount")}
             </Typography>
             <Input
               placeholder="0"
@@ -77,7 +79,7 @@ export default function BudgetFormScreen() {
                 color="#6B7280"
                 style={{ marginBottom: spacing[2] }}
               >
-                Tanggal Mulai
+                {t("budget.startDate")}
               </Typography>
               <DateInput date={startDate} setDate={setStartDate} />
             </View>

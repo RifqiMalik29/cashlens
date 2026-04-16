@@ -1,5 +1,6 @@
 import { Button } from "@components/ui/Button";
 import { spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface BudgetFormActionsProps {
@@ -17,6 +18,8 @@ export function BudgetFormActions({
   onSave,
   onDelete
 }: BudgetFormActionsProps) {
+  const { t } = useTranslation();
+
   return (
     <>
       {error && (
@@ -36,7 +39,7 @@ export function BudgetFormActions({
           variant="primary"
           size="lg"
         >
-          {isEditMode ? "Simpan Perubahan" : "Buat Anggaran"}
+          {isEditMode ? t("budget.saveChanges") : t("budget.createBudget")}
         </Button>
 
         {isEditMode && onDelete && (
@@ -48,7 +51,7 @@ export function BudgetFormActions({
             variant="danger"
             size="lg"
           >
-            Hapus Anggaran
+            {t("budget.deleteBudget")}
           </Button>
         )}
       </View>

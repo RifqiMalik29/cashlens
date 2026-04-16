@@ -1,5 +1,6 @@
 import { Button } from "@components/ui/Button";
 import { Typography } from "@components/ui/Typography";
+import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface PermissionDeniedViewProps {
@@ -9,6 +10,8 @@ interface PermissionDeniedViewProps {
 export function PermissionDeniedView({
   onRequestPermission
 }: PermissionDeniedViewProps) {
+  const { t } = useTranslation();
+
   return (
     <SafeAreaView className="flex-1 bg-background items-center justify-center p-6">
       <Typography
@@ -16,17 +19,17 @@ export function PermissionDeniedView({
         weight="bold"
         style={{ textAlign: "center", marginBottom: 16 }}
       >
-        Izin Kamera Diperlukan
+        {t("scanner.cameraPermission")}
       </Typography>
       <Typography
         variant="body"
         color="#6B7280"
         style={{ textAlign: "center", marginBottom: 24 }}
       >
-        CashLens memerlukan akses kamera untuk memindai struk transaksi Anda.
+        {t("scanner.cameraPermissionDesc")}
       </Typography>
       <Button onPress={onRequestPermission} variant="primary" size="lg">
-        Beri Izin Kamera
+        {t("scanner.grantPermission")}
       </Button>
     </SafeAreaView>
   );

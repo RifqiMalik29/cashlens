@@ -1,5 +1,6 @@
 import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 interface BudgetFormHeaderProps {
@@ -7,6 +8,8 @@ interface BudgetFormHeaderProps {
 }
 
 export function BudgetFormHeader({ isEditMode }: BudgetFormHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <View
       className="px-6 pt-[46px] pb-4 flex-row items-center justify-between"
@@ -14,12 +17,10 @@ export function BudgetFormHeader({ isEditMode }: BudgetFormHeaderProps) {
     >
       <View>
         <Typography variant="h2" weight="bold" color="#FFFFFF">
-          {isEditMode ? "Ubah Anggaran" : "Tambah Anggaran"}
+          {isEditMode ? t("budget.editBudget") : t("budget.addNewBudget")}
         </Typography>
         <Typography variant="body" color="#FFFFFF">
-          {isEditMode
-            ? "Perbarui detail anggaranmu"
-            : "Buat anggaran baru untuk kategori tertentu"}
+          {isEditMode ? t("budget.editBudgetDesc") : t("budget.addBudgetDesc")}
         </Typography>
       </View>
     </View>

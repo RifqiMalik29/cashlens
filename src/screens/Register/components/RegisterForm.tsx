@@ -3,6 +3,7 @@ import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
 import { Eye, EyeOff } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 interface RegisterFormProps {
@@ -40,11 +41,13 @@ export function RegisterForm({
   onTogglePassword,
   onToggleConfirmPassword
 }: RegisterFormProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mt-8">
       <Input
-        label="Nama"
-        placeholder="Nama lengkap"
+        label={t("auth.name")}
+        placeholder={t("auth.namePlaceholder")}
         value={name}
         onChangeText={setName}
         autoCapitalize="words"
@@ -52,8 +55,8 @@ export function RegisterForm({
 
       <View style={{ marginTop: spacing[4] }}>
         <Input
-          label="Email"
-          placeholder="nama@email.com"
+          label={t("auth.email")}
+          placeholder={t("auth.emailPlaceholder")}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -63,8 +66,8 @@ export function RegisterForm({
 
       <View style={{ marginTop: spacing[4] }}>
         <Input
-          label="Kata Sandi"
-          placeholder="Minimal 8 karakter"
+          label={t("auth.password")}
+          placeholder={t("auth.passwordPlaceholderRegister")}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
@@ -82,8 +85,8 @@ export function RegisterForm({
 
       <View style={{ marginTop: spacing[4] }}>
         <Input
-          label="Konfirmasi Kata Sandi"
-          placeholder="Ulangi kata sandi"
+          label={t("auth.confirmPassword")}
+          placeholder={t("auth.confirmPasswordPlaceholder")}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry={!showConfirmPassword}
@@ -114,7 +117,7 @@ export function RegisterForm({
         fullWidth
         style={{ marginTop: spacing[6] }}
       >
-        Daftar
+        {t("auth.register")}
       </Button>
     </View>
   );

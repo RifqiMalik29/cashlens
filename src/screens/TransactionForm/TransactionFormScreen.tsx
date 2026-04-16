@@ -8,11 +8,13 @@ import { Input } from "@components/ui/Input";
 import { spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
 import { useTransactionForm } from "./useTransactionForm";
 
 export default function TransactionFormScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const {
     amount,
@@ -37,7 +39,9 @@ export default function TransactionFormScreen() {
   } = useTransactionForm();
 
   useHeader({
-    title: isEditMode ? "Edit Transaksi" : "Tambah Transaksi"
+    title: isEditMode
+      ? t("transactions.editTransaction")
+      : t("transactions.addTransaction")
   });
 
   return (
@@ -77,8 +81,8 @@ export default function TransactionFormScreen() {
 
             <View style={{ marginBottom: spacing[5] }}>
               <Input
-                label="Catatan (opsional)"
-                placeholder="Tambah catatan..."
+                label={t("transactions.noteOptional")}
+                placeholder={t("form.notePlaceholder")}
                 value={note}
                 onChangeText={setNote}
                 multiline
@@ -103,7 +107,9 @@ export default function TransactionFormScreen() {
                 variant="primary"
                 size="lg"
               >
-                {isEditMode ? "Simpan Perubahan" : "Tambah Transaksi"}
+                {isEditMode
+                  ? t("transactions.saveChanges")
+                  : t("transactions.addTransaction")}
               </Button>
 
               {isEditMode && (
@@ -115,7 +121,7 @@ export default function TransactionFormScreen() {
                   variant="danger"
                   size="lg"
                 >
-                  Hapus Transaksi
+                  {t("transactions.deleteTransaction")}
                 </Button>
               )}
             </View>
@@ -124,15 +130,15 @@ export default function TransactionFormScreen() {
       </KeyboardAvoidingView>
       <BaseDialog
         isVisible={showPaywall}
-        title="Batas Transaksi Tercapai"
-        message="Kamu telah mencapai batas 50 transaksi gratis bulan ini. Upgrade ke Premium untuk transaksi tanpa batas!"
+        title={t("transactions.transactionLimitTitle")}
+        message={t("transactions.transactionLimitDesc")}
         type="warning"
-        primaryButtonText="Upgrade ke Premium"
+        primaryButtonText={t("transactions.upgradeNow")}
         onPrimaryButtonPress={() => {
           setShowPaywall(false);
           router.push("/upgrade" as never);
         }}
-        secondaryButtonText="Nanti Saja"
+        secondaryButtonText={t("transactions.later")}
         onSecondaryButtonPress={() => setShowPaywall(false)}
         onClose={() => setShowPaywall(false)}
       />
