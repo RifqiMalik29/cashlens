@@ -16,16 +16,19 @@ interface BudgetSummaryProps {
 
 function getPeriodDateRange(period: string) {
   const now = new Date();
-  const start = new Date(now);
-  const end = new Date(now);
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   switch (period) {
-    case "weekly":
-      start.setDate(now.getDate() - now.getDay());
+    case "weekly": {
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+      start.setDate(diff);
       start.setHours(0, 0, 0, 0);
       end.setDate(start.getDate() + 6);
       end.setHours(23, 59, 59, 999);
       break;
+    }
     case "monthly":
       start.setDate(1);
       start.setHours(0, 0, 0, 0);
@@ -40,7 +43,7 @@ function getPeriodDateRange(period: string) {
       break;
   }
 
-  return { start: start.toISOString(), end: end.toISOString() };
+  return { start, end };
 }
 
 function getProgressColor(percentage: number): string {
@@ -61,13 +64,15 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
       const { start, end } = getPeriodDateRange(budget.period);
 
       const spent = transactions
-        .filter(
-          (t) =>
+        .filter((t) => {
+          const transDate = new Date(t.date);
+          return (
             t.type === "expense" &&
             t.categoryId === budget.categoryId &&
-            t.date >= start &&
-            t.date <= end
-        )
+            transDate >= start &&
+            transDate <= end
+          );
+        })
         .reduce((sum, t) => sum + t.amountInBaseCurrency, 0);
 
       const percentage = budget.amount > 0 ? (spent / budget.amount) * 100 : 0;
