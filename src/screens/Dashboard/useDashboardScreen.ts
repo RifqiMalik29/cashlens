@@ -189,6 +189,7 @@ export function useDashboardScreen() {
     transactionCount,
     transactionLimit,
     isPremium,
-    isInitialPull
+    isInitialPull,
+    transactions
   };
 }

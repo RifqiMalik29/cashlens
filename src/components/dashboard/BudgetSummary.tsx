@@ -1,6 +1,5 @@
 import { useBudgetStore } from "@stores/useBudgetStore";
-import { useCategoryStore } from "@stores/useCategoryStore";
-import { useTransactionStore } from "@stores/useTransactionStore";
+import { type Category, type Transaction } from "@types";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,6 +11,8 @@ import { Typography } from "../ui/Typography";
 interface BudgetSummaryProps {
   currency: string;
   onPressBudget?: () => void;
+  transactions: Transaction[];
+  categories: Category[];
 }
 
 function getPeriodDateRange(period: string) {
@@ -54,11 +55,14 @@ function getProgressColor(percentage: number): string {
   return "#4CAF82";
 }
 
-export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
+export function BudgetSummary({
+  currency,
+  onPressBudget,
+  transactions,
+  categories
+}: BudgetSummaryProps) {
   const { t } = useTranslation();
   const budgets = useBudgetStore((state) => state.budgets);
-  const categories = useCategoryStore((state) => state.categories);
-  const transactions = useTransactionStore((state) => state.transactions);
 
   const budgetData = useMemo(() => {
     return budgets.map((budget) => {

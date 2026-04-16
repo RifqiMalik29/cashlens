@@ -41,7 +41,8 @@ export default function DashboardScreen() {
     transactionCount,
     transactionLimit,
     isPremium,
-    isInitialPull
+    isInitialPull,
+    transactions
   } = useDashboardScreen();
 
   const router = useRouter();
@@ -117,6 +118,8 @@ export default function DashboardScreen() {
           onPressUpgrade={() => router.push("/upgrade" as never)}
           onPressBudget={() => router.replace("/(tabs)/budget")}
           isPremium={isPremium}
+          transactions={transactions}
+          categories={categories}
         />
 
         {hasCurrentMonthData && (
