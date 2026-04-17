@@ -18,9 +18,9 @@ export interface TransactionResponse {
   user_id: string;
   category_id: string | null;
   amount: number;
-  type?: "income" | "expense";
   description: string;
-  transaction_date: string;
+  date: string;
+  transaction_date?: string;
   created_at: string;
   updated_at: string;
   category?: TransactionCategory;
@@ -34,17 +34,14 @@ interface PaginatedTransactionResponse {
 }
 
 interface SummaryResponse {
-  period: string;
   total_income: number;
   total_expense: number;
-  balance: number;
-  transaction_count: number;
+  net_balance: number;
   by_category: {
     category_id: string;
     category_name: string;
+    type: "income" | "expense";
     total: number;
-    count: number;
-    percentage: number;
   }[];
 }
 
@@ -72,13 +69,12 @@ export const transactionService = {
       );
     }
     const payload = {
-      id: data.id,
       category_id: data.categoryId,
       amount: data.amount,
       currency: data.currency ?? "IDR",
       type: data.type ?? "expense",
       description: data.note || "",
-      transaction_date: data.date
+      date: data.date
         ? data.date.split("T")[0] + "T00:00:00Z"
         : new Date().toISOString().split("T")[0] + "T00:00:00Z"
     };
@@ -95,7 +91,7 @@ export const transactionService = {
       amount: data.amount,
       currency: data.currency ?? "IDR",
       description: data.note || "",
-      transaction_date: data.date
+      date: data.date
         ? data.date.split("T")[0] + "T00:00:00Z"
         : new Date().toISOString().split("T")[0] + "T00:00:00Z"
     };

@@ -140,7 +140,7 @@ export async function handleSave(d: SaveDeps) {
       type,
       categoryId: selectedCategoryId,
       note: note.trim(),
-      date: saved.transaction_date,
+      date: saved.date ?? saved.transaction_date,
       receiptImageUri: receiptUri,
       isFromScan: isScanTransaction || !!existingTransaction?.isFromScan,
       createdAt: saved.created_at,
