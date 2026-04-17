@@ -1,10 +1,10 @@
 import { useHeader } from "@hooks/useHeader";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { authService } from "@services/api/authService";
 import i18n from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { logger } from "@utils/logger";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -31,7 +31,7 @@ const LANGUAGES: LanguageOption[] = [
 ];
 
 export function useLanguageSelector() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { preferences, updatePreferences } = useAuthStore();
   const { t } = useTranslation();
   const [isUpdating, setIsUpdating] = useState(false);

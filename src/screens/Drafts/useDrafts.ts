@@ -1,18 +1,18 @@
 import { colors } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { draftService } from "@services/api/draftService";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { type DraftTransaction, useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { generateId } from "@utils/generateId";
 import { logger } from "@utils/logger";
-import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function useDrafts() {
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { drafts, confirmDraft, dismissDraft } = useDraftStore();
   const { addTransaction } = useTransactionStore();
   const { categories } = useCategoryStore();
