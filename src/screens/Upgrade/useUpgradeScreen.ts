@@ -6,8 +6,10 @@ import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { logger } from "@utils/logger";
 import * as WebBrowser from "expo-web-browser";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function useUpgradeScreen() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] =
@@ -15,6 +17,14 @@ export function useUpgradeScreen() {
   const fetchSubscription = useSubscriptionStore(
     (state) => state.fetchSubscription
   );
+
+  const features = [
+    t("upgrade.feature1"),
+    t("upgrade.feature2"),
+    t("upgrade.feature3"),
+    t("upgrade.feature4"),
+    t("upgrade.feature5")
+  ];
 
   const handleSubscribe = async () => {
     setIsLoading(true);
@@ -53,6 +63,7 @@ export function useUpgradeScreen() {
     error,
     selectedPlan,
     setSelectedPlan,
-    handleSubscribe
+    handleSubscribe,
+    features
   };
 }

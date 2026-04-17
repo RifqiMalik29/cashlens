@@ -1,12 +1,16 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
+import { Typography } from "@components/ui/Typography";
+import { colors } from "@constants/theme";
 import { useLocalSearchParams } from "expo-router";
-import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CheckEmailForm } from "./components/CheckEmailForm";
 import { useCheckEmailConfirmation } from "./useCheckEmailConfirmation";
 
 export default function CheckEmailConfirmationScreen() {
+  const { t } = useTranslation();
   const { email } = useLocalSearchParams<{ email: string }>();
 
   const {
@@ -25,16 +29,30 @@ export default function CheckEmailConfirmationScreen() {
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 justify-center px-6">
         <View className="mt-8">
-          <Text className="text-2xl font-bold text-foreground text-center mb-2">
-            Cek Email Kamu
-          </Text>
-          <Text className="text-base text-muted-foreground text-center mb-2">
-            Kami telah mengirim kode 6 digit ke
-          </Text>
+          <Typography
+            variant="h3"
+            weight="bold"
+            color={colors.textPrimary}
+            style={{ textAlign: "center", marginBottom: 8 }}
+          >
+            {t("auth.checkEmail")}
+          </Typography>
+          <Typography
+            variant="body"
+            color={colors.textSecondary}
+            style={{ textAlign: "center", marginBottom: 8 }}
+          >
+            {t("auth.otpSentTo")}
+          </Typography>
           {email && (
-            <Text className="text-base font-semibold text-primary text-center mb-6">
+            <Typography
+              variant="body"
+              weight="semibold"
+              color={colors.primary}
+              style={{ textAlign: "center", marginBottom: 24 }}
+            >
               {email}
-            </Text>
+            </Typography>
           )}
         </View>
 
@@ -50,8 +68,8 @@ export default function CheckEmailConfirmationScreen() {
         />
 
         <AuthFooter
-          questionText="Sudah punya akun? "
-          actionText="Masuk"
+          questionText={t("auth.hasAccount") + " "}
+          actionText={t("auth.login")}
           onActionPress={handleGoToLogin}
         />
       </View>

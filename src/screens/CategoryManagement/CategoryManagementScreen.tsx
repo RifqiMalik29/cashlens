@@ -1,12 +1,22 @@
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useHeader } from "@hooks/useHeader";
 import { Plus } from "lucide-react-native";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View
+} from "react-native";
 
+import { AddCategorySheet } from "./components/AddCategorySheet";
 import { CategoryCard } from "./components/CategoryCard";
 import { useCategoryManagementScreen } from "./useCategoryManagementScreen";
 
 export default function CategoryManagementScreen() {
+  const { t } = useTranslation();
   const {
     filterTypes,
     selectedType,
@@ -16,8 +26,20 @@ export default function CategoryManagementScreen() {
     handleAddCategory,
     handleUpdateCategory,
     handleFilterSelect,
-    error
+    error,
+    isSheetVisible,
+    newCategoryName,
+    newCategoryType,
+    isAddingCategory,
+    sheetError,
+    setNewCategoryName,
+    setNewCategoryType,
+    handleSubmitNewCategory,
+    handleCloseSheet,
+    scrollViewRef
   } = useCategoryManagementScreen();
+
+  useHeader({ statusBarStyle: "dark", title: t("categories.title") });
 
   return (
     <View className="flex-1 bg-background">
@@ -53,69 +75,91 @@ export default function CategoryManagementScreen() {
         )}
       </View>
 
-      <ScrollView className="flex-1 px-6">
-        {expenseCategories.length > 0 && (
-          <View className="mb-6">
-            <Typography
-              variant="body"
-              weight="semibold"
-              color="#EF4444"
-              style={{ marginBottom: spacing[2] }}
-            >
-              Kategori Pengeluaran ({expenseCategories.length})
-            </Typography>
-            <View className="flex-row flex-wrap gap-2">
-              {expenseCategories.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  onDelete={handleDeleteCategory}
-                  onUpdate={handleUpdateCategory}
-                />
-              ))}
-            </View>
-          </View>
-        )}
-
-        {incomeCategories.length > 0 && (
-          <View className="mb-6">
-            <Typography
-              variant="body"
-              weight="semibold"
-              color="#10B981"
-              style={{ marginBottom: spacing[2] }}
-            >
-              Kategori Pemasukan ({incomeCategories.length})
-            </Typography>
-            <View className="flex-row flex-wrap gap-2">
-              {incomeCategories.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  onDelete={handleDeleteCategory}
-                  onUpdate={handleUpdateCategory}
-                />
-              ))}
-            </View>
-          </View>
-        )}
-
-        <TouchableOpacity
-          onPress={handleAddCategory}
-          className="flex-row items-center justify-center border-2 border-dashed border-border rounded-lg py-4 mb-8"
-          activeOpacity={0.7}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          className="flex-1 px-6"
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets
         >
-          <Plus size={20} color="#9CA3AF" />
-          <Typography
-            variant="body"
-            weight="medium"
-            color="#9CA3AF"
-            style={{ marginLeft: 8 }}
+          {expenseCategories.length > 0 && (
+            <View className="mb-6">
+              <Typography
+                variant="body"
+                weight="semibold"
+                color="#EF4444"
+                style={{ marginBottom: spacing[2] }}
+              >
+                {t("categories.expenseCategories")} ({expenseCategories.length})
+              </Typography>
+              <View className="flex-row flex-wrap gap-2">
+                {expenseCategories.map((category) => (
+                  <CategoryCard
+                    key={category.id}
+                    category={category}
+                    onDelete={handleDeleteCategory}
+                    onUpdate={handleUpdateCategory}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+
+          {incomeCategories.length > 0 && (
+            <View className="mb-6">
+              <Typography
+                variant="body"
+                weight="semibold"
+                color="#10B981"
+                style={{ marginBottom: spacing[2] }}
+              >
+                {t("categories.incomeCategories")} ({incomeCategories.length})
+              </Typography>
+              <View className="flex-row flex-wrap gap-2">
+                {incomeCategories.map((category) => (
+                  <CategoryCard
+                    key={category.id}
+                    category={category}
+                    onDelete={handleDeleteCategory}
+                    onUpdate={handleUpdateCategory}
+                  />
+                ))}
+              </View>
+            </View>
+          )}
+
+          <TouchableOpacity
+            onPress={handleAddCategory}
+            className="flex-row items-center justify-center border-2 border-dashed border-border rounded-lg py-4 mb-8"
+            activeOpacity={0.7}
           >
-            Tambah Kategori Custom
-          </Typography>
-        </TouchableOpacity>
-      </ScrollView>
+            <Plus size={20} color="#9CA3AF" />
+            <Typography
+              variant="body"
+              weight="medium"
+              color="#9CA3AF"
+              style={{ marginLeft: 8 }}
+            >
+              {t("categories.addCustom")}
+            </Typography>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <AddCategorySheet
+        isVisible={isSheetVisible}
+        name={newCategoryName}
+        type={newCategoryType}
+        isLoading={isAddingCategory}
+        error={sheetError}
+        onNameChange={setNewCategoryName}
+        onTypeChange={setNewCategoryType}
+        onSubmit={handleSubmitNewCategory}
+        onClose={handleCloseSheet}
+      />
     </View>
   );
 }

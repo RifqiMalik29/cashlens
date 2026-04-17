@@ -1,4 +1,5 @@
 import { type TransactionType } from "@types";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -9,6 +10,8 @@ interface TypeSelectorProps {
 }
 
 export function TypeSelector({ type, onTypeChange }: TypeSelectorProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="flex-row rounded-lg bg-surface-secondary p-1 mb-6">
       <TouchableOpacity
@@ -23,7 +26,7 @@ export function TypeSelector({ type, onTypeChange }: TypeSelectorProps) {
           weight="semibold"
           color={type === "expense" ? "#EF4444" : "#6B7280"}
         >
-          Pengeluaran
+          {t("form.expense")}
         </Typography>
       </TouchableOpacity>
       <TouchableOpacity
@@ -38,7 +41,7 @@ export function TypeSelector({ type, onTypeChange }: TypeSelectorProps) {
           weight="semibold"
           color={type === "income" ? "#10B981" : "#6B7280"}
         >
-          Pemasukan
+          {t("form.income")}
         </Typography>
       </TouchableOpacity>
     </View>

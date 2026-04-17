@@ -1,12 +1,14 @@
 import { Typography } from "@components/ui/Typography";
 import { colors, spacing } from "@constants/theme";
 import { Check } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useLanguageSelector } from "./useLanguageSelector";
 
 export default function LanguageSelectorScreen() {
+  const { t } = useTranslation();
   const { languages, currentLanguage, handleSelectLanguage } =
     useLanguageSelector();
 
@@ -60,8 +62,7 @@ export default function LanguageSelectorScreen() {
 
         <View className="mt-6 p-4 bg-surface-secondary rounded-xl">
           <Typography variant="caption" color={colors.textSecondary}>
-            Changing the language will immediately apply to all screens in the
-            app. Your preference is saved automatically.
+            {t("language.changeInfo")}
           </Typography>
         </View>
 

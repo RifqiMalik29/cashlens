@@ -1,6 +1,7 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { AuthLogo } from "@components/auth/AuthLogo";
 import { spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -8,6 +9,7 @@ import { LoginForm } from "./components/LoginForm";
 import { useLogin } from "./useLogin";
 
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const {
     email,
     setEmail,
@@ -50,8 +52,8 @@ export default function LoginScreen() {
               onTogglePassword={toggleShowPassword}
             />
             <AuthFooter
-              questionText="Belum punya akun? "
-              actionText="Daftar"
+              questionText={t("auth.noAccount") + " "}
+              actionText={t("auth.register")}
               onActionPress={handleGoToRegister}
             />
           </View>

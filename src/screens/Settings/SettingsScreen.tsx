@@ -132,7 +132,7 @@ export default function SettingsScreen() {
           <View style={{ marginTop: spacing[3] }}>
             <SettingsItem
               icon={<Trash2 size={20} color="#EF4444" />}
-              label="Hapus Akun"
+              label={t("settings.deleteAccount")}
               danger
               onPress={handleDeleteAccount}
             />

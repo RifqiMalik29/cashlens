@@ -3,6 +3,7 @@ import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
 import { Eye, EyeOff } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 interface LoginFormProps {
@@ -28,11 +29,13 @@ export function LoginForm({
   onLogin,
   onTogglePassword
 }: LoginFormProps) {
+  const { t } = useTranslation();
+
   return (
     <View className="mt-8">
       <Input
-        label="Email"
-        placeholder="nama@email.com"
+        label={t("auth.email")}
+        placeholder={t("auth.emailPlaceholder")}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -41,8 +44,8 @@ export function LoginForm({
 
       <View style={{ marginTop: spacing[4] }}>
         <Input
-          label="Kata Sandi"
-          placeholder="Minimal 6 karakter"
+          label={t("auth.password")}
+          placeholder={t("auth.passwordPlaceholder")}
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
@@ -73,7 +76,7 @@ export function LoginForm({
         fullWidth
         style={{ marginTop: spacing[6] }}
       >
-        Masuk
+        {t("auth.login")}
       </Button>
     </View>
   );

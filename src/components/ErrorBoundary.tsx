@@ -1,8 +1,7 @@
-import * as Sentry from "@sentry/react-native";
 import { Button, Card, Typography } from "@components/ui";
-import { colors } from "@constants/theme";
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react-native";
+import * as Sentry from "@sentry/react-native";
+import { AlertTriangle } from "lucide-react-native";
+import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -67,7 +66,8 @@ export class ErrorBoundary extends Component<Props, State> {
               color="secondary"
               className="text-center mb-6"
             >
-              Maaf, terjadi masalah yang tidak terduga. Jangan khawatir, data Anda aman.
+              Maaf, terjadi masalah yang tidak terduga. Jangan khawatir, data
+              Anda aman.
             </Typography>
 
             {__DEV__ && this.state.error && (

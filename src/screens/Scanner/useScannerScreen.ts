@@ -22,9 +22,7 @@ export function useScannerScreen() {
     setError,
     retryScan,
     processingStatus,
-    processingMethod,
-    showPaywall,
-    setShowPaywall
+    processingMethod
   } = useScannerProcessor({ isLimitReached: isScanLimitReached, recordScan });
 
   const {
@@ -66,11 +64,9 @@ export function useScannerScreen() {
     isOffline,
     remainingScans: remaining,
     scanLimit,
-    isLimitReached: isScanLimitReached,
     processingStatus,
     processingMethod,
-    showPaywall,
-    setShowPaywall,
-    isPremium
+    isPremium,
+    isLimitReached: isScanLimitReached
   };
 }

@@ -16,56 +16,46 @@ interface BudgetWithProgress extends Budget {
 
 function getBudgetPeriodDates(budget: Budget) {
   const now = new Date();
-  let startDate = new Date(budget.startDate);
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+  let startDate: Date;
   let endDate: Date;
   let periodLabel: string;
 
   switch (budget.period) {
     case "weekly": {
-      const dayOfWeek = startDate.getDay();
-      const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-      const monday = new Date(startDate);
-      monday.setDate(startDate.getDate() + diffToMonday);
-      monday.setHours(0, 0, 0, 0);
+      const day = now.getDay();
+      const diff = now.getDate() - (day === 0 ? 6 : day - 1);
+      startDate = new Date(todayStart);
+      startDate.setDate(diff);
+      startDate.setHours(0, 0, 0, 0);
 
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-      sunday.setHours(23, 59, 59, 999);
-
-      endDate = sunday;
+      endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + 6);
+      endDate.setHours(23, 59, 59, 999);
       periodLabel = "Mingguan";
       break;
     }
     case "monthly": {
-      const firstDay = new Date(
-        startDate.getFullYear(),
-        startDate.getMonth(),
-        1
-      );
-      const lastDay = new Date(
-        startDate.getFullYear(),
-        startDate.getMonth() + 1,
-        0
-      );
-      lastDay.setHours(23, 59, 59, 999);
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      startDate.setHours(0, 0, 0, 0);
 
-      startDate = firstDay;
-      endDate = lastDay;
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      endDate.setHours(23, 59, 59, 999);
       periodLabel = "Bulanan";
       break;
     }
     case "yearly": {
-      const firstDay = new Date(startDate.getFullYear(), 0, 1);
-      const lastDay = new Date(startDate.getFullYear(), 11, 31);
-      lastDay.setHours(23, 59, 59, 999);
+      startDate = new Date(now.getFullYear(), 0, 1);
+      startDate.setHours(0, 0, 0, 0);
 
-      startDate = firstDay;
-      endDate = lastDay;
+      endDate = new Date(now.getFullYear(), 11, 31);
+      endDate.setHours(23, 59, 59, 999);
       periodLabel = "Tahunan";
       break;
     }
     default:
+      startDate = new Date(budget.startDate);
       endDate = now;
       periodLabel = "Custom";
   }

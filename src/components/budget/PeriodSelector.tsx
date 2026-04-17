@@ -1,29 +1,27 @@
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 type Period = "weekly" | "monthly" | "yearly";
-
-interface PeriodOption {
-  value: Period;
-  label: string;
-}
 
 interface PeriodSelectorProps {
   selectedPeriod: Period;
   onSelectPeriod: (period: Period) => void;
 }
 
-const PERIOD_OPTIONS: PeriodOption[] = [
-  { value: "weekly", label: "Mingguan" },
-  { value: "monthly", label: "Bulanan" },
-  { value: "yearly", label: "Tahunan" }
-];
-
 export function PeriodSelector({
   selectedPeriod,
   onSelectPeriod
 }: PeriodSelectorProps) {
+  const { t } = useTranslation();
+
+  const periodOptions: { value: Period; label: string }[] = [
+    { value: "weekly", label: t("budget.weekly") },
+    { value: "monthly", label: t("budget.monthly") },
+    { value: "yearly", label: t("budget.yearly") }
+  ];
+
   return (
     <View style={{ marginTop: spacing[5] }}>
       <Typography
@@ -32,10 +30,10 @@ export function PeriodSelector({
         color="#6B7280"
         style={{ marginBottom: spacing[2] }}
       >
-        Periode
+        {t("budget.period")}
       </Typography>
       <View className="flex-row rounded-lg bg-surface-secondary p-1">
-        {PERIOD_OPTIONS.map((option) => (
+        {periodOptions.map((option) => (
           <TouchableOpacity
             key={option.value}
             onPress={() => onSelectPeriod(option.value)}

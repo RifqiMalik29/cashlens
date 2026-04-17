@@ -1,5 +1,4 @@
 import { processReceiptIntelligence } from "@services/receiptParser";
-import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { createLogger } from "@utils/logger";
@@ -21,8 +20,6 @@ interface UseScannerProcessorResult {
   recordScan: () => Promise<void>;
   processingStatus: string;
   processingMethod?: "local_ocr" | "gemini_text" | "gemini_vision";
-  showPaywall: boolean;
-  setShowPaywall: (show: boolean) => void;
 }
 
 interface UseScannerProcessorOptions {
@@ -41,29 +38,15 @@ export function useScannerProcessor({
   const [processingMethod, setProcessingMethod] = useState<
     "local_ocr" | "gemini_text" | "gemini_vision" | undefined
   >();
-  const [showPaywall, setShowPaywall] = useState(false);
   const [lastImageUri, setLastImageUri] = useState<string | null>(null);
 
-  const { subscriptionTier, stealthScansUsed } = useAuthStore();
-  const premiumQuota = useSubscriptionStore((state) => state.quota);
   const categories = useCategoryStore((state) => state.categories);
+  const fetchSubscription = useSubscriptionStore(
+    (state) => state.fetchSubscription
+  );
 
   const processScannedData = useCallback(
     async (imageUri: string) => {
-      // PAYWALL CHECK
-      const isFreeUser = subscriptionTier === "free";
-      const isPremiumUser = subscriptionTier === "premium";
-      const freeTrialExhausted = isFreeUser && stealthScansUsed >= 5;
-      const premiumExhausted =
-        isPremiumUser &&
-        premiumQuota.scansLimit !== null &&
-        premiumQuota.scansUsed >= premiumQuota.scansLimit;
-
-      if (freeTrialExhausted || premiumExhausted) {
-        setShowPaywall(true);
-        return;
-      }
-
       logger.debug("START INTELLIGENT SCAN");
       setLastImageUri(imageUri);
       setIsScanning(true);
@@ -80,6 +63,8 @@ export function useScannerProcessor({
 
         if (result.method !== "local_ocr") {
           await recordScan();
+          // Fetch the latest subscription data to update quota in the UI
+          await fetchSubscription();
         } else {
           setIsOffline(true);
         }
@@ -126,12 +111,17 @@ export function useScannerProcessor({
       } catch (err) {
         logger.error("✗ Intelligent processing failed:", err);
         const message = (err as Error).message || "";
+        // Let the screen handle the limit reached view, but
+        // we can still get a 403 here if the quota was used up
+        // on another device between when the screen loaded and the
+        // user pressed the scan button.
         if (
           message.includes("403") ||
           message.toLowerCase().includes("limit") ||
           message.toLowerCase().includes("quota")
         ) {
-          setShowPaywall(true);
+          // Re-fetch subscription to make sure the UI is up to date
+          await fetchSubscription();
         } else {
           setError(message || "Gagal memproses struk");
         }
@@ -139,15 +129,7 @@ export function useScannerProcessor({
         setIsScanning(false);
       }
     },
-    [
-      router,
-      recordScan,
-      subscriptionTier,
-      stealthScansUsed,
-      categories,
-      premiumQuota.scansLimit,
-      premiumQuota.scansUsed
-    ]
+    [router, recordScan, categories, fetchSubscription]
   );
 
   const handlePickFromGallery = useCallback(async () => {
@@ -194,8 +176,6 @@ export function useScannerProcessor({
     retryScan,
     recordScan,
     processingStatus,
-    processingMethod,
-    showPaywall,
-    setShowPaywall
+    processingMethod
   };
 }
