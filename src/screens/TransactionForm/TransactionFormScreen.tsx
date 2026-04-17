@@ -7,7 +7,7 @@ import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
-import { useRouter } from "expo-router";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 
@@ -15,7 +15,7 @@ import { useTransactionForm } from "./useTransactionForm";
 
 export default function TransactionFormScreen() {
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useProtectedRouter();
   const {
     amount,
     setAmount,

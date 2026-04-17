@@ -1,16 +1,16 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { authService } from "@services/api/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useSyncStore } from "@stores/useSyncStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
-import { useRouter } from "expo-router";
 import { useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useRegister() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { reset } = useAuthStore();
   const resetSyncStatus = useSyncStore((state) => state.reset);
 

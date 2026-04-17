@@ -1,10 +1,11 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useQuota } from "@hooks/useQuota";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useDraftStore } from "@stores/useDraftStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { type TransactionType } from "@types";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
 import { handleDelete, handleSave, handleTypeChange } from "./handlers";
@@ -12,7 +13,7 @@ import { handleDelete, handleSave, handleTypeChange } from "./handlers";
 const DEFAULT_AMOUNT = "";
 
 export function useTransactionForm() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const {
     id,
     amount: scannedAmount,

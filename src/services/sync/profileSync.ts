@@ -20,14 +20,10 @@ export async function pullProfile(
   try {
     const data = await authService.getMe();
 
-    // Assuming backend returns preferences nested in user or profile
-    // Based on MASTER_ROADMAP: user has preferences
-    const prefs = data.preferences;
-
     const preferences: UserPreferences = {
-      baseCurrency: prefs?.base_currency || "IDR",
-      theme: (prefs?.theme as UserPreferences["theme"]) || "system",
-      language: prefs?.language || "id",
+      baseCurrency: data.base_currency || "IDR",
+      theme: "system",
+      language: data.language || "id",
       createdAt: data.created_at || new Date().toISOString()
     };
 

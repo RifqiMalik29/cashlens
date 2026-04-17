@@ -1,4 +1,5 @@
 import i18n, { normalizeLanguage } from "@services/i18n";
+import { getDeviceId } from "@utils/deviceId";
 
 import { api } from "./apiClient";
 
@@ -6,12 +7,16 @@ export interface BackendUser {
   id: string;
   email: string;
   name?: string;
+  language?: string;
+  base_currency?: string;
+  subscription_tier?: "free" | "premium";
+  subscription_expires_at?: string | null;
+  is_founder?: boolean;
+  device_id?: string | null;
+  trial_status?: "inactive" | "active" | "expired" | "denied";
+  trial_start_at?: string | null;
+  trial_end_at?: string | null;
   telegram_chat_id?: string | number;
-  preferences?: {
-    base_currency?: string;
-    theme?: string;
-    language?: string;
-  };
   created_at?: string;
   updated_at?: string;
 }
@@ -24,26 +29,33 @@ interface AuthData {
 
 export const authService = {
   login: async (email: string, password: string): Promise<AuthData> => {
-    const res = await api.post<AuthData>(
+    const device_id = await getDeviceId();
+    return api.post<AuthData>(
       "/api/v1/auth/login",
-      { email, password, language: normalizeLanguage(i18n.language) },
+      { email, password, device_id },
       { isAuth: false }
     );
-    // API client auto-unwraps data wrapper
-    return res;
   },
 
   register: async (
     email: string,
     password: string,
-    name: string
-  ): Promise<{ user: BackendUser }> => {
-    const res = await api.post<{ user: BackendUser }>(
+    name: string,
+    base_currency?: string
+  ): Promise<AuthData> => {
+    const device_id = await getDeviceId();
+    return api.post<AuthData>(
       "/api/v1/auth/register",
-      { email, password, name, language: normalizeLanguage(i18n.language) },
+      {
+        email,
+        password,
+        name,
+        language: normalizeLanguage(i18n.language),
+        base_currency: base_currency ?? "IDR",
+        device_id
+      },
       { isAuth: false }
     );
-    return res;
   },
 
   confirmEmail: async (email: string, otp: string): Promise<void> => {
@@ -66,8 +78,8 @@ export const authService = {
     await api.patch("/api/v1/auth/push-token", { push_token: pushToken });
   },
 
-  logout: async (refreshToken: string): Promise<void> => {
-    return api.post("/api/v1/auth/logout", { refresh_token: refreshToken });
+  logout: async (): Promise<void> => {
+    return api.post("/api/v1/auth/logout");
   },
 
   getMe: async (): Promise<BackendUser> => {
@@ -76,9 +88,9 @@ export const authService = {
 
   getTelegramStatus: async (): Promise<{
     is_linked: boolean;
-    chat_id?: string;
+    chat_id?: number;
   }> => {
-    return await api.get<{ is_linked: boolean; chat_id?: string }>(
+    return await api.get<{ is_linked: boolean; chat_id?: number }>(
       "/api/v1/auth/telegram/status"
     );
   },

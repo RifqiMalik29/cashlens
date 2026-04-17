@@ -27,7 +27,7 @@ export async function pullTransactions(userId: string): Promise<Transaction[]> {
       type: (item.category?.type ?? "expense") as Transaction["type"],
       categoryId: item.category_id || "",
       note: item.description,
-      date: item.transaction_date,
+      date: item.date ?? item.transaction_date,
       receiptImageUri: undefined,
       isFromScan: false,
       createdAt: item.created_at,

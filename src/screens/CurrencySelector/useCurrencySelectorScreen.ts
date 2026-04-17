@@ -1,11 +1,11 @@
 import { currencies } from "@constants/currencies";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useAuthStore } from "@stores/useAuthStore";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 
 export function useCurrencySelectorScreen() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { preferences, updatePreferences } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState("");
 

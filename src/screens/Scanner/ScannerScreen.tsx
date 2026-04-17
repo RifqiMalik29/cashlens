@@ -1,7 +1,7 @@
 import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
 import { Typography } from "@components/ui";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { CameraView } from "expo-camera";
-import { useRouter } from "expo-router";
 import React from "react";
 import { StatusBar, StyleSheet, View } from "react-native";
 
@@ -18,7 +18,7 @@ import {
 import { useScannerScreen } from "./useScannerScreen";
 
 export default function ScannerScreen() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const {
     cameraRef,
     permission,

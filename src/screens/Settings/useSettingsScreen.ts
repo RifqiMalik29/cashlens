@@ -2,12 +2,12 @@ import { currencies } from "@constants/currencies";
 import { colors } from "@constants/theme";
 import { useCloudSync } from "@hooks/useCloudSync";
 import { useHeader } from "@hooks/useHeader";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { authService } from "@services/api/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import * as Haptics from "expo-haptics";
-import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -23,7 +23,7 @@ export interface SettingsDialogState {
 }
 
 export function useSettingsScreen() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { reset, preferences, userEmail, stealthScansUsed, resetStealthScans } =
     useAuthStore();
   const {
@@ -82,11 +82,7 @@ export function useSettingsScreen() {
         setDialogState((prev) => ({ ...prev, isVisible: false }));
         setLogoutSyncing(true);
         try {
-          const { refreshToken } = useAuthStore.getState();
-          // Call backend logout to revoke refresh token
-          if (refreshToken) {
-            await authService.logout(refreshToken);
-          }
+          await authService.logout();
         } catch (error) {
           // Continue with local logout even if backend logout fails
           // eslint-disable-next-line no-console

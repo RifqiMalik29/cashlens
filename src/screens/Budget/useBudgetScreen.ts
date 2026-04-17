@@ -1,9 +1,9 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { type Budget, type Category } from "@types";
-import { useRouter } from "expo-router";
 import { useCallback, useMemo } from "react";
 
 interface BudgetWithProgress extends Budget {
@@ -64,7 +64,7 @@ function getBudgetPeriodDates(budget: Budget) {
 }
 
 export function useBudgetScreen() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { baseCurrency } = useAuthStore((state) => state.preferences);
   const budgets = useBudgetStore((state) => state.budgets);
   const categories = useCategoryStore((state) => state.categories);

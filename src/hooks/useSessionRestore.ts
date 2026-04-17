@@ -40,7 +40,7 @@ export function useSessionRestore() {
         setUserEmail(user.email);
 
         // Sync language from backend (source of truth)
-        const backendLang = user.preferences?.language;
+        const backendLang = user.language;
         if (backendLang && normalizeLanguage(backendLang) === backendLang) {
           const currentLang = useAuthStore.getState().preferences.language;
           if (backendLang !== currentLang) {

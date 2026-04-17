@@ -1,3 +1,4 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { authService } from "@services/api/authService";
 import i18n, { normalizeLanguage } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
@@ -5,13 +6,12 @@ import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useSyncStore } from "@stores/useSyncStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
-import { useRouter } from "expo-router";
 import { useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function useLogin() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { setAuthenticated, setUserId, setTokens, updatePreferences, reset } =
     useAuthStore();
   const resetSyncStatus = useSyncStore((state) => state.reset);
@@ -62,11 +62,14 @@ export function useLogin() {
       setTokens(accessToken, refreshToken);
       setUserId(data.user.id, data.user.email);
 
-      // Save language preference from backend, fallback to current i18n language
-      const backendLang = data.user.preferences?.language;
+      const backendLang = data.user.language;
       if (backendLang && normalizeLanguage(backendLang) === backendLang) {
         updatePreferences({ language: backendLang });
         i18n.changeLanguage(backendLang);
+      }
+
+      if (data.user.base_currency) {
+        updatePreferences({ baseCurrency: data.user.base_currency });
       }
 
       setAuthenticated(true);
