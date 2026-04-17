@@ -1,9 +1,9 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { authService } from "@services/api/authService";
-import { useRouter } from "expo-router";
 import { useState } from "react";
 
 export function useCheckEmailConfirmation(email?: string) {
-  const router = useRouter();
+  const router = useProtectedRouter();
 
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);

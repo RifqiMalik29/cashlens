@@ -1,5 +1,5 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useAuthStore } from "@stores/useAuthStore";
-import { useRouter } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type {
   FlatList,
@@ -11,7 +11,7 @@ import { useWindowDimensions } from "react-native";
 import { ONBOARDING_SLIDES } from "./onboardingSlides";
 
 export function useOnboarding() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { setOnboarded } = useAuthStore();
   const { height, width } = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);

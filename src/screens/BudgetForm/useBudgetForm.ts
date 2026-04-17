@@ -1,13 +1,14 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { budgetService } from "@services/api/budgetService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { type Budget, type BudgetPeriod } from "@types";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 
 export function useBudgetForm() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
 
   const { baseCurrency } = useAuthStore((state) => state.preferences);
