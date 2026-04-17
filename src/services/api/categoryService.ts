@@ -9,6 +9,7 @@ export interface CategoryResponse {
   icon: string;
   color: string;
   type: "income" | "expense";
+  is_system: boolean;
   is_default: boolean;
   created_at: string;
 }
