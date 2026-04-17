@@ -18,27 +18,35 @@ export function usePaymentVerification(): UsePaymentVerificationResult {
   const fetchSubscription = useSubscriptionStore(
     (state) => state.fetchSubscription
   );
-  const [verificationState, setVerificationState] = useState<VerificationState>("loading");
+  const [verificationState, setVerificationState] =
+    useState<VerificationState>("loading");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const verifyPayment = useCallback(async (invoiceId?: string) => {
-    if (!invoiceId) {
-      setErrorMessage("Invoice ID tidak ditemukan");
-      setVerificationState("error");
-      return;
-    }
+  const verifyPayment = useCallback(
+    async (invoiceId?: string) => {
+      if (!invoiceId) {
+        setErrorMessage("Invoice ID tidak ditemukan");
+        setVerificationState("error");
+        return;
+      }
 
-    try {
-      await subscriptionService.verifySubscription(invoiceId);
-      await fetchSubscription();
-      setVerificationState("success");
-    } catch (err) {
-      const message = (err as Error).message || "Verifikasi pembayaran gagal";
-      logger.error("PaymentVerification", "Verification failed:", err as Error);
-      setErrorMessage(message);
-      setVerificationState("error");
-    }
-  }, [fetchSubscription]);
+      try {
+        await subscriptionService.verifySubscription(invoiceId);
+        await fetchSubscription();
+        setVerificationState("success");
+      } catch (err) {
+        const message = (err as Error).message || "Verifikasi pembayaran gagal";
+        logger.error(
+          "PaymentVerification",
+          "Verification failed:",
+          err as Error
+        );
+        setErrorMessage(message);
+        setVerificationState("error");
+      }
+    },
+    [fetchSubscription]
+  );
 
   const resetVerification = useCallback(() => {
     setVerificationState("loading");
