@@ -1,0 +1,16 @@
+{
+  "appName": "CashLens",
+  "tagline": "Scan, track, and budget your expenses.",
+  "primaryColor": "#4CAF82",
+  "secondaryColor": "#E8F5EE",
+  "targetUser": "Individuals or small households looking to manage personal finances, track expenses, and create budgets.",
+  "features": [
+    "Receipt Scanning (OCR)",
+    "Budget Management",
+    "Transaction Tracking",
+    "User Authentication",
+    "Category Management"
+  ],
+  "problemSolved": "CashLens solves the problem of manual expense tracking by enabling users to easily digitize receipts and categorize transactions, simplifying personal finance management and budgeting.",
+  "callToAction": "Start Budgeting Today"
+}
