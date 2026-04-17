@@ -13,7 +13,7 @@ export function LimitReachedView({ onUpgrade }: LimitReachedViewProps) {
   const { t } = useTranslation();
   return (
     <SafeAreaView className="flex-1 bg-background justify-center items-center p-8">
-      <View className="items-center">
+      <View className="w-full items-center">
         <ShieldAlert size={48} color="#F59E0B" />
         <Typography variant="h3" weight="bold" className="mt-4 text-center">
           {t("paywall.title")}

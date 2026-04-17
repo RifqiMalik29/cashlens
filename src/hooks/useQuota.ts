@@ -95,6 +95,19 @@ export function useQuota() {
     })();
   }, [currentMonth]);
 
+  // If backend reports fewer scans than local, the quota was reset (new billing
+  // period or manual reset). Sync local down to backend to avoid false limit.
+  useEffect(() => {
+    if (!isScanQuotaLoading && quota.scansUsed < scanQuota.count) {
+      const synced = { count: quota.scansUsed, month: currentMonth };
+      setScanQuota(synced);
+      AsyncStorage.setItem(
+        SCAN_QUOTA_STORAGE_KEY,
+        JSON.stringify(synced)
+      ).catch((e) => logger.error("Failed to sync scan quota down:", e));
+    }
+  }, [quota.scansUsed, scanQuota.count, isScanQuotaLoading, currentMonth]);
+
   // Use backend scan usage if local count is lower
   const scanCount = Math.max(scanQuota.count, quota.scansUsed);
   const isScanLimitReached =
