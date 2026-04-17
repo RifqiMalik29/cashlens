@@ -17,7 +17,7 @@ export function useTelegramRealtime() {
       try {
         const status = await authService.getTelegramStatus();
         if (status.is_linked && status.chat_id) {
-          setTelegramLinked(true, status.chat_id);
+          setTelegramLinked(true, String(status.chat_id));
         } else {
           setTelegramLinked(false);
         }

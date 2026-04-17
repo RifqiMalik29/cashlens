@@ -82,11 +82,7 @@ export function useSettingsScreen() {
         setDialogState((prev) => ({ ...prev, isVisible: false }));
         setLogoutSyncing(true);
         try {
-          const { refreshToken } = useAuthStore.getState();
-          // Call backend logout to revoke refresh token
-          if (refreshToken) {
-            await authService.logout(refreshToken);
-          }
+          await authService.logout();
         } catch (error) {
           // Continue with local logout even if backend logout fails
           // eslint-disable-next-line no-console

@@ -62,11 +62,14 @@ export function useLogin() {
       setTokens(accessToken, refreshToken);
       setUserId(data.user.id, data.user.email);
 
-      // Save language preference from backend, fallback to current i18n language
-      const backendLang = data.user.preferences?.language;
+      const backendLang = data.user.language;
       if (backendLang && normalizeLanguage(backendLang) === backendLang) {
         updatePreferences({ language: backendLang });
         i18n.changeLanguage(backendLang);
+      }
+
+      if (data.user.base_currency) {
+        updatePreferences({ baseCurrency: data.user.base_currency });
       }
 
       setAuthenticated(true);
