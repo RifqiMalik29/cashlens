@@ -21,7 +21,7 @@ export function useNotificationSubscription() {
     logger.debug("Dashboard", "Subscribing to notifications...");
     const unsubscribe = notificationService.subscribe((raw) => {
       // Filter by enabled packages (ignoring the test package check which is handled in the parser)
-      const isTestPackage = raw.packageName === "com.rifqi2173.cashlens";
+      const isTestPackage = raw.packageName === "com.cashlens.app";
       if (!isTestPackage && !enabledPackages.includes(raw.packageName)) {
         logger.debug(
           "Dashboard",

@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:229668836733:android:944936452d4df46e38e814",
+        "android_client_info": {
+          "package_name": "com.cashlens.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVlSVZgk_2Md6Udy1fKE2y4EDUoRHU0Ss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:229668836733:android:6f791719e468525c38e814",
         "android_client_info": {
           "package_name": "com.rifqi2173.cashlens"

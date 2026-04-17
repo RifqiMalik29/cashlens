@@ -12,7 +12,7 @@ export default {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
-      bundleIdentifier: IS_DEV ? "com.cashlens.app.dev" : "com.rifqi2173.cashlens"
+      bundleIdentifier: IS_DEV ? "com.cashlens.app.dev" : "com.cashlens.app"
     },
     android: {
       adaptiveIcon: {
@@ -23,7 +23,7 @@ export default {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
-      package: IS_DEV ? "com.cashlens.app.dev" : "com.rifqi2173.cashlens",
+      package: IS_DEV ? "com.cashlens.app.dev" : "com.cashlens.app",
       permissions: [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"

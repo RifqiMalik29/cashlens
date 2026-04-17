@@ -13,7 +13,7 @@ const PARSERS = [
     // BCA Mobile
     name: "BCA",
     package: "com.bca.mobile",
-    testPackage: "com.rifqi2173.cashlens",
+    testPackage: "com.cashlens.app",
     regex: /Transfer Rp ([\d.,]+) ke (.*) BERHASIL/i,
     extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
       amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
