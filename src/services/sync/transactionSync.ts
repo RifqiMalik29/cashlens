@@ -3,7 +3,6 @@ import { type Transaction } from "@types";
 import { transactionService } from "../api/transactionService";
 import { isValidUserId, type SyncResult } from "./syncUtils";
 
- 
 export async function pushTransactions(
   _userId: string,
   _transactions: Transaction[]

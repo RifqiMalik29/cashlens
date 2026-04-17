@@ -1,8 +1,8 @@
 import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
-import { Brain, Cpu, Eye,Sparkles } from "lucide-react-native";
+import { Brain, Cpu, Eye, Sparkles } from "lucide-react-native";
 import React from "react";
-import { ActivityIndicator,View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 interface AIProcessingIndicatorProps {
   status: string;

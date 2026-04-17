@@ -22,7 +22,11 @@ export default function PaymentSuccessScreen() {
         {verificationState === "loading" && (
           <>
             <ActivityIndicator size="large" color="#4CAF82" />
-            <Typography variant="h3" weight="bold" className="text-center mb-2 mt-6">
+            <Typography
+              variant="h3"
+              weight="bold"
+              className="text-center mb-2 mt-6"
+            >
               Memverifikasi Pembayaran...
             </Typography>
             <Typography
@@ -48,8 +52,8 @@ export default function PaymentSuccessScreen() {
               color="secondary"
               className="text-center mb-8"
             >
-              Selamat! Kamu sekarang adalah pengguna Premium. Nikmati akses tanpa
-              batas ke semua fitur CashLens.
+              Selamat! Kamu sekarang adalah pengguna Premium. Nikmati akses
+              tanpa batas ke semua fitur CashLens.
             </Typography>
             <Button
               variant="primary"
@@ -79,11 +83,7 @@ export default function PaymentSuccessScreen() {
             </Typography>
             {errorMessage && (
               <View className="bg-red-50 p-4 rounded-lg mb-6">
-                <Typography
-                  variant="body"
-                  color="error"
-                  className="text-xs"
-                >
+                <Typography variant="body" color="error" className="text-xs">
                   {errorMessage}
                 </Typography>
               </View>

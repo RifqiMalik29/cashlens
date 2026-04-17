@@ -1,7 +1,8 @@
 import GorhomBottomSheet, {
   BottomSheetBackdrop,
   type BottomSheetBackdropProps,
-  BottomSheetView} from "@gorhom/bottom-sheet";
+  BottomSheetView
+} from "@gorhom/bottom-sheet";
 import React, {
   forwardRef,
   useCallback,
