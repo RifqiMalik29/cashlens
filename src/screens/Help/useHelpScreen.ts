@@ -3,8 +3,7 @@ import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import { useTranslation } from "react-i18next";
 
-const SUPPORT_EMAIL = "support@cashlens.app";
-const SUPPORT_WHATSAPP = "6281234567890"; // Format without + or dashes
+const SUPPORT_EMAIL = "cashlens.app@gmail.com";
 const PRIVACY_POLICY_URL =
   "https://github.com/RifqiMalik29/cashlens/blob/main/docs/PRIVACY_POLICY.md";
 
@@ -16,12 +15,9 @@ export function useHelpScreen() {
     statusBarStyle: "dark"
   });
 
-  const handleContactPress = async (type: "email" | "whatsapp") => {
+  const handleContactPress = async () => {
     await Haptics.selectionAsync();
-    const url =
-      type === "email"
-        ? `mailto:${SUPPORT_EMAIL}`
-        : `https://wa.me/${SUPPORT_WHATSAPP}`;
+    const url = `mailto:${SUPPORT_EMAIL}`;
     try {
       const supported = await Linking.canOpenURL(url);
       if (supported) await Linking.openURL(url);

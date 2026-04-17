@@ -27,7 +27,7 @@ describe("subscriptionService", () => {
           scans_limit: null
         }
       };
-      mockApi.get.mockResolvedValueOnce({ data: mockData });
+      mockApi.get.mockResolvedValueOnce(mockData);
 
       const result = await subscriptionService.getSubscription();
 
@@ -50,7 +50,7 @@ describe("subscriptionService", () => {
         invoice_id: "cashlens-abc-123",
         expires_at: "2026-04-20"
       };
-      mockApi.post.mockResolvedValueOnce({ data: mockData });
+      mockApi.post.mockResolvedValueOnce(mockData);
 
       const result = await subscriptionService.createInvoice("annual");
 
@@ -62,7 +62,7 @@ describe("subscriptionService", () => {
     });
 
     it("sends correct plan for monthly", async () => {
-      mockApi.post.mockResolvedValueOnce({ data: {} });
+      mockApi.post.mockResolvedValueOnce({});
       await subscriptionService.createInvoice("monthly");
       expect(mockApi.post).toHaveBeenCalledWith(
         "/api/v1/payments/create-invoice",

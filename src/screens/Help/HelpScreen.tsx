@@ -1,7 +1,7 @@
 import { SettingsItem, SettingsSection } from "@components/settings";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
-import { Mail, MessageSquare, Shield } from "lucide-react-native";
+import { Mail, Shield } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -54,16 +54,8 @@ export default function HelpScreen() {
             <SettingsItem
               icon={<Mail size={20} color="#4CAF82" />}
               label={t("settings.help.email")}
-              value="support@cashlens.app"
-              onPress={() => handleContactPress("email")}
-            />
-          </View>
-          <View style={{ marginTop: spacing[3] }}>
-            <SettingsItem
-              icon={<MessageSquare size={20} color="#4CAF82" />}
-              label={t("settings.help.whatsapp")}
-              value="+62 812-3456-7890"
-              onPress={() => handleContactPress("whatsapp")}
+              value="cashlens.app@gmail.com"
+              onPress={handleContactPress}
             />
           </View>
           <View className="bg-surface-secondary rounded-xl p-4 mt-4">
