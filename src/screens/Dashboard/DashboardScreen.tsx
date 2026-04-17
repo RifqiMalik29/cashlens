@@ -9,8 +9,8 @@ import { EmptyState } from "@components/transaction/EmptyState";
 import { BaseDialog } from "@components/ui";
 import { colors, spacing } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { notificationService } from "@services/notificationService";
-import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   RefreshControl,
@@ -44,7 +44,7 @@ export default function DashboardScreen() {
     isInitialPull
   } = useDashboardScreen();
 
-  const router = useRouter();
+  const router = useProtectedRouter();
 
   useHeader({
     showHeader: false,

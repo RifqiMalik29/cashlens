@@ -1,9 +1,9 @@
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { processReceiptIntelligence } from "@services/receiptParser";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { createLogger } from "@utils/logger";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 
 const logger = createLogger("[ScannerProcessor]");
@@ -30,7 +30,7 @@ interface UseScannerProcessorOptions {
 export function useScannerProcessor({
   recordScan
 }: UseScannerProcessorOptions): UseScannerProcessorResult {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isOffline, setIsOffline] = useState(false);

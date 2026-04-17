@@ -2,8 +2,9 @@ import { BaseDialog } from "@components/ui/BaseDialog";
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { type SupportedApp } from "@stores/useNotificationStore";
-import { type Href, useRouter } from "expo-router";
+import { type Href } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
 import { ScrollView, Switch, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +17,7 @@ import {
 import { useNotificationSettings } from "./useNotificationSettings";
 
 export default function NotificationSettingsScreen() {
-  const router = useRouter();
+  const router = useProtectedRouter();
   const {
     t,
     isFeatureEnabled,
