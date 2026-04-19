@@ -384,7 +384,7 @@ components:
         - category_id
         - amount
         - type
-        - date
+        - transaction_date
       properties:
         category_id:
           type: string
@@ -404,7 +404,7 @@ components:
         description:
           type: string
           example: "Lunch at restaurant"
-        date:
+        transaction_date:
           type: string
           format: date-time
           example: "2026-04-12T12:30:00Z"
@@ -425,7 +425,7 @@ components:
         description:
           type: string
           example: "Updated description"
-        date:
+        transaction_date:
           type: string
           format: date-time
 
@@ -467,7 +467,7 @@ components:
       required:
         - category_id
         - amount
-        - period
+        - period_type
         - start_date
         - end_date
       properties:
@@ -478,7 +478,7 @@ components:
           type: number
           format: double
           example: 1000000
-        period:
+        period_type:
           type: string
           enum: [daily, weekly, monthly, yearly]
           example: "monthly"
@@ -496,7 +496,7 @@ components:
           type: number
           format: double
           example: 1500000
-        period:
+        period_type:
           type: string
           enum: [daily, weekly, monthly, yearly]
         start_date:
@@ -1398,7 +1398,7 @@ paths:
               amount: 50000
               type: "expense"
               description: "Lunch at restaurant"
-              date: "2026-04-12T12:30:00Z"
+              transaction_date: "2026-04-12T12:30:00Z"
       responses:
         '201':
           description: Transaction created successfully
@@ -1572,7 +1572,7 @@ paths:
             example:
               amount: 75000
               description: "Updated lunch expense"
-              date: "2026-04-12T12:30:00Z"
+              transaction_date: "2026-04-12T12:30:00Z"
       responses:
         '200':
           description: Transaction updated successfully
@@ -1628,7 +1628,7 @@ paths:
             example:
               category_id: "550e8400-e29b-41d4-a716-446655440000"
               amount: 1000000
-              period: "monthly"
+              period_type: "monthly"
               start_date: "2026-04-01T00:00:00Z"
               end_date: "2026-04-30T23:59:59Z"
       responses:
@@ -1730,7 +1730,7 @@ paths:
               $ref: '#/components/schemas/UpdateBudgetRequest'
             example:
               amount: 1500000
-              period: "monthly"
+              period_type: "monthly"
       responses:
         '200':
           description: Budget updated successfully

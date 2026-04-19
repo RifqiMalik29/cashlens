@@ -24,6 +24,19 @@ const PARSERS = [
     })
   },
   {
+    // myBCA
+    name: "BCA",
+    package: "com.bca.mybca",
+    regex: /Transfer Rp ([\d.,]+) ke (.*) BERHASIL/i,
+    extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
+      amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),
+      currency: "IDR",
+      description: "drafts.bcaTo",
+      descriptionParams: { target: match[2].trim() },
+      type: "expense"
+    })
+  },
+  {
     // GoPay
     name: "GoPay",
     package: "com.gojek.app",
@@ -64,7 +77,7 @@ const PARSERS = [
   {
     // Bank Jago Spending
     name: "Jago",
-    package: "com.jago.app",
+    package: "com.jago.digitalbanking",
     regex: /Uang keluar Rp([\d.,]+) untuk (.*)/i,
     extract: (match: RegExpMatchArray): Partial<ParsedDraft> => ({
       amount: parseFloat(match[1].replace(/\./g, "").replace(/,/g, ".")),

@@ -17,6 +17,12 @@ export const SUPPORTED_APPS: SupportedApp[] = [
     icon: "account-balance"
   },
   {
+    id: "mybca",
+    name: "myBCA",
+    packageName: "com.bca.mybca",
+    icon: "account-balance"
+  },
+  {
     id: "gopay",
     name: "GoPay / Gojek",
     packageName: "com.gojek.app",
@@ -25,7 +31,7 @@ export const SUPPORTED_APPS: SupportedApp[] = [
   {
     id: "jago",
     name: "Bank Jago",
-    packageName: "com.jago.app",
+    packageName: "com.jago.digitalbanking",
     icon: "savings"
   },
   {

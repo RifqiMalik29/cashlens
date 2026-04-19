@@ -7,35 +7,6 @@ interface Category {
   type: string;
 }
 
-interface ResetFormParams {
-  setAmount: Dispatch<SetStateAction<string>>;
-  setType: Dispatch<SetStateAction<"income" | "expense">>;
-  setSelectedCategoryId: Dispatch<SetStateAction<string | null>>;
-  setDate: Dispatch<SetStateAction<string>>;
-  setNote: Dispatch<SetStateAction<string>>;
-  setReceiptUri: Dispatch<SetStateAction<string | undefined>>;
-  setError: Dispatch<SetStateAction<string | null>>;
-}
-
-export function resetForm(params: ResetFormParams) {
-  const {
-    setAmount,
-    setType,
-    setSelectedCategoryId,
-    setDate,
-    setNote,
-    setReceiptUri,
-    setError
-  } = params;
-  setAmount("");
-  setType("expense");
-  setSelectedCategoryId(null);
-  setDate(new Date().toISOString());
-  setNote("");
-  setReceiptUri(undefined);
-  setError(null);
-}
-
 export function handleTypeChange(params: {
   newType: TransactionType;
   categories: Category[];
@@ -124,42 +95,54 @@ export async function handleSave(d: SaveDeps) {
   try {
     const numericAmount = parseFloat(amount);
 
-    const saved = await transactionService.createTransaction({
-      categoryId: selectedCategoryId,
-      amount: numericAmount,
-      note: note.trim(),
-      date
-    });
-
-    const tx: Transaction = {
-      id: saved.id,
-      amount: numericAmount,
-      currency: baseCurrency,
-      amountInBaseCurrency: numericAmount,
-      exchangeRate: 1,
-      type,
-      categoryId: selectedCategoryId,
-      note: note.trim(),
-      date: saved.date ?? saved.transaction_date,
-      receiptImageUri: receiptUri,
-      isFromScan: isScanTransaction || !!existingTransaction?.isFromScan,
-      createdAt: saved.created_at,
-      updatedAt: saved.updated_at
-    };
-
     if (isEditMode && existingTransaction) {
-      await transactionService.updateTransaction(existingTransaction.id, {
+      const saved = await transactionService.updateTransaction(
+        existingTransaction.id,
+        {
+          categoryId: selectedCategoryId,
+          amount: numericAmount,
+          note: note.trim(),
+          date
+        }
+      );
+      updateTransaction(existingTransaction.id, {
+        id: existingTransaction.id,
+        amount: numericAmount,
+        currency: baseCurrency,
+        amountInBaseCurrency: numericAmount,
+        exchangeRate: 1,
+        type,
+        categoryId: selectedCategoryId,
+        note: note.trim(),
+        date: saved.transaction_date ?? saved.date ?? date,
+        receiptImageUri: receiptUri,
+        isFromScan: isScanTransaction || !!existingTransaction.isFromScan,
+        createdAt: existingTransaction.createdAt,
+        updatedAt: saved.updated_at
+      });
+    } else {
+      const saved = await transactionService.createTransaction({
         categoryId: selectedCategoryId,
         amount: numericAmount,
+        type,
         note: note.trim(),
         date
       });
-      updateTransaction(existingTransaction.id, {
-        ...tx,
-        id: existingTransaction.id
+      addTransaction({
+        id: saved.id,
+        amount: numericAmount,
+        currency: baseCurrency,
+        amountInBaseCurrency: numericAmount,
+        exchangeRate: 1,
+        type,
+        categoryId: selectedCategoryId,
+        note: note.trim(),
+        date: saved.transaction_date ?? saved.date ?? date,
+        receiptImageUri: receiptUri,
+        isFromScan: isScanTransaction,
+        createdAt: saved.created_at,
+        updatedAt: saved.updated_at
       });
-    } else {
-      addTransaction(tx);
       if (draftId) confirmDraft(draftId);
       resetForm();
     }
