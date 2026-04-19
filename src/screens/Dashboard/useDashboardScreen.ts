@@ -25,7 +25,7 @@ export function useDashboardScreen() {
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
   const { drafts } = useDraftStore();
-  const { isInitialPull } = useSyncStatus();
+  const { isInitialPull, lastSyncedAt, getRelativeTime } = useSyncStatus();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -189,6 +189,8 @@ export function useDashboardScreen() {
     transactionCount,
     transactionLimit,
     isPremium,
-    isInitialPull
+    isInitialPull,
+    lastSyncedAt,
+    getRelativeTime
   };
 }
