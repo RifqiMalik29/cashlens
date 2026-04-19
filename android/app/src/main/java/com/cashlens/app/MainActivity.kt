@@ -1,4 +1,4 @@
-package com.rifqi2173.cashlens
+package com.cashlens.app
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
