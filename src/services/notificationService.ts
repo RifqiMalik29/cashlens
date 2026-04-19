@@ -40,6 +40,9 @@ class NotificationService {
       "Notification",
       "Setting up DeviceEventEmitter listener for onNotificationReceived"
     );
+
+    NotificationModule.addListener("onNotificationReceived");
+
     const subscription = DeviceEventEmitter.addListener(
       "onNotificationReceived",
       (data) => {
@@ -51,7 +54,10 @@ class NotificationService {
       }
     );
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+      NotificationModule.removeListeners(1);
+    };
   }
 }
 

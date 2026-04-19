@@ -1,16 +1,23 @@
 package com.cashlens.app.services
 
+import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.WritableMap
-import com.facebook.react.modules.core.DeviceEventManagerModule
-import com.cashlens.app.MainApplication
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 class TransactionNotificationListener : NotificationListenerService() {
 
     private val TAG = "NotificationListener"
+
+    companion object {
+        const val ACTION_TRANSACTION = "com.cashlens.app.TRANSACTION_NOTIFICATION"
+        const val EXTRA_PACKAGE = "packageName"
+        const val EXTRA_TITLE = "title"
+        const val EXTRA_TEXT = "text"
+        const val EXTRA_SUB_TEXT = "subText"
+        const val EXTRA_POST_TIME = "postTime"
+    }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         val packageName = sbn.packageName
@@ -27,35 +34,15 @@ class TransactionNotificationListener : NotificationListenerService() {
         if (isLikelyTransaction) {
             Log.d(TAG, "Transaction Detected from $packageName: $text")
 
-            val payload = Arguments.createMap().apply {
-                putString("packageName", packageName)
-                putString("title", title)
-                putString("text", text)
-                putString("subText", subText)
-                putDouble("postTime", sbn.postTime.toDouble())
+            val intent = Intent(ACTION_TRANSACTION).apply {
+                putExtra(EXTRA_PACKAGE, packageName)
+                putExtra(EXTRA_TITLE, title)
+                putExtra(EXTRA_TEXT, text)
+                putExtra(EXTRA_SUB_TEXT, subText)
+                putExtra(EXTRA_POST_TIME, sbn.postTime)
             }
 
-            sendEvent(payload)
-        }
-    }
-
-    private fun sendEvent(params: WritableMap) {
-        try {
-            val reactContext = (application as MainApplication)
-                .reactNativeHost
-                .reactInstanceManager
-                .currentReactContext
-
-            if (reactContext != null) {
-                reactContext
-                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-                    .emit("onNotificationReceived", params)
-                Log.d(TAG, "Event emitted to React Native successfully")
-            } else {
-                Log.e(TAG, "ReactContext is null, cannot emit event")
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error emitting event: ${e.message}")
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
         }
     }
 }
