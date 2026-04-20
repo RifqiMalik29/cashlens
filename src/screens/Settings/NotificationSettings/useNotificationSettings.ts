@@ -7,6 +7,7 @@ import {
   useNotificationStore
 } from "@stores/useNotificationStore";
 import { logger } from "@utils/logger";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Linking } from "react-native";
@@ -48,9 +49,37 @@ export function useNotificationSettings() {
     }
   }, []);
 
+  // Re-check Telegram status each time the screen comes into focus.
+  // This replaces the global 30s poll — status only matters on this screen.
+  const checkTelegramStatus = useCallback(async () => {
+    try {
+      const status = await authService.getTelegramStatus();
+      if (status.is_linked && status.chat_id) {
+        setTelegramLinked(true, String(status.chat_id));
+      } else {
+        setTelegramLinked(false);
+      }
+    } catch (error) {
+      const msg = (error as Error).message;
+      if (!msg.includes("404")) {
+        logger.error(
+          "NotificationSettings",
+          "Error checking Telegram status:",
+          error as Error
+        );
+      }
+    }
+  }, [setTelegramLinked]);
+
   useEffect(() => {
     checkPermission();
   }, [checkPermission]);
+
+  useFocusEffect(
+    useCallback(() => {
+      checkTelegramStatus();
+    }, [checkTelegramStatus])
+  );
 
   const handleToggleFeature = (value: boolean) => {
     setFeatureEnabled(value);

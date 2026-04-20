@@ -1,4 +1,4 @@
-import { useCloudSync } from "@hooks/useCloudSync";
+import { usePullData } from "@hooks/useCloudSync";
 import { useNotificationSubscription } from "@hooks/useNotificationSubscription";
 import { useQuota } from "@hooks/useQuota";
 import { useSyncStatus } from "@hooks/useSyncStatus";
@@ -29,7 +29,7 @@ export function useDashboardScreen() {
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { pullData } = useCloudSync();
+  const pullData = usePullData();
 
   // Subscribe to notifications
   useNotificationSubscription();

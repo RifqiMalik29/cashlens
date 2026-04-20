@@ -1,6 +1,6 @@
 import { currencies } from "@constants/currencies";
 import { colors } from "@constants/theme";
-import { useCloudSync } from "@hooks/useCloudSync";
+import { usePullData } from "@hooks/useCloudSync";
 import { useHeader } from "@hooks/useHeader";
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useSyncStatus } from "@hooks/useSyncStatus";
@@ -23,7 +23,7 @@ export function useSettingsScreen() {
     expiresAt,
     fetchSubscription
   } = useSubscriptionStore();
-  const { pullData } = useCloudSync();
+  const pullData = usePullData();
   const { setLogoutSyncing, setManualSyncing } = useSyncStatus();
   const { t } = useTranslation();
   const [isRestoring, setIsRestoring] = useState(false);

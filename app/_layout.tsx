@@ -18,7 +18,6 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import type { CustomerInfo } from "react-native-purchases";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 Sentry.init({
@@ -47,9 +46,6 @@ function RootLayout() {
   const { isAuthenticated, isOnboarded, preferences, userId } = useAuthStore();
   const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
     useSyncStatus();
-  const fetchSubscription = useSubscriptionStore(
-    (state) => state.fetchSubscription
-  );
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   // Network status monitoring
@@ -73,18 +69,18 @@ function RootLayout() {
     }
   }, [isLayoutReady, userId]);
 
+  // RevenueCat listener — updates subscription store when purchase state
+  // changes (e.g. after purchase, restore, or server-side cancellation).
+  // fetchSubscription is intentionally excluded from deps: we only want to
+  // register this listener once, and the ref inside fetchSubscription is stable.
   useEffect(() => {
-    const customerInfoUpdateListener = (_customerInfo: CustomerInfo) => {
-      fetchSubscription();
+    const fetchSub = useSubscriptionStore.getState().fetchSubscription;
+    const listener = () => {
+      fetchSub();
     };
-    revenueCatService.addCustomerInfoUpdateListener(customerInfoUpdateListener);
-
-    return () => {
-      // revenueCatService.removeCustomerInfoUpdateListener(
-      //   customerInfoUpdateListener
-      // );
-    };
-  }, [fetchSubscription]);
+    revenueCatService.addCustomerInfoUpdateListener(listener);
+    // Listener is never removed (RevenueCat SDK manages its own lifecycle)
+  }, []);
 
   // Sync language preference from store
   useEffect(() => {
@@ -99,15 +95,11 @@ function RootLayout() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      // Set user context for Sentry
       setupSentryUserContext();
-      // Fetch subscription data
-      fetchSubscription();
     } else {
-      // Clear user context when logged out
       Sentry.setUser(null);
     }
-  }, [isAuthenticated, fetchSubscription]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!isLayoutReady) return;
