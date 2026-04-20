@@ -3,13 +3,15 @@ import { Typography } from "@components/ui/Typography";
 import { colors } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
 import {
+  AlertCircle,
   BadgeCheck,
   Bell,
   Crown,
   FolderOpen,
   Headphones,
   ScanLine,
-  Sparkles
+  Sparkles,
+  X
 } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import {
@@ -20,6 +22,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { PaymentResultModal } from "./PaymentResultModal";
+import { PlanCard } from "./PlanCard";
 import { useUpgradeScreen } from "./useUpgradeScreen";
 
 const FEATURE_ICONS = [
@@ -44,7 +48,11 @@ export default function UpgradeScreen() {
     monthlyPrice,
     savingsPct,
     annualPerMonth,
-    offeringsLoading
+    offeringsLoading,
+    setError,
+    paymentStatus,
+    paymentErrorMessage,
+    resetPaymentStatus
   } = useUpgradeScreen();
 
   useHeader({ title: t("upgrade.title") });
@@ -56,7 +64,6 @@ export default function UpgradeScreen() {
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero */}
         <View className="items-center pt-6 pb-4">
           <View
             className="w-16 h-16 rounded-full items-center justify-center mb-4"
@@ -76,7 +83,6 @@ export default function UpgradeScreen() {
           </Typography>
         </View>
 
-        {/* Features */}
         <View
           className="rounded-xl p-4 mb-6"
           style={{ backgroundColor: colors.surface }}
@@ -105,103 +111,60 @@ export default function UpgradeScreen() {
           ))}
         </View>
 
-        {/* Plan selector */}
         {offeringsLoading ? (
           <View className="items-center py-8">
             <ActivityIndicator color={colors.primary} />
           </View>
         ) : (
           <View className="flex-row mb-4" style={{ gap: 12 }}>
-            {/* Annual */}
-            <TouchableOpacity
+            <PlanCard
+              plan="annual"
+              selected={selectedPlan === "annual"}
               onPress={() => setSelectedPlan("annual")}
-              activeOpacity={0.8}
-              className="flex-1 rounded-xl p-4"
-              style={{
-                backgroundColor: colors.surface,
-                borderWidth: 2,
-                borderColor:
-                  selectedPlan === "annual" ? colors.primary : colors.border
-              }}
-            >
-              {savingsPct != null && (
-                <View
-                  className="rounded-full px-2 py-0.5 mb-2 self-start"
-                  style={{ backgroundColor: colors.primaryLight }}
-                >
-                  <Typography
-                    variant="caption"
-                    weight="bold"
-                    color={colors.primary}
-                  >
-                    {t("upgrade.savePct", { pct: savingsPct })}
-                  </Typography>
-                </View>
-              )}
-              <Typography
-                variant="body"
-                weight="semibold"
-                color={colors.textPrimary}
-              >
-                {t("upgrade.annual")}
-              </Typography>
-              <Typography variant="h4" weight="bold" color={colors.primary}>
-                {annualPrice}
-              </Typography>
-              <Typography variant="caption" color={colors.textSecondary}>
-                {t("upgrade.perYear")}
-              </Typography>
-              {annualPerMonth && (
-                <Typography
-                  variant="caption"
-                  color={colors.textSecondary}
-                  style={{ marginTop: 2 }}
-                >
-                  {annualPerMonth}
-                </Typography>
-              )}
-            </TouchableOpacity>
-
-            {/* Monthly */}
-            <TouchableOpacity
+              price={annualPrice}
+              label={t("upgrade.annual")}
+              sublabel={t("upgrade.perYear")}
+              badge={
+                savingsPct != null
+                  ? t("upgrade.savePct", { pct: savingsPct })
+                  : null
+              }
+              perMonth={annualPerMonth}
+            />
+            <PlanCard
+              plan="monthly"
+              selected={selectedPlan === "monthly"}
               onPress={() => setSelectedPlan("monthly")}
-              activeOpacity={0.8}
-              className="flex-1 rounded-xl p-4"
-              style={{
-                backgroundColor: colors.surface,
-                borderWidth: 2,
-                borderColor:
-                  selectedPlan === "monthly" ? colors.primary : colors.border
-              }}
-            >
-              <View style={{ height: 24, marginBottom: 2 }} />
-              <Typography
-                variant="body"
-                weight="semibold"
-                color={colors.textPrimary}
-              >
-                {t("upgrade.monthly")}
-              </Typography>
-              <Typography variant="h4" weight="bold" color={colors.textPrimary}>
-                {monthlyPrice}
-              </Typography>
-              <Typography variant="caption" color={colors.textSecondary}>
-                {t("upgrade.perMonth")}
-              </Typography>
-            </TouchableOpacity>
+              price={monthlyPrice}
+              label={t("upgrade.monthly")}
+              sublabel={t("upgrade.perMonth")}
+            />
           </View>
         )}
 
-        {/* Error */}
         {error && (
-          <View className="rounded-lg px-4 py-3 mb-4 bg-red-50">
-            <Typography variant="caption" color={colors.error}>
+          <View
+            className="rounded-xl px-4 py-3 mb-4 flex-row items-start"
+            style={{ backgroundColor: "#FEF2F2", gap: 10 }}
+          >
+            <AlertCircle
+              size={18}
+              color={colors.error}
+              style={{ marginTop: 1 }}
+            />
+            <Typography
+              variant="body"
+              color={colors.error}
+              style={{ flex: 1, fontWeight: "500" }}
+            >
               {error}
             </Typography>
+            <TouchableOpacity onPress={() => setError(null)} hitSlop={8}>
+              <X size={16} color={colors.error} />
+            </TouchableOpacity>
           </View>
         )}
 
-        {/* CTA */}
         <Button
           onPress={handleSubscribe}
           loading={isLoading}
@@ -212,7 +175,6 @@ export default function UpgradeScreen() {
           {t("upgrade.subscribe")}
         </Button>
 
-        {/* Restore */}
         <TouchableOpacity
           onPress={handleRestore}
           activeOpacity={0.7}
@@ -223,7 +185,6 @@ export default function UpgradeScreen() {
           </Typography>
         </TouchableOpacity>
 
-        {/* Terms */}
         <Typography
           variant="caption"
           color={colors.textSecondary}
@@ -232,6 +193,11 @@ export default function UpgradeScreen() {
           {t("upgrade.terms")}
         </Typography>
       </ScrollView>
+      <PaymentResultModal
+        status={paymentStatus}
+        errorMessage={paymentErrorMessage}
+        onDismiss={resetPaymentStatus}
+      />
     </SafeAreaView>
   );
 }
