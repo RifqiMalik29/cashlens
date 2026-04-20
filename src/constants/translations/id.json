@@ -291,6 +291,13 @@
       "fetchOfferings": "Gagal memuat paket langganan. Silakan coba lagi.",
       "planNotFound": "Paket yang dipilih tidak tersedia. Silakan coba lagi.",
       "purchase": "Pembelian gagal. Silakan coba lagi."
+    },
+    "payment": {
+      "successTitle": "Selamat! 🎉",
+      "successSubtitle": "Kamu sekarang anggota Premium.",
+      "failedTitle": "Pembayaran Gagal",
+      "failedSubtitle": "Terjadi kesalahan. Silakan coba lagi.",
+      "tryAgain": "Coba Lagi"
     }
   },
   "categories": {

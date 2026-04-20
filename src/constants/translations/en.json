@@ -289,6 +289,13 @@
       "fetchOfferings": "Failed to load subscription plans. Please try again.",
       "planNotFound": "Selected plan is not available. Please try again.",
       "purchase": "Purchase failed. Please try again."
+    },
+    "payment": {
+      "successTitle": "Congratulations! 🎉",
+      "successSubtitle": "You're now a Premium member.",
+      "failedTitle": "Payment Failed",
+      "failedSubtitle": "Something went wrong. Please try again.",
+      "tryAgain": "Try Again"
     }
   },
   "categories": {
