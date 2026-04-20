@@ -45,7 +45,9 @@
     "otpPlaceholder": "123456",
     "verifyEmail": "Verifikasi Email",
     "notReceivedCode": "Belum terima kode?",
-    "resend": "Kirim ulang"
+    "resend": "Kirim ulang",
+    "orContinueWith": "atau lanjutkan dengan",
+    "continueWithGoogle": "Lanjutkan dengan Google"
   },
   "tabs": {
     "home": "Beranda",

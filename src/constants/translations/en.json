@@ -45,7 +45,9 @@
     "otpPlaceholder": "123456",
     "verifyEmail": "Verify Email",
     "notReceivedCode": "Didn't receive the code?",
-    "resend": "Resend"
+    "resend": "Resend",
+    "orContinueWith": "or continue with",
+    "continueWithGoogle": "Continue with Google"
   },
   "tabs": {
     "home": "Home",

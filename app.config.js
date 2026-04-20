@@ -76,7 +76,13 @@ export default {
         }
       ],
       "expo-localization",
-      "@sentry/react-native"
+      "@sentry/react-native",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          iosUrlScheme: "com.googleusercontent.apps.552315397645-eo82ht4qr87pqplh5g08nfhe7319kf3u"
+        }
+      ]
     ],
     experiments: {
       typedRoutes: true,

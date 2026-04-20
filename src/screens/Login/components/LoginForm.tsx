@@ -1,3 +1,4 @@
+import { GoogleSignInButton } from "@components/auth/GoogleSignInButton";
 import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
@@ -12,10 +13,12 @@ interface LoginFormProps {
   password: string;
   setPassword: (value: string) => void;
   isLoading: boolean;
+  isGoogleLoading: boolean;
   error: string | null;
   showPassword: boolean;
   onLogin: () => void;
   onTogglePassword: () => void;
+  onGoogleSignIn: () => void;
 }
 
 export function LoginForm({
@@ -24,10 +27,12 @@ export function LoginForm({
   password,
   setPassword,
   isLoading,
+  isGoogleLoading,
   error,
   showPassword,
   onLogin,
-  onTogglePassword
+  onTogglePassword,
+  onGoogleSignIn
 }: LoginFormProps) {
   const { t } = useTranslation();
 
@@ -72,12 +77,30 @@ export function LoginForm({
       <Button
         onPress={onLogin}
         loading={isLoading}
-        disabled={isLoading}
+        disabled={isLoading || isGoogleLoading}
         fullWidth
         style={{ marginTop: spacing[6] }}
       >
         {t("auth.login")}
       </Button>
+
+      <View
+        className="flex-row items-center"
+        style={{ marginTop: spacing[4], gap: 8 }}
+      >
+        <View className="flex-1 h-px bg-border" />
+        <Typography variant="caption" color="#9CA3AF">
+          {t("auth.orContinueWith")}
+        </Typography>
+        <View className="flex-1 h-px bg-border" />
+      </View>
+
+      <GoogleSignInButton
+        onPress={onGoogleSignIn}
+        isLoading={isGoogleLoading}
+        label={t("auth.continueWithGoogle")}
+        style={{ marginTop: spacing[3] }}
+      />
     </View>
   );
 }
