@@ -8,21 +8,11 @@ import { authService } from "@services/authService";
 import { revenueCatService } from "@services/subscriptionService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
+import { type SettingsDialogState } from "@types";
 import * as Haptics from "expo-haptics";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
-
-export interface SettingsDialogState {
-  isVisible: boolean;
-  title: string;
-  message: string;
-  type: "info" | "success" | "error" | "warning";
-  primaryButtonText?: string;
-  onPrimaryButtonPress?: () => void;
-  secondaryButtonText?: string;
-  onSecondaryButtonPress?: () => void;
-}
 
 export function useSettingsScreen() {
   const router = useProtectedRouter();
@@ -50,16 +40,17 @@ export function useSettingsScreen() {
     statusBarStyle: "light"
   });
 
-  const currentCurrency = useMemo(() => {
-    return (
+  const currentCurrency = useMemo(
+    () =>
       currencies.find((c) => c.code === preferences.baseCurrency) ||
-      currencies[0]
-    );
-  }, [preferences.baseCurrency]);
+      currencies[0],
+    [preferences.baseCurrency]
+  );
 
-  const languageDisplay = useMemo(() => {
-    return preferences.language === "id" ? "Bahasa Indonesia" : "English";
-  }, [preferences.language]);
+  const languageDisplay = useMemo(
+    () => (preferences.language === "id" ? "Bahasa Indonesia" : "English"),
+    [preferences.language]
+  );
 
   const themeDisplay = useMemo(() => {
     switch (preferences.theme) {

@@ -72,6 +72,7 @@ class RevenueCatService {
   public getOfferings = async (): Promise<PurchasesOffering | null> => {
     try {
       const offerings = await Purchases.getOfferings();
+
       return offerings.current;
     } catch (error) {
       logger.error("Failed to get offerings", error as Error);

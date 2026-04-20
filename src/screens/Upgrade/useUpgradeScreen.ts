@@ -1,6 +1,10 @@
-import { ENTITLEMENT_ID, revenueCatService } from "@services/subscriptionService";
+import {
+  ENTITLEMENT_ID,
+  revenueCatService
+} from "@services/subscriptionService";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { logger } from "@utils/logger";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type {
@@ -11,6 +15,7 @@ import type {
 
 export function useUpgradeScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [offerings, setOfferings] = useState<PurchasesOffering | null>(null);
@@ -43,12 +48,10 @@ export function useUpgradeScreen() {
     t("upgrade.feature5")
   ];
 
-  const annualPack = offerings?.availablePackages.find(
-    (p) => p.identifier === "annual"
-  );
-  const monthlyPack = offerings?.availablePackages.find(
-    (p) => p.identifier === "monthly"
-  );
+  const annualPack = offerings?.annual;
+  const monthlyPack = offerings?.monthly;
+  const annualPrice = annualPack?.product.priceString ?? "—";
+  const monthlyPrice = monthlyPack?.product.priceString ?? "—";
 
   const handleSubscribe = async () => {
     if (!offerings) return;
@@ -70,6 +73,7 @@ export function useUpgradeScreen() {
       );
       if (customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined) {
         await fetchSubscription();
+        router.back();
       }
     } catch (e) {
       const error = e as PurchasesError;
@@ -82,6 +86,34 @@ export function useUpgradeScreen() {
     }
   };
 
+  const handleRestore = async () => {
+    try {
+      const customerInfo = await revenueCatService.restorePurchases();
+      if (customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined) {
+        router.back();
+      }
+    } catch {
+      // silent
+    }
+  };
+
+  const annualMonthlyEquiv = annualPack ? annualPack.product.price / 12 : null;
+  const monthlyRaw = monthlyPack?.product.price ?? null;
+  const savingsPct =
+    annualMonthlyEquiv && monthlyRaw && monthlyRaw > 0
+      ? Math.round((1 - annualMonthlyEquiv / monthlyRaw) * 100)
+      : null;
+  const currencySymbol =
+    annualPack?.product.currencyCode === "IDR"
+      ? "Rp"
+      : (annualPack?.product.currencyCode ?? "");
+  const annualPerMonth =
+    annualMonthlyEquiv != null
+      ? `${currencySymbol}${Math.round(annualMonthlyEquiv).toLocaleString()}${t("upgrade.perMonth")}`
+      : null;
+
+  const offeringsLoading = !annualPack && !monthlyPack && !error;
+
   return {
     isLoading,
     error,
@@ -90,6 +122,15 @@ export function useUpgradeScreen() {
     handleSubscribe,
     features,
     annualPack,
-    monthlyPack
+    monthlyPack,
+    handleRestore,
+    annualPrice,
+    monthlyPrice,
+    annualMonthlyEquiv,
+    monthlyRaw,
+    savingsPct,
+    currencySymbol,
+    annualPerMonth,
+    offeringsLoading
   };
 }

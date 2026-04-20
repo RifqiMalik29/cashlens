@@ -51,3 +51,14 @@ export interface UserPreferences {
   language: string;
   createdAt: string;
 }
+
+export interface SettingsDialogState {
+  isVisible: boolean;
+  title: string;
+  message: string;
+  type: "info" | "success" | "error" | "warning";
+  primaryButtonText?: string;
+  onPrimaryButtonPress?: () => void;
+  secondaryButtonText?: string;
+  onSecondaryButtonPress?: () => void;
+}

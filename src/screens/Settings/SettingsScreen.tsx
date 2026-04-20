@@ -19,7 +19,7 @@ import {
   RefreshCcw,
   Trash2
 } from "lucide-react-native";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import RevenueCatUI from "react-native-purchases-ui";
 import { SafeAreaView } from "react-native-safe-area-context";
 
