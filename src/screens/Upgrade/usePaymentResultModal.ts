@@ -14,5 +14,6 @@ export function usePaymentResultModal(
       router.back();
     }, 2500);
     return () => clearTimeout(timer);
-  }, [status, onDismiss, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
 }
