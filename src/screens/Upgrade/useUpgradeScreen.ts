@@ -4,7 +4,6 @@ import {
 } from "@services/subscriptionService";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { logger } from "@utils/logger";
-import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type {
@@ -15,9 +14,14 @@ import type {
 
 export function useUpgradeScreen() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<
+    "idle" | "success" | "failed"
+  >("idle");
+  const [paymentErrorMessage, setPaymentErrorMessage] = useState<string | null>(
+    null
+  );
   const [offerings, setOfferings] = useState<PurchasesOffering | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<"annual" | "monthly">(
     "annual"
@@ -57,7 +61,6 @@ export function useUpgradeScreen() {
     if (!offerings) return;
 
     setIsLoading(true);
-    setError(null);
 
     const pack = selectedPlan === "annual" ? annualPack : monthlyPack;
 
@@ -73,24 +76,30 @@ export function useUpgradeScreen() {
       );
       if (customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined) {
         await fetchSubscription();
-        router.back();
+        setPaymentStatus("success");
       }
     } catch (e) {
-      const error = e as PurchasesError;
-      if (!error.userCancelled) {
+      const purchaseError = e as PurchasesError;
+      if (!purchaseError.userCancelled) {
         logger.error("UpgradeScreen", "Failed to purchase", e);
-        setError(t("upgrade.error.purchase"));
+        setPaymentErrorMessage(purchaseError.message ?? null);
+        setPaymentStatus("failed");
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const resetPaymentStatus = () => {
+    setPaymentStatus("idle");
+    setPaymentErrorMessage(null);
+  };
+
   const handleRestore = async () => {
     try {
       const customerInfo = await revenueCatService.restorePurchases();
       if (customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined) {
-        router.back();
+        setPaymentStatus("success");
       }
     } catch {
       // silent
@@ -117,6 +126,10 @@ export function useUpgradeScreen() {
   return {
     isLoading,
     error,
+    setError,
+    paymentStatus,
+    paymentErrorMessage,
+    resetPaymentStatus,
     selectedPlan,
     setSelectedPlan,
     handleSubscribe,
