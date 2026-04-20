@@ -281,6 +281,10 @@
     "feature3": "Automatic bank notification detection",
     "feature4": "Unlimited custom categories",
     "feature5": "Priority support",
+    "savePct": "SAVE {{pct}}%",
+    "restore": "Restore Purchases",
+    "noRestoreFound": "No previous purchases found.",
+    "terms": "By subscribing you agree to our Terms of Service and Privacy Policy. Subscription renews automatically. Cancel anytime.",
     "error": {
       "fetchOfferings": "Failed to load subscription plans. Please try again.",
       "planNotFound": "Selected plan is not available. Please try again.",

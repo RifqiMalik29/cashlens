@@ -283,6 +283,10 @@
     "feature3": "Deteksi notifikasi bank otomatis",
     "feature4": "Kategori kustom tanpa batas",
     "feature5": "Dukungan prioritas",
+    "savePct": "HEMAT {{pct}}%",
+    "restore": "Pulihkan Pembelian",
+    "noRestoreFound": "Tidak ada pembelian sebelumnya.",
+    "terms": "Dengan berlangganan kamu menyetujui Syarat Layanan dan Kebijakan Privasi kami. Langganan diperbarui otomatis. Batalkan kapan saja.",
     "error": {
       "fetchOfferings": "Gagal memuat paket langganan. Silakan coba lagi.",
       "planNotFound": "Paket yang dipilih tidak tersedia. Silakan coba lagi.",
