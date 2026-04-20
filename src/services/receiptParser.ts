@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import { useAuthStore } from "@stores/useAuthStore";
+import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { createLogger } from "@utils/logger";
 
 import { type Transaction } from "../types";
@@ -140,8 +141,8 @@ export async function processReceiptIntelligence(
   imageUri: string,
   onStatusUpdate?: (status: string) => void
 ): Promise<ProcessingResult> {
-  const { subscriptionTier, stealthScansUsed, incrementStealthScans } =
-    useAuthStore.getState();
+  const { stealthScansUsed, incrementStealthScans } = useAuthStore.getState();
+  const { tier: subscriptionTier } = useSubscriptionStore.getState();
   const geminiReady = isGeminiAvailable();
 
   const isPremium = subscriptionTier === "premium";
@@ -239,7 +240,7 @@ export async function processReceiptIntelligence(
       categoryId: localResult.categoryId || "cat_other_expense",
       date: localResult.date || new Date().toISOString(),
       note: localResult.note,
-      isFromScan: true
+    isFromScan: true
     },
     method: "local_ocr",
     confidence: localResult.amount ? 50 : 10

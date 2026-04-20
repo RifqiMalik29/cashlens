@@ -7,10 +7,10 @@ import {
   saveAuthTokens,
   saveUserData
 } from "@services/secureStorage";
+import { revenueCatService } from "@services/subscriptionService";
 import type { UserPreferences } from "@types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
 interface AuthState {
   isAuthenticated: boolean;
   isOnboarded: boolean;
@@ -18,7 +18,6 @@ interface AuthState {
   userEmail: string | null;
   accessToken: string | null;
   refreshToken: string | null;
-  subscriptionTier: "free" | "premium";
   stealthScansUsed: number;
   preferences: UserPreferences;
   _syncVersion: number;
@@ -27,7 +26,6 @@ interface AuthState {
   setUserId: (id: string | null, email?: string | null) => void;
   setUserEmail: (email: string | null) => void;
   setTokens: (accessToken: string | null, refreshToken: string | null) => void;
-  setSubscriptionTier: (tier: "free" | "premium") => void;
   incrementStealthScans: () => void;
   resetStealthScans: () => void;
   updatePreferences: (data: Partial<UserPreferences>) => void;
@@ -52,7 +50,6 @@ export const useAuthStore = create<AuthState>()(
       userEmail: null,
       accessToken: null,
       refreshToken: null,
-      subscriptionTier: "free",
       stealthScansUsed: 0,
       preferences: defaultPreferences,
       _syncVersion: 0,
@@ -60,13 +57,17 @@ export const useAuthStore = create<AuthState>()(
       setOnboarded: (value) => set({ isOnboarded: value }),
       setUserId: async (id, email) => {
         set({ userId: id, userEmail: email ?? null });
+
+        if (id) {
+          revenueCatService.login(id);
+        }
+
         // Persist user data to secure storage
         const state = get();
         if (id && (email || state.userEmail)) {
           await saveUserData({
             userId: id,
-            userEmail: email || state.userEmail || "",
-            subscriptionTier: state.subscriptionTier
+            userEmail: email || state.userEmail || ""
           });
         } else if (!id) {
           await deleteUserData();
@@ -84,18 +85,6 @@ export const useAuthStore = create<AuthState>()(
           });
         } else {
           await deleteAuthTokens();
-        }
-      },
-      setSubscriptionTier: async (tier) => {
-        set({ subscriptionTier: tier });
-        // Update subscription tier in secure storage
-        const state = get();
-        if (state.userId) {
-          await saveUserData({
-            userId: state.userId,
-            userEmail: state.userEmail ?? "",
-            subscriptionTier: tier
-          });
         }
       },
       incrementStealthScans: () =>
@@ -116,11 +105,11 @@ export const useAuthStore = create<AuthState>()(
           userEmail: null,
           accessToken: null,
           refreshToken: null,
-          subscriptionTier: "free",
           stealthScansUsed: 0,
           preferences: defaultPreferences,
           _syncVersion: 0
         });
+        await revenueCatService.logout();
       },
       initializeFromSecureStorage: async () => {
         // Load auth tokens from secure storage
@@ -137,8 +126,7 @@ export const useAuthStore = create<AuthState>()(
         if (userData) {
           set({
             userId: userData.userId,
-            userEmail: userData.userEmail,
-            subscriptionTier: userData.subscriptionTier
+            userEmail: userData.userEmail
           });
         }
 

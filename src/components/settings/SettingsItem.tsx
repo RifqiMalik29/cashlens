@@ -9,6 +9,8 @@ interface SettingsItemProps {
   value?: ReactNode;
   onPress?: () => void;
   danger?: boolean;
+  disabled?: boolean;
+  accessory?: ReactNode;
 }
 
 export function SettingsItem({
@@ -16,13 +18,17 @@ export function SettingsItem({
   label,
   value,
   onPress,
-  danger
+  danger,
+  disabled,
+  accessory
 }: SettingsItemProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
+      disabled={disabled}
       className="flex-row items-center bg-white border border-border rounded-lg px-4 py-3"
       activeOpacity={0.7}
+      style={{ opacity: disabled ? 0.5 : 1 }}
     >
       <View className="mr-3">{icon}</View>
       <View className="flex-1">
@@ -39,7 +45,9 @@ export function SettingsItem({
           {value}
         </Typography>
       )}
-      <ChevronRight size={20} color={danger ? "#EF4444" : "#9CA3AF"} />
+      {accessory ?? (
+        <ChevronRight size={20} color={danger ? "#EF4444" : "#9CA3AF"} />
+      )}
     </TouchableOpacity>
   );
 }

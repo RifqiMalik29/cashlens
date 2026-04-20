@@ -1,6 +1,6 @@
 import { type Transaction } from "@types";
 
-import { transactionService } from "../api/transactionService";
+import { type TransactionResponse, transactionService } from "../transactionService";
 import { isValidUserId, type SyncResult } from "./syncUtils";
 
 export async function pushTransactions(
@@ -18,7 +18,7 @@ export async function pullTransactions(userId: string): Promise<Transaction[]> {
   try {
     const data = await transactionService.getTransactions();
 
-    return data.map((item) => ({
+    return data.map((item: TransactionResponse) => ({
       id: item.id,
       amount: item.amount,
       currency: "IDR",

@@ -193,7 +193,9 @@
     "validUntil": "Valid until:",
     "about": "About",
     "version": "Version",
-    "developer": "Developer"
+    "developer": "Developer",
+    "restorePurchases": "Restore Purchases",
+    "manageSubscription": "Manage Subscription"
   },
   "notifications": {
     "permissionTitle": "Permission Required",
@@ -278,7 +280,12 @@
     "feature2": "Unlimited AI receipt scans",
     "feature3": "Automatic bank notification detection",
     "feature4": "Unlimited custom categories",
-    "feature5": "Priority support"
+    "feature5": "Priority support",
+    "error": {
+      "fetchOfferings": "Failed to load subscription plans. Please try again.",
+      "planNotFound": "Selected plan is not available. Please try again.",
+      "purchase": "Purchase failed. Please try again."
+    }
   },
   "categories": {
     "title": "Manage Categories",
@@ -319,6 +326,14 @@
     "tapToRetry": "Tap to retry",
     "pleaseWait": "Please wait...",
     "syncDesc": "Your data will automatically sync with the cloud whenever there are changes."
+  },
+  "restore": {
+    "successTitle": "Purchase Restored",
+    "successMessage": "Your Premium subscription has been restored successfully.",
+    "notFoundTitle": "No Purchase Found",
+    "notFoundMessage": "No active subscription was found for this account.",
+    "errorIOS": "Could not restore purchases. Please try again or contact support.",
+    "errorAndroid": "Could not restore purchases. Please try again or contact support."
   },
   "onboarding": {
     "slide1Title": "Track Your Transactions",

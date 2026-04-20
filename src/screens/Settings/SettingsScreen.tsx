@@ -16,9 +16,11 @@ import {
   LayoutGrid,
   LogOut,
   Palette,
+  RefreshCcw,
   Trash2
 } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
+import RevenueCatUI from "react-native-purchases-ui";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ProfileSection } from "./components/ProfileSection";
@@ -120,6 +122,13 @@ export default function SettingsScreen() {
             label={t("settings.helpCenter")}
             onPress={handleHelpPress}
           />
+          <View style={{ marginTop: spacing[3] }}>
+            <SettingsItem
+              icon={<RefreshCcw size={20} color="#4CAF82" />}
+              label={t("settings.manageSubscription")}
+              onPress={() => RevenueCatUI.presentCustomerCenter()}
+            />
+          </View>
         </SettingsSection>
 
         <SettingsSection title={t("settings.account")}>

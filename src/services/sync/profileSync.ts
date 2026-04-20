@@ -1,6 +1,6 @@
 import { type UserPreferences } from "@types";
 
-import { authService } from "../api/authService";
+import { authService } from "../authService";
 import { isValidUserId, type SyncResult } from "./syncUtils";
 
 export async function pushProfile(

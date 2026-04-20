@@ -25,11 +25,7 @@ const getCurrentMonth = () => {
 export function useQuota() {
   const { stealthScansUsed, incrementStealthScans } = useAuthStore();
   const { transactions } = useTransactionStore();
-  const { tier: subscriptionTier, quota } = useSubscriptionStore();
-
-  const actualTransactionLimit =
-    quota.transactionsLimit ?? FREE_TRANSACTION_LIMIT;
-  const actualScanLimit = quota.scansLimit ?? FREE_SCAN_LIMIT;
+  const { tier: subscriptionTier } = useSubscriptionStore();
 
   const [scanQuota, setScanQuota] = useState<ScanQuota>({
     count: 0,
@@ -42,8 +38,6 @@ export function useQuota() {
   // 1. Calculate Transaction Quota (Monthly)
   const currentMonthTransactions = useMemo(() => {
     return transactions.filter((t) => {
-      // Use createdAt to count how many transactions were ADDED this month
-      // rather than the effective transaction date
       const createDate = new Date(t.createdAt || t.date);
       const createMonth = `${createDate.getFullYear()}-${String(
         createDate.getMonth() + 1
@@ -53,14 +47,9 @@ export function useQuota() {
   }, [transactions, currentMonth]);
 
   const transactionCount = currentMonthTransactions.length;
-  // Use the backend quota count if local count is lower, otherwise local count
-  const effectiveTransactionCount = Math.max(
-    transactionCount,
-    quota.transactionsUsed
-  );
   const isTransactionLimitReached =
     subscriptionTier === "free" &&
-    effectiveTransactionCount >= actualTransactionLimit;
+    transactionCount >= FREE_TRANSACTION_LIMIT;
 
   // 2. Load and Manage Scan Quota
   useEffect(() => {
@@ -95,37 +84,19 @@ export function useQuota() {
     })();
   }, [currentMonth]);
 
-  // If backend reports fewer scans than local, the quota was reset (new billing
-  // period or manual reset). Sync local down to backend to avoid false limit.
-  useEffect(() => {
-    if (!isScanQuotaLoading && quota.scansUsed < scanQuota.count) {
-      const synced = { count: quota.scansUsed, month: currentMonth };
-      setScanQuota(synced);
-      AsyncStorage.setItem(
-        SCAN_QUOTA_STORAGE_KEY,
-        JSON.stringify(synced)
-      ).catch((e) => logger.error("Failed to sync scan quota down:", e));
-    }
-  }, [quota.scansUsed, scanQuota.count, isScanQuotaLoading, currentMonth]);
-
-  // Use backend scan usage if local count is lower
-  const scanCount = Math.max(scanQuota.count, quota.scansUsed);
   const isScanLimitReached =
-    subscriptionTier === "free" && scanCount >= actualScanLimit;
+    subscriptionTier === "free" && scanQuota.count >= FREE_SCAN_LIMIT;
 
-  // Magic Scans logic: If free and hasn't used up 5 magic scans yet
   const hasMagicScansRemaining =
     subscriptionTier === "free" && stealthScansUsed < MAGIC_SCAN_LIMIT;
 
   const recordScan = useCallback(async () => {
     if (subscriptionTier === "premium") return;
 
-    // Increment stealth scans if still in trial
     if (hasMagicScansRemaining) {
       incrementStealthScans();
     }
 
-    // Always record against the monthly limit too
     const next = { count: scanQuota.count + 1, month: currentMonth };
     setScanQuota(next);
     try {
@@ -142,23 +113,20 @@ export function useQuota() {
   ]);
 
   return {
-    // Transaction Quota
-    transactionCount: effectiveTransactionCount,
-    transactionLimit: actualTransactionLimit,
+    transactionCount,
+    transactionLimit: FREE_TRANSACTION_LIMIT,
     isTransactionLimitReached,
     canAddTransaction:
       subscriptionTier === "premium" || !isTransactionLimitReached,
 
-    // Scan Quota
-    scanCount,
-    scanLimit: actualScanLimit,
+    scanCount: scanQuota.count,
+    scanLimit: FREE_SCAN_LIMIT,
     isScanLimitReached,
     hasMagicScansRemaining,
     stealthScansUsed,
     isQuotaLoading: isScanQuotaLoading,
     recordScan,
 
-    // Tier info
     isPremium: subscriptionTier === "premium"
   };
 }

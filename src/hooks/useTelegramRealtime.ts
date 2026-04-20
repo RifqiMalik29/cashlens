@@ -1,4 +1,4 @@
-import { authService } from "@services/api/authService";
+import { authService } from "@services/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useNotificationStore } from "@stores/useNotificationStore";
 import { logger } from "@utils/logger";

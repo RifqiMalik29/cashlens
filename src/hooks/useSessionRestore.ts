@@ -1,4 +1,4 @@
-import { authService } from "@services/api/authService";
+import { authService } from "@services/authService";
 import i18n, { normalizeLanguage } from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { createLogger } from "@utils/logger";

@@ -3,7 +3,7 @@ import { createLogger } from "@utils/logger";
 import { File } from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 
-import { receiptService } from "./api/receiptService";
+import { receiptService } from "./receiptService";
 
 const logger = createLogger("[GeminiAI]");
 const CACHE_PREFIX = "gemini_cache_v1:";

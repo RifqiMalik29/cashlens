@@ -1,5 +1,5 @@
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
-import { authService } from "@services/api/authService";
+import { authService } from "@services/authService";
 import { useState } from "react";
 
 export function useCheckEmailConfirmation(email?: string) {

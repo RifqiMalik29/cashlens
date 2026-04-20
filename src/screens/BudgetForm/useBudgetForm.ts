@@ -1,5 +1,5 @@
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
-import { budgetService } from "@services/api/budgetService";
+import { budgetService } from "@services/budgetService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";

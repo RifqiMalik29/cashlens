@@ -69,6 +69,7 @@
     "react-native-keychain": "^10.0.0",
     "react-native-mmkv": "^4.3.0",
     "react-native-purchases": "^10.0.1",
+    "react-native-purchases-ui": "^10.0.1",
     "react-native-reanimated": "~4.1.7",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
@@ -109,7 +110,7 @@
   "jest": {
     "preset": "jest-expo",
     "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/.*|nativewind|react-native-svg|@revenuecat/purchases-js-hybrid-mappings|react-native-purchases)"
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/.*|nativewind|react-native-svg)"
     ],
     "moduleNameMapper": {
       "^@utils/(.*)$": "<rootDir>/src/utils/$1",

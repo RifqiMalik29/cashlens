@@ -1,4 +1,4 @@
-import { transactionService } from "@services/api/transactionService";
+import { transactionService } from "@services/transactionService";
 import type { Transaction, TransactionType } from "@types";
 import type { Dispatch, SetStateAction } from "react";
 

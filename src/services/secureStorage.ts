@@ -17,7 +17,6 @@ export interface AuthTokens {
 export interface UserData {
   userId: string;
   userEmail: string;
-  subscriptionTier: "free" | "premium";
 }
 
 /**

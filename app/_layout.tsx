@@ -11,12 +11,14 @@ import { useSyncStatus } from "@hooks/useSyncStatus";
 import { useTelegramRealtime } from "@hooks/useTelegramRealtime";
 import * as Sentry from "@sentry/react-native";
 import i18n, { initI18n } from "@services/i18n";
+import { revenueCatService } from "@services/subscriptionService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import type { CustomerInfo } from "react-native-purchases";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 Sentry.init({
@@ -42,7 +44,7 @@ initI18n();
 function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
+  const { isAuthenticated, isOnboarded, preferences, userId } = useAuthStore();
   const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
     useSyncStatus();
   const fetchSubscription = useSubscriptionStore(
@@ -64,6 +66,25 @@ function RootLayout() {
 
   // Listen for Telegram linking status
   useTelegramRealtime();
+
+  useEffect(() => {
+    if (isLayoutReady) {
+      revenueCatService.init(userId);
+    }
+  }, [isLayoutReady, userId]);
+
+  useEffect(() => {
+    const customerInfoUpdateListener = (_customerInfo: CustomerInfo) => {
+      fetchSubscription();
+    };
+    revenueCatService.addCustomerInfoUpdateListener(customerInfoUpdateListener);
+
+    return () => {
+      // revenueCatService.removeCustomerInfoUpdateListener(
+      //   customerInfoUpdateListener
+      // );
+    };
+  }, [fetchSubscription]);
 
   // Sync language preference from store
   useEffect(() => {

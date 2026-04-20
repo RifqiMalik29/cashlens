@@ -1,6 +1,6 @@
 import { colors } from "@constants/theme";
 import { useHeader } from "@hooks/useHeader";
-import { authService } from "@services/api/authService";
+import { authService } from "@services/authService";
 import { notificationService } from "@services/notificationService";
 import {
   SUPPORTED_APPS,
