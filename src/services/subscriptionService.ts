@@ -19,6 +19,9 @@ class RevenueCatService {
 
   public init = (userId: string | null): void => {
     if (this.isConfigured) {
+      if (userId) {
+        this.login(userId);
+      }
       return;
     }
 
