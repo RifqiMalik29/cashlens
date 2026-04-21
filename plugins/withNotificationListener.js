@@ -312,21 +312,8 @@ const withReleaseBuildConfig = (config) => {
     // Add bundle splits if missing
     if (!contents.includes("bundle {")) {
       contents = contents.replace(
-        /androidResources \{[^}]+\}\s*\}/,
-        (match) =>
-          match +
-          `
-    bundle {
-        language {
-            enableSplit = true
-        }
-        density {
-            enableSplit = true
-        }
-        abi {
-            enableSplit = true
-        }
-    }`
+        /(    androidResources \{[^}]+\})\s*\n\}/,
+        `$1\n    bundle {\n        language {\n            enableSplit = true\n        }\n        density {\n            enableSplit = true\n        }\n        abi {\n            enableSplit = true\n        }\n    }\n}`
       );
     }
 

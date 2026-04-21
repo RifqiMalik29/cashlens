@@ -138,7 +138,6 @@ android {
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
-}
     bundle {
         language {
             enableSplit = true
@@ -150,6 +149,7 @@ android {
             enableSplit = true
         }
     }
+}
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
 // Accepts values in comma delimited lists, example:
