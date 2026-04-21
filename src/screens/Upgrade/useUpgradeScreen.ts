@@ -23,6 +23,7 @@ export function useUpgradeScreen() {
     null
   );
   const [offerings, setOfferings] = useState<PurchasesOffering | null>(null);
+  const [offeringsError, setOfferingsError] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<"annual" | "monthly">(
     "annual"
   );
@@ -33,11 +34,15 @@ export function useUpgradeScreen() {
   useEffect(() => {
     const getOfferings = async () => {
       try {
-        const offerings = await revenueCatService.getOfferings();
-        if (offerings) {
-          setOfferings(offerings);
+        const result = await revenueCatService.getOfferings();
+        if (result) {
+          setOfferings(result);
+        } else {
+          setOfferingsError(true);
+          setError(t("upgrade.error.fetchOfferings"));
         }
       } catch {
+        setOfferingsError(true);
         setError(t("upgrade.error.fetchOfferings"));
       }
     };
@@ -121,7 +126,7 @@ export function useUpgradeScreen() {
       ? `${currencySymbol}${Math.round(annualMonthlyEquiv).toLocaleString()}${t("upgrade.perMonth")}`
       : null;
 
-  const offeringsLoading = !annualPack && !monthlyPack && !error;
+  const offeringsLoading = !annualPack && !monthlyPack && !offeringsError;
 
   return {
     isLoading,
