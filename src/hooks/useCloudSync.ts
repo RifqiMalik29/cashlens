@@ -14,6 +14,10 @@ import {
   SYNC_PULL_INTERVAL_MS
 } from "./cloudSyncHelpers";
 
+// Module-level singleton so multiple hook consumers share one pullData reference
+// and the periodic interval is only started once (by the root layout).
+let modulePullData: (() => Promise<void>) | null = null;
+
 export function useCloudSync() {
   const { userId, isAuthenticated, setPreferences } = useAuthStore();
   const { setSyncing, setSynced, setError, setInitialPulling, lastSyncedAt } =
@@ -30,7 +34,7 @@ export function useCloudSync() {
   const hasInitialPullRef = useRef(false);
   const pullIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Stable refs so interval/callbacks don't need to re-create when these change
+  // Stable refs so the interval callback never captures stale closures
   const setTransactionsRef = useRef(setTransactions);
   const setBudgetsRef = useRef(setBudgets);
   const setCategoriesRef = useRef(setCategories);
@@ -116,6 +120,12 @@ export function useCloudSync() {
     }
   }, []); // stable — uses refs internally
 
+  // Publish to module singleton so other consumers (Dashboard, Settings)
+  // call the same function without creating extra intervals.
+  useEffect(() => {
+    modulePullData = pullData;
+  }, [pullData]);
+
   // Reset on logout
   useEffect(() => {
     if (!userId) {
@@ -137,8 +147,9 @@ export function useCloudSync() {
     }
   }, [isAuthenticated, userId, lastSyncedAt, pullData]);
 
-  // Periodic pull — stable interval, does not restart on lastSyncedAt change
-  // Pauses when app is backgrounded to save battery
+  // Periodic pull — pauses when app is backgrounded to save battery.
+  // Only the root layout mounts this hook with full lifecycle; other
+  // consumers receive pullData via the module singleton (see below).
   useEffect(() => {
     if (!userId || !isAuthenticated) {
       if (pullIntervalRef.current) {
@@ -150,17 +161,14 @@ export function useCloudSync() {
 
     if (pullIntervalRef.current) return; // already running
 
-    // Only run sync when app is active
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
       if (nextAppState === "active") {
-        // Resume syncing when app becomes active
         if (!pullIntervalRef.current) {
           pullIntervalRef.current = setInterval(() => {
             if (!isSyncingRef.current) pullData();
           }, SYNC_PULL_INTERVAL_MS);
         }
       } else {
-        // Pause syncing when app is backgrounded or inactive
         if (pullIntervalRef.current) {
           clearInterval(pullIntervalRef.current);
           pullIntervalRef.current = null;
@@ -168,12 +176,10 @@ export function useCloudSync() {
       }
     };
 
-    // Start with active interval
     pullIntervalRef.current = setInterval(() => {
       if (!isSyncingRef.current) pullData();
     }, SYNC_PULL_INTERVAL_MS);
 
-    // Subscribe to app state changes
     const subscription = AppState.addEventListener(
       "change",
       handleAppStateChange
@@ -189,4 +195,15 @@ export function useCloudSync() {
   }, [userId, isAuthenticated, pullData]);
 
   return { pullData };
+}
+
+// Lightweight version for consumers that only need to trigger a manual pull
+// (Dashboard pull-to-refresh, Settings force sync). Does NOT set up any
+// intervals or lifecycle effects — avoids duplicate polling.
+export function usePullData(): () => Promise<void> {
+  return useCallback(async () => {
+    if (modulePullData) {
+      await modulePullData();
+    }
+  }, []);
 }

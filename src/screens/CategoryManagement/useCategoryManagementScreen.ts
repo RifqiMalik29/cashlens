@@ -1,7 +1,7 @@
 import {
   type CategoryResponse,
   categoryService
-} from "@services/api/categoryService";
+} from "@services/categoryService";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { type Category } from "@types";
 import * as Haptics from "expo-haptics";

@@ -45,7 +45,9 @@
     "otpPlaceholder": "123456",
     "verifyEmail": "Verify Email",
     "notReceivedCode": "Didn't receive the code?",
-    "resend": "Resend"
+    "resend": "Resend",
+    "orContinueWith": "or continue with",
+    "continueWithGoogle": "Continue with Google"
   },
   "tabs": {
     "home": "Home",
@@ -66,7 +68,9 @@
     "noTransactionsDesc": "Start recording your financial transactions to see a summary and analysis on your dashboard.",
     "transactionQuota": "Transaction Quota",
     "transactionQuotaDesc": "{{count}} / {{limit}} transactions this month",
-    "upgradeToUnlimited": "Upgrade for unlimited"
+    "upgradeToUnlimited": "Upgrade for unlimited",
+    "lastSync": "Synced",
+    "localDataOnly": "Local data · not yet synced"
   },
   "transactions": {
     "title": "Transactions",
@@ -189,7 +193,9 @@
     "validUntil": "Valid until:",
     "about": "About",
     "version": "Version",
-    "developer": "Developer"
+    "developer": "Developer",
+    "restorePurchases": "Restore Purchases",
+    "manageSubscription": "Manage Subscription"
   },
   "notifications": {
     "permissionTitle": "Permission Required",
@@ -274,7 +280,23 @@
     "feature2": "Unlimited AI receipt scans",
     "feature3": "Automatic bank notification detection",
     "feature4": "Unlimited custom categories",
-    "feature5": "Priority support"
+    "feature5": "Priority support",
+    "savePct": "SAVE {{pct}}%",
+    "restore": "Restore Purchases",
+    "noRestoreFound": "No previous purchases found.",
+    "terms": "By subscribing you agree to our Terms of Service and Privacy Policy. Subscription renews automatically. Cancel anytime.",
+    "error": {
+      "fetchOfferings": "Failed to load subscription plans. Please try again.",
+      "planNotFound": "Selected plan is not available. Please try again.",
+      "purchase": "Purchase failed. Please try again."
+    },
+    "payment": {
+      "successTitle": "Congratulations! 🎉",
+      "successSubtitle": "You're now a Premium member.",
+      "failedTitle": "Payment Failed",
+      "failedSubtitle": "Something went wrong. Please try again.",
+      "tryAgain": "Try Again"
+    }
   },
   "categories": {
     "title": "Manage Categories",
@@ -315,6 +337,14 @@
     "tapToRetry": "Tap to retry",
     "pleaseWait": "Please wait...",
     "syncDesc": "Your data will automatically sync with the cloud whenever there are changes."
+  },
+  "restore": {
+    "successTitle": "Purchase Restored",
+    "successMessage": "Your Premium subscription has been restored successfully.",
+    "notFoundTitle": "No Purchase Found",
+    "notFoundMessage": "No active subscription was found for this account.",
+    "errorIOS": "Could not restore purchases. Please try again or contact support.",
+    "errorAndroid": "Could not restore purchases. Please try again or contact support."
   },
   "onboarding": {
     "slide1Title": "Track Your Transactions",

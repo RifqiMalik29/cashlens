@@ -45,7 +45,9 @@
     "otpPlaceholder": "123456",
     "verifyEmail": "Verifikasi Email",
     "notReceivedCode": "Belum terima kode?",
-    "resend": "Kirim ulang"
+    "resend": "Kirim ulang",
+    "orContinueWith": "atau lanjutkan dengan",
+    "continueWithGoogle": "Lanjutkan dengan Google"
   },
   "tabs": {
     "home": "Beranda",
@@ -66,7 +68,9 @@
     "noTransactionsDesc": "Mulai catat transaksi keuanganmu untuk melihat ringkasan dan analisis pengeluaran di dashboard.",
     "transactionQuota": "Kuota Transaksi",
     "transactionQuotaDesc": "{{count}} / {{limit}} transaksi",
-    "upgradeToUnlimited": "Upgrade untuk tanpa batas"
+    "upgradeToUnlimited": "Upgrade untuk tanpa batas",
+    "lastSync": "Tersinkron",
+    "localDataOnly": "Data lokal · belum disinkron"
   },
   "transactions": {
     "title": "Transaksi",
@@ -191,7 +195,9 @@
     "validUntil": "Berlaku s/d:",
     "about": "Tentang",
     "version": "Versi",
-    "developer": "Developer"
+    "developer": "Developer",
+    "restorePurchases": "Pulihkan Pembelian",
+    "manageSubscription": "Kelola Langganan"
   },
   "notifications": {
     "permissionTitle": "Izin Diperlukan",
@@ -276,7 +282,23 @@
     "feature2": "Scan struk AI tanpa batas",
     "feature3": "Deteksi notifikasi bank otomatis",
     "feature4": "Kategori kustom tanpa batas",
-    "feature5": "Dukungan prioritas"
+    "feature5": "Dukungan prioritas",
+    "savePct": "HEMAT {{pct}}%",
+    "restore": "Pulihkan Pembelian",
+    "noRestoreFound": "Tidak ada pembelian sebelumnya.",
+    "terms": "Dengan berlangganan kamu menyetujui Syarat Layanan dan Kebijakan Privasi kami. Langganan diperbarui otomatis. Batalkan kapan saja.",
+    "error": {
+      "fetchOfferings": "Gagal memuat paket langganan. Silakan coba lagi.",
+      "planNotFound": "Paket yang dipilih tidak tersedia. Silakan coba lagi.",
+      "purchase": "Pembelian gagal. Silakan coba lagi."
+    },
+    "payment": {
+      "successTitle": "Selamat! 🎉",
+      "successSubtitle": "Kamu sekarang anggota Premium.",
+      "failedTitle": "Pembayaran Gagal",
+      "failedSubtitle": "Terjadi kesalahan. Silakan coba lagi.",
+      "tryAgain": "Coba Lagi"
+    }
   },
   "categories": {
     "title": "Kelola Kategori",
@@ -317,6 +339,14 @@
     "tapToRetry": "Ketuk untuk coba lagi",
     "pleaseWait": "Mohon tunggu...",
     "syncDesc": "Data Anda akan otomatis disinkronkan dengan cloud setiap ada perubahan."
+  },
+  "restore": {
+    "successTitle": "Pembelian Dipulihkan",
+    "successMessage": "Langganan Premium Anda berhasil dipulihkan.",
+    "notFoundTitle": "Pembelian Tidak Ditemukan",
+    "notFoundMessage": "Tidak ada langganan aktif yang ditemukan untuk akun ini.",
+    "errorIOS": "Tidak dapat memulihkan pembelian. Silakan coba lagi atau hubungi dukungan.",
+    "errorAndroid": "Tidak dapat memulihkan pembelian. Silakan coba lagi atau hubungi dukungan."
   },
   "onboarding": {
     "slide1Title": "Catat Transaksimu",

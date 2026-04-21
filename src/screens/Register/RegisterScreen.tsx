@@ -1,6 +1,7 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { AuthLogo } from "@components/auth/AuthLogo";
 import { spacing } from "@constants/theme";
+import { useGoogleSignIn } from "@hooks/useGoogleSignIn";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,6 +30,12 @@ export default function RegisterScreen() {
     toggleShowConfirmPassword
   } = useRegister();
 
+  const {
+    handleGoogleSignIn,
+    isLoading: isGoogleLoading,
+    error: googleError
+  } = useGoogleSignIn();
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <KeyboardAvoidingView
@@ -56,12 +63,14 @@ export default function RegisterScreen() {
               confirmPassword={confirmPassword}
               setConfirmPassword={setConfirmPassword}
               isLoading={isLoading}
-              error={error}
+              isGoogleLoading={isGoogleLoading}
+              error={error || googleError}
               showPassword={showPassword}
               showConfirmPassword={showConfirmPassword}
               onRegister={handleRegister}
               onTogglePassword={toggleShowPassword}
               onToggleConfirmPassword={toggleShowConfirmPassword}
+              onGoogleSignIn={handleGoogleSignIn}
             />
             <AuthFooter
               questionText={t("auth.hasAccount") + " "}

@@ -1,34 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { subscriptionService } from "@services/api/subscriptionService";
+import { ENTITLEMENT_ID } from "@services/subscriptionService";
 import { logger } from "@utils/logger";
+import Purchases from "react-native-purchases";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 interface SubscriptionState {
   tier: "free" | "premium";
   expiresAt: string | null;
-  quota: {
-    transactionsUsed: number;
-    transactionsLimit: number | null;
-    scansUsed: number;
-    scansLimit: number | null;
-  };
   isLoading: boolean;
   error: string | null;
   fetchSubscription: () => Promise<void>;
-  setSubscriptionTier: (tier: "free" | "premium") => void;
   reset: () => void;
 }
 
 const defaultState = {
   tier: "free" as const,
   expiresAt: null,
-  quota: {
-    transactionsUsed: 0,
-    transactionsLimit: 50,
-    scansUsed: 0,
-    scansLimit: 5
-  },
   isLoading: false,
   error: null
 };
@@ -40,16 +28,12 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       fetchSubscription: async () => {
         set({ isLoading: true, error: null });
         try {
-          const data = await subscriptionService.getSubscription();
+          const customerInfo = await Purchases.getCustomerInfo();
+          const premiumEntitlement =
+            customerInfo.entitlements.active[ENTITLEMENT_ID];
           set({
-            tier: data.tier,
-            expiresAt: data.expires_at,
-            quota: {
-              transactionsUsed: data.quota.transactions_used,
-              transactionsLimit: data.quota.transactions_limit,
-              scansUsed: data.quota.scans_used,
-              scansLimit: data.quota.scans_limit
-            },
+            tier: premiumEntitlement !== undefined ? "premium" : "free",
+            expiresAt: premiumEntitlement?.expirationDate ?? null,
             isLoading: false
           });
         } catch (error) {
@@ -61,7 +45,6 @@ export const useSubscriptionStore = create<SubscriptionState>()(
           set({ isLoading: false, error: (error as Error).message });
         }
       },
-      setSubscriptionTier: (tier: "free" | "premium") => set({ tier }),
       reset: () => set(defaultState)
     }),
     {
@@ -69,8 +52,7 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         tier: state.tier,
-        expiresAt: state.expiresAt,
-        quota: state.quota
+        expiresAt: state.expiresAt
       })
     }
   )

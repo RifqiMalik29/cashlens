@@ -99,6 +99,15 @@ export const authService = {
     await api.delete("/api/v1/auth/telegram/status");
   },
 
+  loginWithGoogle: async (idToken: string): Promise<AuthData> => {
+    const device_id = await getDeviceId();
+    return api.post<AuthData>(
+      "/api/v1/auth/google",
+      { id_token: idToken, device_id },
+      { isAuth: false }
+    );
+  },
+
   deleteAccount: async (): Promise<void> => {
     await api.delete("/api/v1/auth/me");
   }

@@ -13,12 +13,12 @@ export interface RawNotification {
 
 class NotificationService {
   async isPermissionGranted(): Promise<boolean> {
-    if (Platform.OS !== "android") return false;
+    if (Platform.OS !== "android" || !NotificationModule) return false;
     return await NotificationModule.isPermissionGranted();
   }
 
   openNotificationSettings() {
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android" && NotificationModule) {
       NotificationModule.openNotificationSettings();
     }
   }
@@ -28,18 +28,21 @@ class NotificationService {
     text: string,
     packageName: string = "com.bca.mobile"
   ) {
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android" && NotificationModule) {
       NotificationModule.sendTestNotification(title, text, packageName);
     }
   }
 
   subscribe(callback: (notification: RawNotification) => void) {
-    if (Platform.OS !== "android") return () => {};
+    if (Platform.OS !== "android" || !NotificationModule) return () => {};
 
     logger.debug(
       "Notification",
       "Setting up DeviceEventEmitter listener for onNotificationReceived"
     );
+
+    NotificationModule.addListener("onNotificationReceived");
+
     const subscription = DeviceEventEmitter.addListener(
       "onNotificationReceived",
       (data) => {
@@ -51,7 +54,10 @@ class NotificationService {
       }
     );
 
-    return () => subscription.remove();
+    return () => {
+      subscription.remove();
+      NotificationModule.removeListeners(1);
+    };
   }
 }
 

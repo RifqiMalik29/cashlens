@@ -11,6 +11,7 @@ import { useSyncStatus } from "@hooks/useSyncStatus";
 import { useTelegramRealtime } from "@hooks/useTelegramRealtime";
 import * as Sentry from "@sentry/react-native";
 import i18n, { initI18n } from "@services/i18n";
+import { revenueCatService } from "@services/subscriptionService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { Stack, useRouter, useSegments } from "expo-router";
@@ -42,12 +43,9 @@ initI18n();
 function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { isAuthenticated, isOnboarded, preferences } = useAuthStore();
+  const { isAuthenticated, isOnboarded, preferences, userId } = useAuthStore();
   const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
     useSyncStatus();
-  const fetchSubscription = useSubscriptionStore(
-    (state) => state.fetchSubscription
-  );
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 
   // Network status monitoring
@@ -65,6 +63,25 @@ function RootLayout() {
   // Listen for Telegram linking status
   useTelegramRealtime();
 
+  useEffect(() => {
+    if (isLayoutReady) {
+      revenueCatService.init(userId);
+    }
+  }, [isLayoutReady, userId]);
+
+  // RevenueCat listener — updates subscription store when purchase state
+  // changes (e.g. after purchase, restore, or server-side cancellation).
+  // fetchSubscription is intentionally excluded from deps: we only want to
+  // register this listener once, and the ref inside fetchSubscription is stable.
+  useEffect(() => {
+    const fetchSub = useSubscriptionStore.getState().fetchSubscription;
+    const listener = () => {
+      fetchSub();
+    };
+    revenueCatService.addCustomerInfoUpdateListener(listener);
+    // Listener is never removed (RevenueCat SDK manages its own lifecycle)
+  }, []);
+
   // Sync language preference from store
   useEffect(() => {
     if (preferences.language && preferences.language !== i18n.language) {
@@ -78,15 +95,11 @@ function RootLayout() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      // Set user context for Sentry
       setupSentryUserContext();
-      // Fetch subscription data
-      fetchSubscription();
     } else {
-      // Clear user context when logged out
       Sentry.setUser(null);
     }
-  }, [isAuthenticated, fetchSubscription]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!isLayoutReady) return;

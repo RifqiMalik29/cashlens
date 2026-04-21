@@ -1,3 +1,4 @@
+import { GoogleSignInButton } from "@components/auth/GoogleSignInButton";
 import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
@@ -16,12 +17,14 @@ interface RegisterFormProps {
   confirmPassword: string;
   setConfirmPassword: (value: string) => void;
   isLoading: boolean;
+  isGoogleLoading: boolean;
   error: string | null;
   showPassword: boolean;
   showConfirmPassword: boolean;
   onRegister: () => void;
   onTogglePassword: () => void;
   onToggleConfirmPassword: () => void;
+  onGoogleSignIn: () => void;
 }
 
 export function RegisterForm({
@@ -34,12 +37,14 @@ export function RegisterForm({
   confirmPassword,
   setConfirmPassword,
   isLoading,
+  isGoogleLoading,
   error,
   showPassword,
   showConfirmPassword,
   onRegister,
   onTogglePassword,
-  onToggleConfirmPassword
+  onToggleConfirmPassword,
+  onGoogleSignIn
 }: RegisterFormProps) {
   const { t } = useTranslation();
 
@@ -113,12 +118,30 @@ export function RegisterForm({
       <Button
         onPress={onRegister}
         loading={isLoading}
-        disabled={isLoading}
+        disabled={isLoading || isGoogleLoading}
         fullWidth
         style={{ marginTop: spacing[6] }}
       >
         {t("auth.register")}
       </Button>
+
+      <View
+        className="flex-row items-center"
+        style={{ marginTop: spacing[4], gap: 8 }}
+      >
+        <View className="flex-1 h-px bg-border" />
+        <Typography variant="caption" color="#9CA3AF">
+          {t("auth.orContinueWith")}
+        </Typography>
+        <View className="flex-1 h-px bg-border" />
+      </View>
+
+      <GoogleSignInButton
+        onPress={onGoogleSignIn}
+        isLoading={isGoogleLoading}
+        label={t("auth.continueWithGoogle")}
+        style={{ marginTop: spacing[3] }}
+      />
     </View>
   );
 }

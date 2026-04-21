@@ -9,12 +9,16 @@ interface DashboardHeaderProps {
   pendingCount: number;
   handleTestNotification?: () => void;
   onPressBell: () => void;
+  lastSyncedAt: string | null;
+  getRelativeTime: (dateString: string | null) => string;
 }
 
 export function DashboardHeader({
   pendingCount,
   handleTestNotification,
-  onPressBell
+  onPressBell,
+  lastSyncedAt,
+  getRelativeTime
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
 
@@ -29,6 +33,15 @@ export function DashboardHeader({
         </Typography>
         <Typography variant="body" color="#FFFFFF">
           {t("dashboard.subtitle")}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="rgba(255,255,255,0.65)"
+          style={{ marginTop: 2 }}
+        >
+          {lastSyncedAt
+            ? `${t("dashboard.lastSync")}: ${getRelativeTime(lastSyncedAt)}`
+            : t("dashboard.localDataOnly")}
         </Typography>
       </View>
 

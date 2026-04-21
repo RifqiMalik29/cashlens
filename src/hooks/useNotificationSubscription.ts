@@ -1,4 +1,5 @@
-import { draftService } from "@services/api/draftService";
+import type { DraftResponse } from "@services/draftService";
+import { draftService } from "@services/draftService";
 import { parseNotification } from "@services/notificationParser";
 import { notificationService } from "@services/notificationService";
 import { useDraftStore } from "@stores/useDraftStore";
@@ -65,13 +66,13 @@ export function useNotificationSubscription() {
               date: parsed.date
             }
           })
-          .then((res) => {
+          .then((res: DraftResponse) => {
             useDraftStore.getState().setBackendId(localId, res.id);
           })
-          .catch((err) => {
+          .catch((err: Error) => {
             logger.warn(
               "Dashboard",
-              `Failed to sync draft to backend: ${(err as Error).message}`
+              `Failed to sync draft to backend: ${err.message}`
             );
           });
       } else {

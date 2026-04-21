@@ -1,6 +1,6 @@
 import { type Category } from "@types";
 
-import { categoryService } from "../api/categoryService";
+import { type CategoryResponse, categoryService } from "../categoryService";
 import { isValidUserId, type SyncResult } from "./syncUtils";
 
 export async function pushCategories(
@@ -16,7 +16,7 @@ export async function pullCategories(userId: string): Promise<Category[]> {
   try {
     const data = await categoryService.getCategories();
 
-    return data.map((item) => ({
+    return data.map((item: CategoryResponse) => ({
       id: item.id,
       name: item.name,
       icon: item.icon,

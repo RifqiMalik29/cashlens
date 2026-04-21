@@ -1,6 +1,6 @@
 import { type Budget } from "@types";
 
-import { budgetService } from "../api/budgetService";
+import { type BudgetResponse, budgetService } from "../budgetService";
 import { isValidUserId, type SyncResult } from "./syncUtils";
 
 export async function pushBudgets(
@@ -16,7 +16,7 @@ export async function pullBudgets(userId: string): Promise<Budget[]> {
   try {
     const data = await budgetService.getBudgets();
 
-    return data.map((item) => ({
+    return data.map((item: BudgetResponse) => ({
       id: item.id,
       categoryId: item.category_id,
       amount: item.amount,

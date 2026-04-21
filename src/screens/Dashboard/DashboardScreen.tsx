@@ -41,7 +41,9 @@ export default function DashboardScreen() {
     transactionCount,
     transactionLimit,
     isPremium,
-    isInitialPull
+    isInitialPull,
+    lastSyncedAt,
+    getRelativeTime
   } = useDashboardScreen();
 
   const router = useProtectedRouter();
@@ -71,6 +73,8 @@ export default function DashboardScreen() {
           pendingCount={pendingCount}
           handleTestNotification={handleTestNotification}
           onPressBell={() => router.push("/drafts")}
+          lastSyncedAt={lastSyncedAt}
+          getRelativeTime={getRelativeTime}
         />
         <EmptyState
           title={t("dashboard.noTransactions")}
@@ -99,6 +103,8 @@ export default function DashboardScreen() {
         <DashboardHeader
           pendingCount={pendingCount}
           onPressBell={() => router.push("/drafts")}
+          lastSyncedAt={lastSyncedAt}
+          getRelativeTime={getRelativeTime}
         />
 
         <View style={{ marginTop: -40 }}>

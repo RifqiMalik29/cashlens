@@ -1,6 +1,6 @@
 import { useHeader } from "@hooks/useHeader";
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
-import { authService } from "@services/api/authService";
+import { authService } from "@services/authService";
 import i18n from "@services/i18n";
 import { useAuthStore } from "@stores/useAuthStore";
 import { logger } from "@utils/logger";

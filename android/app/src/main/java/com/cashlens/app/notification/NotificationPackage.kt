@@ -1,4 +1,4 @@
-package com.rifqi2173.cashlens.notification
+package com.cashlens.app.notification
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

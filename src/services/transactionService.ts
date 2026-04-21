@@ -74,7 +74,7 @@ export const transactionService = {
       currency: data.currency ?? "IDR",
       type: data.type ?? "expense",
       description: data.note || "",
-      date: data.date
+      transaction_date: data.date
         ? data.date.split("T")[0] + "T00:00:00Z"
         : new Date().toISOString().split("T")[0] + "T00:00:00Z"
     };
@@ -91,7 +91,7 @@ export const transactionService = {
       amount: data.amount,
       currency: data.currency ?? "IDR",
       description: data.note || "",
-      date: data.date
+      transaction_date: data.date
         ? data.date.split("T")[0] + "T00:00:00Z"
         : new Date().toISOString().split("T")[0] + "T00:00:00Z"
     };

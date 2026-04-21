@@ -1,9 +1,11 @@
-import { authService } from "@services/api/authService";
+import { authService } from "@services/authService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useNotificationStore } from "@stores/useNotificationStore";
 import { logger } from "@utils/logger";
 import { useEffect } from "react";
 
+// One-time check on app start. Polling removed — Telegram link status
+// is checked on demand when the user opens Notification Settings.
 export function useTelegramRealtime() {
   const { userId, isAuthenticated } = useAuthStore();
   const { setTelegramLinked } = useNotificationStore();
@@ -35,8 +37,6 @@ export function useTelegramRealtime() {
     };
 
     checkStatus();
-
-    const interval = setInterval(checkStatus, 30000);
-    return () => clearInterval(interval);
+    // No interval — status is re-checked when user opens Notification Settings
   }, [userId, isAuthenticated, setTelegramLinked]);
 }

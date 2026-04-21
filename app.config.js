@@ -67,18 +67,22 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
-          imageWidth: "100%",
-          imageHeight: "100%",
-          resizeMode: "contain",
+          image: "./assets/images/icon.png",
+          resizeMode: "cover",
           backgroundColor: "#4CAF82",
           dark: {
-            backgroundColor: "#1A1A2E"
+            backgroundColor: "#4CAF82"
           }
         }
       ],
       "expo-localization",
-      "@sentry/react-native"
+      "@sentry/react-native",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          iosUrlScheme: "com.googleusercontent.apps.552315397645-eo82ht4qr87pqplh5g08nfhe7319kf3u"
+        }
+      ]
     ],
     experiments: {
       typedRoutes: true,

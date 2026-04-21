@@ -1,4 +1,4 @@
-import { useCloudSync } from "@hooks/useCloudSync";
+import { usePullData } from "@hooks/useCloudSync";
 import { useNotificationSubscription } from "@hooks/useNotificationSubscription";
 import { useQuota } from "@hooks/useQuota";
 import { useSyncStatus } from "@hooks/useSyncStatus";
@@ -25,11 +25,11 @@ export function useDashboardScreen() {
   const transactions = useTransactionStore((state) => state.transactions);
   const categories = useCategoryStore((state) => state.categories);
   const { drafts } = useDraftStore();
-  const { isInitialPull } = useSyncStatus();
+  const { isInitialPull, lastSyncedAt, getRelativeTime } = useSyncStatus();
   const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
     useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { pullData } = useCloudSync();
+  const pullData = usePullData();
 
   // Subscribe to notifications
   useNotificationSubscription();
@@ -189,6 +189,8 @@ export function useDashboardScreen() {
     transactionCount,
     transactionLimit,
     isPremium,
-    isInitialPull
+    isInitialPull,
+    lastSyncedAt,
+    getRelativeTime
   };
 }

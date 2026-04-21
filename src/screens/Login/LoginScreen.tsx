@@ -1,6 +1,7 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { AuthLogo } from "@components/auth/AuthLogo";
 import { spacing } from "@constants/theme";
+import { useGoogleSignIn } from "@hooks/useGoogleSignIn";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,6 +23,12 @@ export default function LoginScreen() {
     handleGoToRegister,
     toggleShowPassword
   } = useLogin();
+
+  const {
+    handleGoogleSignIn,
+    isLoading: isGoogleLoading,
+    error: googleError
+  } = useGoogleSignIn();
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -46,10 +53,12 @@ export default function LoginScreen() {
               password={password}
               setPassword={setPassword}
               isLoading={isLoading}
-              error={error}
+              isGoogleLoading={isGoogleLoading}
+              error={error || googleError}
               showPassword={showPassword}
               onLogin={handleLogin}
               onTogglePassword={toggleShowPassword}
+              onGoogleSignIn={handleGoogleSignIn}
             />
             <AuthFooter
               questionText={t("auth.noAccount") + " "}
