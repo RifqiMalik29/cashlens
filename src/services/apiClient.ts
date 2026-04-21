@@ -96,7 +96,8 @@ export async function request<T>(
       isAuth &&
       (message.startsWith("HTTP 401") ||
         message === "Unauthorized" ||
-        message === "unauthorized")
+        message === "unauthorized" ||
+        message.toLowerCase().includes("invalid or expired token"))
     ) {
       logger.debug("API", "Access token expired, attempting refresh...");
       const newToken = await refreshAccessToken();
