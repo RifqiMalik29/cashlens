@@ -4,7 +4,7 @@ export default {
   expo: {
     name: IS_DEV ? "CashLens (Dev)" : "CashLens",
     slug: "cashlens",
-    version: "1.0.0",
+    version: "1.0.2",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: IS_DEV ? "cashlens-dev" : "cashlens",
@@ -24,6 +24,7 @@ export default {
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       package: IS_DEV ? "com.cashlens.app.dev" : "com.cashlens.app",
+      versionCode: 3,
       permissions: [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
