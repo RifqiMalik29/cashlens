@@ -11,7 +11,7 @@ export const ENTITLEMENT_ID = "CashLens Premium";
 
 const REVENUECAT_API_KEYS = {
   apple: "",
-  google: "test_UlHisLjyJbMNxkEBAniQgbGHiPO"
+  google: "goog_HsuIDiSIjSnAStUMxMajIKkdcJd"
 };
 
 class RevenueCatService {
