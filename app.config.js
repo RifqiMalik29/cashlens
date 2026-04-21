@@ -50,6 +50,7 @@ export default {
       favicon: "./assets/images/favicon.png"
     },
     plugins: [
+      "./plugins/withNotificationListener",
       "expo-router",
       [
         "expo-camera",
