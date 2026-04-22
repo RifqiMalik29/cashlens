@@ -56,6 +56,7 @@ export default function TransactionFormScreen() {
         <ScrollView
           className="flex-1 px-6"
           keyboardShouldPersistTaps="handled"
+          style={{ backgroundColor: colors.background }}
           contentContainerStyle={{ paddingBottom: spacing[8] }}
         >
           <View className="mt-6">

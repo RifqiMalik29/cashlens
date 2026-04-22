@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { type Category, type TransactionType } from "@types";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
@@ -17,6 +18,7 @@ export function CategoryPicker({
   type,
   onSelectCategory
 }: CategoryPickerProps) {
+  const colors = useColors();
   const filteredCategories = categories.filter(
     (cat) => cat.type === "both" || cat.type === type
   );
@@ -26,7 +28,7 @@ export function CategoryPicker({
       <Typography
         variant="label"
         weight="medium"
-        color="#6B7280"
+        color={colors.textSecondary}
         style={{ marginBottom: spacing[3] }}
       >
         Kategori
@@ -41,11 +43,14 @@ export function CategoryPicker({
                 key={category.id}
                 onPress={() => onSelectCategory(category.id)}
                 className={`items-center justify-center px-4 py-3 rounded-lg border-2 ${
-                  isSelected
-                    ? "border-primary bg-primary-light"
-                    : "border-transparent bg-white"
+                  isSelected ? "border-primary" : "border-transparent"
                 }`}
-                style={{ minWidth: 80 }}
+                style={{
+                  minWidth: 80,
+                  backgroundColor: isSelected
+                    ? colors.primaryLight
+                    : colors.surface
+                }}
               >
                 <View
                   className="items-center justify-center mb-2"
