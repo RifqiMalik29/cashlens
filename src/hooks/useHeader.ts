@@ -26,7 +26,7 @@ export function useHeader({
   const navigation = useNavigation();
   const { colorScheme } = useColorScheme();
   const resolvedStatusBarStyle =
-    statusBarStyle ?? (colorScheme === "dark" ? "light" : "dark");
+    statusBarStyle ?? (colorScheme === "dark" ? "dark" : "light");
 
   useLayoutEffect(() => {
     setStatusBarStyle(resolvedStatusBarStyle);
