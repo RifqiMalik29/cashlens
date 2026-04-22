@@ -1,4 +1,5 @@
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { type Category, type Transaction } from "@types";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { SectionList, Text, View } from "react-native";
@@ -88,6 +89,7 @@ export function TransactionList({
   baseCurrency,
   onTransactionPress
 }: TransactionListProps) {
+  const colors = useColors();
   const sections = groupTransactionsByDate(transactions);
 
   const renderSectionHeader = ({

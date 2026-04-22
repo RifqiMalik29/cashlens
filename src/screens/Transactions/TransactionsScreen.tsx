@@ -1,7 +1,7 @@
 import { EmptyState } from "@components/transaction/EmptyState";
 import { TransactionList } from "@components/transaction/TransactionList";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useHeader } from "@hooks/useHeader";
 import { Plus } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,7 @@ import { useTransactionsScreen } from "./useTransactionsScreen";
 
 export default function TransactionsScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
   const {
     transactions,
     categories,
@@ -33,7 +34,7 @@ export default function TransactionsScreen() {
       edges={["top"]}
       style={{ backgroundColor: colors.primary }}
     >
-      <View className="flex-1 bg-background">
+      <View className="flex-1" style={{ backgroundColor: colors.background }}>
         <View
           className="px-6 pt-6 pb-4 flex-row items-center justify-between"
           style={{ backgroundColor: colors.primary }}

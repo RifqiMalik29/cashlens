@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Calendar } from "lucide-react-native";
 import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -12,6 +13,7 @@ interface DateInputProps {
 }
 
 export function DateInput({ date, setDate }: DateInputProps) {
+  const colors = useColors();
   const [showPicker, setShowPicker] = useState(false);
 
   const dateObj = new Date(date);
@@ -45,14 +47,15 @@ export function DateInput({ date, setDate }: DateInputProps) {
         onClose={handleClosePicker}
       />
       <TouchableOpacity
-        className="flex-row items-center justify-between bg-white border border-border rounded-lg px-4 py-3"
+        className="flex-row items-center justify-between border border-border rounded-lg px-4 py-3"
+        style={{ backgroundColor: colors.surface }}
         activeOpacity={0.7}
         onPress={handleOpenPicker}
       >
         <View className="flex-row items-center">
           <Calendar
             size={20}
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ marginRight: spacing[3] }}
           />
           <Typography variant="body" weight="medium">
