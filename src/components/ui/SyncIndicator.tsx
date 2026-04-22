@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { useSyncStatus } from "@hooks/useSyncStatus";
 import { Cloud, CloudOff } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
@@ -12,6 +13,7 @@ interface SyncIndicatorProps {
 export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
   const { isSyncing, lastSyncedAt, error, getRelativeTime } = useSyncStatus();
   const { t } = useTranslation();
+  const colors = useColors();
 
   if (error) {
     return (
@@ -44,7 +46,7 @@ export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
       <View className="flex-row items-center gap-2">
         <Cloud size={16} color="#4CAF82" />
         {!compact && (
-          <Typography variant="caption" color="#6B7280">
+          <Typography variant="caption" color={colors.textSecondary}>
             {t("sync.lastSynced", { time: getRelativeTime(lastSyncedAt) })}
           </Typography>
         )}
@@ -54,9 +56,9 @@ export function SyncIndicator({ compact = false }: SyncIndicatorProps) {
 
   return (
     <View className="flex-row items-center gap-2">
-      <CloudOff size={16} color="#9CA3AF" />
+      <CloudOff size={16} color={colors.textSecondary} />
       {!compact && (
-        <Typography variant="caption" color="#9CA3AF">
+        <Typography variant="caption" color={colors.textSecondary}>
           {t("sync.notSynced")}
         </Typography>
       )}
@@ -71,6 +73,7 @@ interface SyncStatusButtonProps {
 export function SyncStatusButton({ onPress }: SyncStatusButtonProps) {
   const { isSyncing, lastSyncedAt, error, getRelativeTime } = useSyncStatus();
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <TouchableOpacity
@@ -87,14 +90,14 @@ export function SyncStatusButton({ onPress }: SyncStatusButtonProps) {
       )}
 
       <View className="flex-1">
-        <Typography variant="body" weight="medium" color="#1A1A2E">
+        <Typography variant="body" weight="medium" color={colors.textPrimary}>
           {error
             ? t("sync.failed")
             : isSyncing
               ? t("sync.syncing")
               : t("sync.synced")}
         </Typography>
-        <Typography variant="caption" color="#6B7280">
+        <Typography variant="caption" color={colors.textSecondary}>
           {error
             ? t("sync.tapToRetry")
             : isSyncing

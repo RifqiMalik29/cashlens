@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useMemo } from "react";
 import { View } from "react-native";
@@ -29,6 +30,7 @@ export function SpendingChart({
   dailyData,
   currency
 }: SpendingChartProps) {
+  const colors = useColors();
   const totalExpense = useMemo(() => {
     return categoryData.reduce((sum, item) => sum + item.amount, 0);
   }, [categoryData]);
@@ -43,7 +45,7 @@ export function SpendingChart({
           <View className="items-center justify-center py-8">
             <Typography
               variant="body"
-              color="#6B7280"
+              color={colors.textSecondary}
               style={{ textAlign: "center" }}
             >
               Belum ada data pengeluaran untuk bulan ini
@@ -64,7 +66,7 @@ export function SpendingChart({
           <Typography
             variant="caption"
             weight="medium"
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
             Berdasarkan Kategori
@@ -79,14 +81,14 @@ export function SpendingChart({
                     <Typography
                       variant="caption"
                       weight="medium"
-                      color="#1A1A2E"
+                      color={colors.textPrimary}
                     >
                       {item.categoryName}
                     </Typography>
                     <Typography
                       variant="caption"
                       weight="semibold"
-                      color="#6B7280"
+                      color={colors.textSecondary}
                     >
                       {formatCompactCurrency(item.amount, currency)}
                     </Typography>
@@ -110,7 +112,7 @@ export function SpendingChart({
           <Typography
             variant="caption"
             weight="medium"
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
             Tren Harian (7 Hari Terakhir)
@@ -128,7 +130,7 @@ export function SpendingChart({
                 >
                   <Typography
                     variant="caption"
-                    color="#6B7280"
+                    color={colors.textSecondary}
                     style={{ width: 50 }}
                   >
                     {day.day}

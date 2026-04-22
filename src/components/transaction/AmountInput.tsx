@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -32,12 +33,13 @@ export function AmountInput({
       }).format(parseFloat(amount || "0"))
     : "0";
 
+  const colors = useColors();
   const amountColor = type === "expense" ? "#EF4444" : "#10B981";
 
   return (
     <View className="items-center mb-6">
       <View className="flex-row items-baseline mb-6">
-        <Typography variant="h4" weight="medium" color="#6B7280">
+        <Typography variant="h4" weight="medium" color={colors.textSecondary}>
           {baseCurrency === "IDR" ? "Rp" : baseCurrency}{" "}
         </Typography>
         <Typography
@@ -62,14 +64,14 @@ export function AmountInput({
               <TouchableOpacity
                 key={key}
                 onPress={() => handlePress(key)}
-                className="flex-1 items-center justify-center bg-white rounded-xl border border-border"
-                style={{ height: 60 }}
+                className="flex-1 items-center justify-center rounded-xl border border-border"
+                style={{ backgroundColor: colors.surface, height: 60 }}
                 activeOpacity={0.7}
               >
                 <Typography
                   variant="h3"
                   weight="medium"
-                  color={key === "⌫" ? "#EF4444" : "#1A1A2E"}
+                  color={key === "⌫" ? "#EF4444" : colors.textPrimary}
                 >
                   {key}
                 </Typography>

@@ -1,6 +1,6 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -10,6 +10,7 @@ import { CheckEmailForm } from "./components/CheckEmailForm";
 import { useCheckEmailConfirmation } from "./useCheckEmailConfirmation";
 
 export default function CheckEmailConfirmationScreen() {
+  const colors = useColors();
   const { t } = useTranslation();
   const { email } = useLocalSearchParams<{ email: string }>();
 

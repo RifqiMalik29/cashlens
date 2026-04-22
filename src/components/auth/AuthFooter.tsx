@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../ui/Typography";
@@ -13,9 +14,10 @@ export function AuthFooter({
   actionText,
   onActionPress
 }: AuthFooterProps) {
+  const colors = useColors();
   return (
     <View className="flex-row items-center justify-center mt-6">
-      <Typography color="#6B7280">{questionText}</Typography>
+      <Typography color={colors.textSecondary}>{questionText}</Typography>
       <TouchableOpacity onPress={onActionPress}>
         <Typography
           variant="body"

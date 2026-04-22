@@ -1,5 +1,6 @@
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Search } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { ScrollView, TextInput, TouchableOpacity, View } from "react-native";
@@ -8,6 +9,7 @@ import { useCurrencySelectorScreen } from "./useCurrencySelectorScreen";
 
 export default function CurrencySelectorScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
   const {
     searchQuery,
     setSearchQuery,
@@ -19,8 +21,11 @@ export default function CurrencySelectorScreen() {
   return (
     <View className="flex-1 bg-background">
       <View className="px-6 pt-4 pb-4">
-        <View className="flex-row items-center bg-white border border-border rounded-lg px-4 py-3">
-          <Search size={20} color="#9CA3AF" />
+        <View
+          className="flex-row items-center border border-border rounded-lg px-4 py-3"
+          style={{ backgroundColor: colors.surface }}
+        >
+          <Search size={20} color={colors.textSecondary} />
           <TextInput
             className="flex-1 ml-3"
             value={searchQuery}
@@ -38,7 +43,8 @@ export default function CurrencySelectorScreen() {
           <TouchableOpacity
             key={currency.code}
             onPress={() => handleSelectCurrency(currency.code)}
-            className="flex-row items-center bg-white border border-border rounded-lg px-4 py-3 mb-3"
+            className="flex-row items-center border border-border rounded-lg px-4 py-3 mb-3"
+            style={{ backgroundColor: colors.surface }}
             activeOpacity={0.7}
           >
             <View className="w-10 h-10 rounded-full bg-surface-secondary items-center justify-center mr-3">
@@ -48,7 +54,7 @@ export default function CurrencySelectorScreen() {
               <Typography variant="body" weight="semibold">
                 {currency.code}
               </Typography>
-              <Typography variant="caption" color="#6B7280">
+              <Typography variant="caption" color={colors.textSecondary}>
                 {currency.name}
               </Typography>
             </View>
@@ -67,7 +73,7 @@ export default function CurrencySelectorScreen() {
           <View className="items-center justify-center py-12">
             <Typography
               variant="body"
-              color="#6B7280"
+              color={colors.textSecondary}
               style={{ textAlign: "center" }}
             >
               {t("currency.noResults")}

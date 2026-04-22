@@ -1,5 +1,6 @@
 import { Button } from "@components/ui/Button";
 import { Typography } from "@components/ui/Typography";
+import { useColors } from "@hooks/useColors";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -11,6 +12,7 @@ export function PermissionDeniedView({
   onRequestPermission
 }: PermissionDeniedViewProps) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <SafeAreaView className="flex-1 bg-background items-center justify-center p-6">
@@ -23,7 +25,7 @@ export function PermissionDeniedView({
       </Typography>
       <Typography
         variant="body"
-        color="#6B7280"
+        color={colors.textSecondary}
         style={{ textAlign: "center", marginBottom: 24 }}
       >
         {t("scanner.cameraPermissionDesc")}

@@ -4,8 +4,9 @@ import {
 } from "@components/ui/BottomSheet";
 import { Button } from "@components/ui/Button";
 import { Typography } from "@components/ui/Typography";
-import { colors, fontSizes, heights, spacing } from "@constants/theme";
+import { fontSizes, heights, spacing } from "@constants/theme";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import { useColors } from "@hooks/useColors";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
@@ -34,6 +35,7 @@ export function AddCategorySheet({
   onClose
 }: AddCategorySheetProps) {
   const { t } = useTranslation();
+  const colors = useColors();
   const sheetRef = useRef<BottomSheetHandle>(null);
 
   useEffect(() => {
@@ -64,8 +66,8 @@ export function AddCategorySheet({
           {t("form.category")}
         </Typography>
         <View
-          className="flex-row items-center px-3 rounded-md bg-white border border-border"
-          style={{ height: heights.input }}
+          className="flex-row items-center px-3 rounded-md border border-border"
+          style={{ backgroundColor: colors.surface, height: heights.input }}
         >
           <BottomSheetTextInput
             placeholder={t("categories.addCustom")}
@@ -87,7 +89,7 @@ export function AddCategorySheet({
         <Typography
           variant="label"
           weight="medium"
-          color="#6B7280"
+          color={colors.textSecondary}
           style={{ marginBottom: spacing[2] }}
         >
           {t("form.type")}
@@ -95,28 +97,34 @@ export function AddCategorySheet({
         <View className="flex-row rounded-lg bg-surface-secondary p-1">
           <TouchableOpacity
             onPress={() => onTypeChange("expense")}
-            className={`flex-1 items-center justify-center py-2 rounded-md ${
-              type === "expense" ? "bg-white" : ""
-            }`}
+            className="flex-1 items-center justify-center py-2 rounded-md"
+            style={
+              type === "expense"
+                ? { backgroundColor: colors.surface }
+                : undefined
+            }
           >
             <Typography
               variant="caption"
               weight={type === "expense" ? "semibold" : "regular"}
-              color={type === "expense" ? "#EF4444" : "#6B7280"}
+              color={type === "expense" ? "#EF4444" : colors.textSecondary}
             >
               {t("categories.expense")}
             </Typography>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => onTypeChange("income")}
-            className={`flex-1 items-center justify-center py-2 rounded-md ${
-              type === "income" ? "bg-white" : ""
-            }`}
+            className="flex-1 items-center justify-center py-2 rounded-md"
+            style={
+              type === "income"
+                ? { backgroundColor: colors.surface }
+                : undefined
+            }
           >
             <Typography
               variant="caption"
               weight={type === "income" ? "semibold" : "regular"}
-              color={type === "income" ? "#10B981" : "#6B7280"}
+              color={type === "income" ? "#10B981" : colors.textSecondary}
             >
               {t("categories.income")}
             </Typography>

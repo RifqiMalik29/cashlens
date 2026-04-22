@@ -1,4 +1,5 @@
 import { Typography } from "@components/ui/Typography";
+import { useColors } from "@hooks/useColors";
 import type { Category } from "@types";
 import { Check, Pencil, Trash2, X } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
@@ -15,6 +16,7 @@ export function CategoryCard({
   onDelete,
   onUpdate
 }: CategoryCardProps) {
+  const colors = useColors();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(category?.name || "");
   const [inputWidth, setInputWidth] = useState(100);
@@ -43,7 +45,10 @@ export function CategoryCard({
   }
 
   return (
-    <View className="flex-row items-center bg-white border border-border rounded-lg pl-3 pr-2 py-2">
+    <View
+      className="flex-row items-center border border-border rounded-lg pl-3 pr-2 py-2"
+      style={{ backgroundColor: colors.surface }}
+    >
       <View
         className="w-8 h-8 rounded-full items-center justify-center mr-2"
         style={{ backgroundColor: category.color }}
@@ -73,10 +78,10 @@ export function CategoryCard({
               width: inputWidth,
               fontSize: 12,
               fontWeight: "500",
-              color: "#1F2937",
+              color: colors.textPrimary,
               paddingVertical: 4,
               paddingHorizontal: 8,
-              backgroundColor: "#F9FAFB",
+              backgroundColor: colors.surfaceSecondary,
               borderWidth: 1,
               borderColor: "#D1D5DB",
               borderRadius: 6
@@ -119,7 +124,7 @@ export function CategoryCard({
           onPress={() => setIsEditing(true)}
           className="ml-2 p-1"
         >
-          <Pencil size={14} color="#9CA3AF" />
+          <Pencil size={14} color={colors.textSecondary} />
         </TouchableOpacity>
       )}
 

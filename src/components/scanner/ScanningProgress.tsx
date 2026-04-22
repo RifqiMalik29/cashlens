@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import Animated, {
@@ -16,6 +17,7 @@ interface ScanningProgressProps {
 }
 
 export function ScanningProgress({ isScanning }: ScanningProgressProps) {
+  const colors = useColors();
   const progress = useSharedValue(0);
   const dot1 = useSharedValue(0.3);
   const dot2 = useSharedValue(0.3);
@@ -85,7 +87,10 @@ export function ScanningProgress({ isScanning }: ScanningProgressProps) {
 
   return (
     <View className="absolute inset-0 bg-black/80 items-center justify-center p-8">
-      <View className="bg-white rounded-2xl p-6 items-center w-full max-w-xs">
+      <View
+        className="rounded-2xl p-6 items-center w-full max-w-xs"
+        style={{ backgroundColor: colors.surface }}
+      >
         <ActivityIndicator size="large" color="#4CAF82" />
 
         <Typography
@@ -98,7 +103,7 @@ export function ScanningProgress({ isScanning }: ScanningProgressProps) {
 
         <Typography
           variant="body"
-          color="#6B7280"
+          color={colors.textSecondary}
           style={{ marginTop: 8, textAlign: "center" }}
         >
           Membaca informasi transaksi

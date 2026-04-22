@@ -1,7 +1,8 @@
 import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
@@ -27,6 +28,7 @@ export function CheckEmailForm({
   onResend
 }: CheckEmailFormProps) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <View className="gap-4">

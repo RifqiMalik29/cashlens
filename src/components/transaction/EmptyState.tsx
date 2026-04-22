@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { View, type ViewStyle } from "react-native";
 
 import { Button } from "../ui/Button";
@@ -19,10 +20,14 @@ export function EmptyState({
   onAction,
   customContainerStyle
 }: EmptyStateProps) {
+  const colors = useColors();
   return (
     <View
       className="flex-1 items-center justify-center px-8"
-      style={[{ paddingBottom: spacing[10] }, customContainerStyle]}
+      style={[
+        { paddingBottom: spacing[10], backgroundColor: colors.background },
+        customContainerStyle
+      ]}
     >
       <Typography
         variant="h3"
@@ -33,7 +38,7 @@ export function EmptyState({
       </Typography>
       <Typography
         variant="body"
-        color="#6B7280"
+        color={colors.textSecondary}
         style={{ textAlign: "center", marginBottom: spacing[6] }}
       >
         {description}
