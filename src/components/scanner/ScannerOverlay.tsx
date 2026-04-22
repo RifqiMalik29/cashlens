@@ -1,7 +1,4 @@
-import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
-
-import { Typography } from "../ui";
 
 const FRAME_WIDTH = 280;
 const FRAME_HEIGHT = 380;
@@ -11,8 +8,6 @@ interface ScannerOverlayProps {
 }
 
 export function ScannerOverlay({ isScanning }: ScannerOverlayProps) {
-  const { t } = useTranslation();
-
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
       {/* Frame UI Only - Removed the background mask */}
@@ -47,17 +42,6 @@ export function ScannerOverlay({ isScanning }: ScannerOverlayProps) {
             style={{ width: 40, height: 40 }}
           />
         </View>
-
-        {!isScanning && (
-          <View className="mt-10 px-6">
-            <View className="bg-black/40 backdrop-blur-md px-6 py-3 rounded-full flex-row items-center border border-white/20">
-              <View className="w-2 h-2 bg-primary rounded-full mr-3" />
-              <Typography color="#FFFFFF" weight="semibold">
-                {t("scanner.positionReceipt")}
-              </Typography>
-            </View>
-          </View>
-        )}
       </View>
     </View>
   );
