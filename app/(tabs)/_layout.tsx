@@ -1,5 +1,6 @@
 import { CustomHeader } from "@components/ui";
-import { colors, heights, spacing } from "@constants/theme";
+import { heights, spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Tabs } from "expo-router";
 import {
   ArrowLeftRight,
@@ -10,13 +11,15 @@ import {
 } from "lucide-react-native";
 
 export default function TabsLayout() {
+  const colors = useColors();
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
         tabBarStyle: {
-          backgroundColor: colors.white,
+          backgroundColor: colors.surface,
           borderTopColor: colors.border,
           height: heights.tabBar,
           paddingBottom: spacing[2]
