@@ -25,13 +25,13 @@ export function QuotaBanner({
           <Typography
             variant="body"
             weight="medium"
-            color={isNearLimit ? "warning" : "secondary"}
+            color={isNearLimit ? "#F59E0B" : colors.textSecondary}
           >
             {count} / {limit} transaksi bulan ini
           </Typography>
           <Typography
             variant="caption"
-            color={isNearLimit ? "warning" : "secondary"}
+            color={isNearLimit ? "#F59E0B" : colors.textSecondary}
           >
             {percentage}%
           </Typography>

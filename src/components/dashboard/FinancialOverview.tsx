@@ -38,13 +38,13 @@ export function FinancialOverview({
             <Typography
               variant="body"
               weight="medium"
-              color={isNearLimit ? "warning" : "secondary"}
+              color={isNearLimit ? "#F59E0B" : colors.textSecondary}
             >
               {t("dashboard.transactionQuotaDesc", { count, limit })}
             </Typography>
             <Typography
               variant="caption"
-              color={isNearLimit ? "warning" : "secondary"}
+              color={isNearLimit ? "#F59E0B" : colors.textSecondary}
             >
               {percentage}%
             </Typography>
