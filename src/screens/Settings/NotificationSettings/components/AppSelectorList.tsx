@@ -1,6 +1,6 @@
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { type SupportedApp } from "@stores/useNotificationStore";
 import { Check, Smartphone } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
@@ -20,6 +20,7 @@ export function AppSelectorList({
   selectAppsTitle,
   selectAppsDesc
 }: AppSelectorListProps) {
+  const colors = useColors();
   return (
     <View className="mb-8">
       <Typography
@@ -50,7 +51,10 @@ export function AppSelectorList({
               <Card className="p-4">
                 <View className="flex-row items-center justify-between">
                   <View className="flex-row items-center">
-                    <View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center mr-3">
+                    <View
+                      className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                      style={{ backgroundColor: colors.surfaceSecondary }}
+                    >
                       <Smartphone size={20} color={colors.textPrimary} />
                     </View>
                     <Typography variant="body" weight="medium">
@@ -59,9 +63,7 @@ export function AppSelectorList({
                   </View>
                   <View
                     className={`w-6 h-6 rounded-md items-center justify-center border ${
-                      isEnabled
-                        ? "bg-primary border-primary"
-                        : "bg-white border-gray-300"
+                      isEnabled ? "bg-primary border-primary" : "border-border"
                     }`}
                   >
                     {isEnabled && <Check size={16} color="#FFFFFF" />}

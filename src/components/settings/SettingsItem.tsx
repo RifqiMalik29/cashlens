@@ -1,4 +1,5 @@
 import { Typography } from "@components/ui/Typography";
+import { useColors } from "@hooks/useColors";
 import { ChevronRight } from "lucide-react-native";
 import type { ReactNode } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -22,31 +23,39 @@ export function SettingsItem({
   disabled,
   accessory
 }: SettingsItemProps) {
+  const colors = useColors();
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className="flex-row items-center bg-white border border-border rounded-lg px-4 py-3"
+      className="flex-row items-center border border-border rounded-lg px-4 py-3"
       activeOpacity={0.7}
-      style={{ opacity: disabled ? 0.5 : 1 }}
+      style={{ opacity: disabled ? 0.5 : 1, backgroundColor: colors.surface }}
     >
       <View className="mr-3">{icon}</View>
       <View className="flex-1">
         <Typography
           variant="body"
           weight="medium"
-          color={danger ? "#EF4444" : "#1A1A2E"}
+          color={danger ? colors.error : colors.textPrimary}
         >
           {label}
         </Typography>
       </View>
       {value && (
-        <Typography variant="body" color="#6B7280" style={{ marginRight: 8 }}>
+        <Typography
+          variant="body"
+          color={colors.textSecondary}
+          style={{ marginRight: 8 }}
+        >
           {value}
         </Typography>
       )}
       {accessory ?? (
-        <ChevronRight size={20} color={danger ? "#EF4444" : "#9CA3AF"} />
+        <ChevronRight
+          size={20}
+          color={danger ? colors.error : colors.textSecondary}
+        />
       )}
     </TouchableOpacity>
   );

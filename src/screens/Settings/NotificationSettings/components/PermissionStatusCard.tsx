@@ -1,7 +1,7 @@
 import { Button } from "@components/ui/Button";
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { ShieldAlert, ShieldCheck } from "lucide-react-native";
 import { View } from "react-native";
 
@@ -20,6 +20,7 @@ export function PermissionStatusCard({
   fixPermissionButtonText,
   onOpenSettings
 }: PermissionStatusCardProps) {
+  const colors = useColors();
   return (
     <Card className="p-4 mb-6">
       <Typography

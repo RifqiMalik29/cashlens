@@ -1,5 +1,5 @@
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { View } from "react-native";
 
 interface SettingsHeaderProps {
@@ -8,6 +8,7 @@ interface SettingsHeaderProps {
 }
 
 export function SettingsHeader({ title, subtitle }: SettingsHeaderProps) {
+  const colors = useColors();
   return (
     <View
       className="px-6 pt-6 pb-4"
