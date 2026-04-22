@@ -1,4 +1,5 @@
 import { Button, Card, Typography } from "@components/ui";
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import { View } from "react-native";
 
@@ -13,6 +14,7 @@ export function QuotaBanner({
   limit,
   onPressUpgrade
 }: QuotaBannerProps) {
+  const colors = useColors();
   const percentage = Math.min(100, Math.round((count / limit) * 100));
   const isNearLimit = percentage >= 80;
 
@@ -34,7 +36,10 @@ export function QuotaBanner({
             {percentage}%
           </Typography>
         </View>
-        <View className="h-2 bg-gray-200 rounded-full overflow-hidden w-full mb-3">
+        <View
+          className="h-2 rounded-full overflow-hidden w-full mb-3"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
           <View
             className={`h-full rounded-full ${isNearLimit ? "bg-warning" : "bg-primary"}`}
             style={{ width: `${percentage}%` }}
