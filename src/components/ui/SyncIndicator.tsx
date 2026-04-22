@@ -78,7 +78,8 @@ export function SyncStatusButton({ onPress }: SyncStatusButtonProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="flex-row items-center gap-2 bg-surface-secondary px-4 py-3 rounded-lg"
+      className="flex-row items-center gap-2 px-4 py-3 rounded-lg"
+      style={{ backgroundColor: colors.surfaceSecondary }}
       activeOpacity={0.7}
     >
       {error ? (

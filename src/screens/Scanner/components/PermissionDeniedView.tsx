@@ -15,7 +15,10 @@ export function PermissionDeniedView({
   const colors = useColors();
 
   return (
-    <SafeAreaView className="flex-1 bg-background items-center justify-center p-6">
+    <SafeAreaView
+      className="flex-1 items-center justify-center p-6"
+      style={{ backgroundColor: colors.background }}
+    >
       <Typography
         variant="h3"
         weight="bold"
