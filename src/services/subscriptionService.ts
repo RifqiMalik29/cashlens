@@ -53,7 +53,10 @@ class RevenueCatService {
 
   public logout = async (): Promise<void> => {
     try {
-      await Purchases.logOut();
+      const customerInfo = await Purchases.getCustomerInfo();
+      if (!customerInfo.originalAppUserId.startsWith("$RCAnonymousID")) {
+        await Purchases.logOut();
+      }
     } catch (error) {
       logger.error("RevenueCat logout failed", error as Error);
     }
