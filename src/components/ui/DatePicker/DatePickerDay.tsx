@@ -1,4 +1,5 @@
 import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { TouchableOpacity } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -23,6 +24,7 @@ export function DatePickerDay({
   isToday,
   onPress
 }: DatePickerDayProps) {
+  const themeColors = useColors();
   const animatedStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: isSelected
@@ -37,10 +39,10 @@ export function DatePickerDay({
   });
 
   const textColor = isSelected
-    ? colors.white
+    ? "#FFFFFF"
     : isToday
       ? colors.primary
-      : colors.textPrimary;
+      : themeColors.textPrimary;
 
   return (
     <TouchableOpacity

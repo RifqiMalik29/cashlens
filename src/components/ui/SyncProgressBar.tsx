@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
@@ -15,6 +15,7 @@ interface SyncProgressBarProps {
 }
 
 export function SyncProgressBar({ isVisible }: SyncProgressBarProps) {
+  const colors = useColors();
   const progress = useSharedValue(0);
 
   useEffect(() => {
@@ -43,7 +44,9 @@ export function SyncProgressBar({ isVisible }: SyncProgressBarProps) {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.bar, animatedStyle]} />
+      <Animated.View
+        style={[styles.bar, { backgroundColor: colors.primary }, animatedStyle]}
+      />
     </View>
   );
 }
@@ -62,7 +65,6 @@ const styles = StyleSheet.create({
   bar: {
     height: "100%",
     width: "40%",
-    backgroundColor: colors.primary,
     borderRadius: 2
   }
 });

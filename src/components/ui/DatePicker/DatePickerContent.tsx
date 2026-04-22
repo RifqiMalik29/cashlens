@@ -1,4 +1,5 @@
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -15,6 +16,7 @@ export function DatePickerContent({
   selectedDate,
   onDateSelect
 }: DatePickerContentProps) {
+  const colors = useColors();
   const [currentMonth, setCurrentMonth] = useState(
     new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
   );
@@ -58,7 +60,10 @@ export function DatePickerContent({
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={handleJumpToToday} style={styles.todayButton}>
+      <TouchableOpacity
+        onPress={handleJumpToToday}
+        style={[styles.todayButton, { backgroundColor: colors.primaryLight }]}
+      >
         <Typography variant="caption" weight="semibold" color={colors.primary}>
           Hari Ini
         </Typography>
@@ -107,7 +112,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing[4],
     paddingHorizontal: spacing[4],
     paddingVertical: spacing[2],
-    backgroundColor: colors.primaryLight,
     borderRadius: 16
   },
   weekdays: {

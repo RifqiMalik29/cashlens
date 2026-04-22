@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import { View, type ViewStyle } from "react-native";
 
@@ -21,10 +22,11 @@ export function Card({
   style,
   shadow = "sm"
 }: CardProps) {
+  const colors = useColors();
   return (
     <View
-      className={`bg-white rounded-lg p-4 ${shadowClasses[shadow]} ${className}`}
-      style={style}
+      className={`rounded-lg p-4 ${shadowClasses[shadow]} ${className}`}
+      style={[{ backgroundColor: colors.surface }, style]}
     >
       {children}
     </View>

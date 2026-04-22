@@ -14,6 +14,22 @@ export const colors = {
   overlay: "rgba(0,0,0,0.5)"
 };
 
+export const darkColors = {
+  background: "#0F1A14",
+  primary: "#4CAF82",
+  primaryLight: "#1A3326",
+  white: "#1C2B22",
+  textPrimary: "#F0F4F1",
+  textSecondary: "#9AB5A3",
+  border: "#2D3F35",
+  error: "#EF4444",
+  warning: "#F59E0B",
+  success: "#10B981",
+  surface: "#1C2B22",
+  surfaceSecondary: "#162318",
+  overlay: "rgba(0,0,0,0.7)"
+};
+
 export const fontSizes = {
   xs: 11,
   sm: 13,

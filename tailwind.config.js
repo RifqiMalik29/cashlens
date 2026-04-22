@@ -7,16 +7,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "#F7FAF8",
+        background: "var(--color-background)",
         primary: "#4CAF82",
-        "primary-light": "#E8F5EE",
-        border: "#E5E7EB",
+        "primary-light": "var(--color-primary-light)",
+        border: "var(--color-border)",
         error: "#EF4444",
         warning: "#F59E0B",
         success: "#10B981",
-        "surface-secondary": "#F9FAFB",
-        "text-primary": "#1A1A2E",
-        "text-secondary": "#6B7280"
+        surface: "var(--color-surface)",
+        "surface-secondary": "var(--color-surface-secondary)",
+        "text-primary": "var(--color-text-primary)",
+        "text-secondary": "var(--color-text-secondary)"
       },
       borderRadius: {
         sm: "6px",
