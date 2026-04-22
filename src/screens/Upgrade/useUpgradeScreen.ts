@@ -57,8 +57,18 @@ export function useUpgradeScreen() {
     t("upgrade.feature5")
   ];
 
-  const annualPack = offerings?.annual;
-  const monthlyPack = offerings?.monthly;
+  const annualPack =
+    offerings?.annual ??
+    offerings?.availablePackages.find(
+      (p) => p.packageType === "ANNUAL" || p.identifier === "annual"
+    ) ??
+    null;
+  const monthlyPack =
+    offerings?.monthly ??
+    offerings?.availablePackages.find(
+      (p) => p.packageType === "MONTHLY" || p.identifier === "monthly"
+    ) ??
+    null;
   const annualPrice = annualPack?.product.priceString ?? "—";
   const monthlyPrice = monthlyPack?.product.priceString ?? "—";
 
