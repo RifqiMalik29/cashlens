@@ -1,4 +1,5 @@
 import { Button, Card, Typography } from "@components/ui";
+import { useColors } from "@hooks/useColors";
 import { useBudgetStore } from "@stores/useBudgetStore";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -24,6 +25,7 @@ export function FinancialOverview({
   isPremium
 }: FinancialOverviewProps) {
   const { t } = useTranslation();
+  const colors = useColors();
   const budgets = useBudgetStore((state) => state.budgets);
   const percentage = Math.min(100, Math.round((count / limit) * 100));
   const isNearLimit = percentage >= 80;
@@ -47,7 +49,10 @@ export function FinancialOverview({
               {percentage}%
             </Typography>
           </View>
-          <View className="h-2 bg-gray-200 rounded-full overflow-hidden w-full mb-3">
+          <View
+            className="h-2 rounded-full overflow-hidden w-full mb-3"
+            style={{ backgroundColor: colors.border }}
+          >
             <View
               className={`h-full rounded-full ${isNearLimit ? "bg-warning" : "bg-primary"}`}
               style={{ width: `${percentage}%` }}

@@ -38,7 +38,7 @@ export function QuotaBanner({
         </View>
         <View
           className="h-2 rounded-full overflow-hidden w-full mb-3"
-          style={{ backgroundColor: colors.surfaceSecondary }}
+          style={{ backgroundColor: colors.border }}
         >
           <View
             className={`h-full rounded-full ${isNearLimit ? "bg-warning" : "bg-primary"}`}

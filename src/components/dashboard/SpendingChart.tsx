@@ -93,7 +93,10 @@ export function SpendingChart({
                       {formatCompactCurrency(item.amount, currency)}
                     </Typography>
                   </View>
-                  <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <View
+                    className="h-2 rounded-full overflow-hidden"
+                    style={{ backgroundColor: colors.border }}
+                  >
                     <View
                       className="h-full rounded-full"
                       style={{
@@ -135,7 +138,10 @@ export function SpendingChart({
                   >
                     {day.day}
                   </Typography>
-                  <View className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
+                  <View
+                    className="flex-1 h-4 rounded-full overflow-hidden"
+                    style={{ backgroundColor: colors.border }}
+                  >
                     <View
                       className="h-full bg-primary rounded-full"
                       style={{ width: `${barWidth}%` }}

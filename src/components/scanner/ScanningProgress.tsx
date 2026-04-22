@@ -110,8 +110,8 @@ export function ScanningProgress({ isScanning }: ScanningProgressProps) {
         </Typography>
 
         <View
-          className="w-full bg-gray-200 rounded-full mt-6 overflow-hidden"
-          style={{ height: 4 }}
+          className="w-full rounded-full mt-6 overflow-hidden"
+          style={{ height: 4, backgroundColor: colors.border }}
         >
           <Animated.View
             style={[animatedBarStyle, animatedColorStyle]}
