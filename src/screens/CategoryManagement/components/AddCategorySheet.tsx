@@ -94,7 +94,10 @@ export function AddCategorySheet({
         >
           {t("form.type")}
         </Typography>
-        <View className="flex-row rounded-lg bg-surface-secondary p-1">
+        <View
+          className="flex-row rounded-lg p-1"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
           <TouchableOpacity
             onPress={() => onTypeChange("expense")}
             className="flex-1 items-center justify-center py-2 rounded-md"

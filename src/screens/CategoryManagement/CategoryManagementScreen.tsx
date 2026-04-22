@@ -44,9 +44,12 @@ export default function CategoryManagementScreen() {
   useHeader({ statusBarStyle: "dark", title: t("categories.title") });
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <View className="px-6 pt-4 pb-4">
-        <View className="flex-row rounded-lg bg-surface-secondary p-1">
+        <View
+          className="flex-row rounded-lg p-1"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
           {filterTypes.map((type) => (
             <TouchableOpacity
               key={type.value}
