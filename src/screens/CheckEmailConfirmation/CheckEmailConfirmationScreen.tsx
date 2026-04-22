@@ -27,7 +27,10 @@ export default function CheckEmailConfirmationScreen() {
   } = useCheckEmailConfirmation(email);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+    >
       <View className="flex-1 justify-center px-6">
         <View className="mt-8">
           <Typography

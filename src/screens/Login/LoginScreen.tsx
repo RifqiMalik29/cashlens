@@ -1,6 +1,7 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { AuthLogo } from "@components/auth/AuthLogo";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useGoogleSignIn } from "@hooks/useGoogleSignIn";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
@@ -10,6 +11,7 @@ import { LoginForm } from "./components/LoginForm";
 import { useLogin } from "./useLogin";
 
 export default function LoginScreen() {
+  const colors = useColors();
   const { t } = useTranslation();
   const {
     email,
@@ -31,7 +33,10 @@ export default function LoginScreen() {
   } = useGoogleSignIn();
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+    >
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : "padding"}
