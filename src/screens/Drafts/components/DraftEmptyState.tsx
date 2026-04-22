@@ -1,11 +1,12 @@
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { CreditCard } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 export function DraftEmptyState() {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <View className="flex-1 items-center justify-center mt-20 px-10">

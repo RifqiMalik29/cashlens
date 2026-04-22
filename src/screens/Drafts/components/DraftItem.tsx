@@ -1,6 +1,6 @@
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { type DraftTransaction } from "@stores/useDraftStore";
 import { formatCurrency } from "@utils/formatCurrency";
 import { ArrowDownLeft, ArrowUpRight, Check, X } from "lucide-react-native";
@@ -21,6 +21,7 @@ export function DraftItem({
   onEdit
 }: DraftItemProps) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={() => onEdit(item)}>
