@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { useQuota } from "@hooks/useQuota";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useTranslation } from "react-i18next";
@@ -22,12 +23,17 @@ export function SummaryCard({
 }: SummaryCardProps) {
   const { t } = useTranslation();
   const { isPremium } = useQuota();
+  const colors = useColors();
 
   return (
     <Card className="mx-4 mb-4" style={{ shadowOpacity: 0.08 }}>
       <View className="flex-row justify-between items-start mb-4">
         <View>
-          <Typography variant="caption" color="#6B7280" weight="medium">
+          <Typography
+            variant="caption"
+            color={colors.textSecondary}
+            weight="medium"
+          >
             {t("dashboard.totalBalance")}
           </Typography>
           <Typography variant="h2" weight="bold" style={{ marginTop: 4 }}>
@@ -41,7 +47,7 @@ export function SummaryCard({
         <View className="flex-1">
           <View className="flex-row items-center gap-1 mb-1">
             <View className="w-2 h-2 rounded-full bg-green-500" />
-            <Typography variant="caption" color="#6B7280">
+            <Typography variant="caption" color={colors.textSecondary}>
               {t("dashboard.income")}
             </Typography>
           </View>
@@ -53,7 +59,7 @@ export function SummaryCard({
         <View className="flex-1">
           <View className="flex-row items-center gap-1 mb-1">
             <View className="w-2 h-2 rounded-full bg-red-500" />
-            <Typography variant="caption" color="#6B7280">
+            <Typography variant="caption" color={colors.textSecondary}>
               {t("dashboard.expense")}
             </Typography>
           </View>

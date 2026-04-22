@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Bell, TestTube } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
@@ -21,6 +21,7 @@ export function DashboardHeader({
   getRelativeTime
 }: DashboardHeaderProps) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <View
