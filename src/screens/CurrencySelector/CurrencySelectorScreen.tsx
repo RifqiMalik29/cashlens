@@ -19,7 +19,7 @@ export default function CurrencySelectorScreen() {
   } = useCurrencySelectorScreen();
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <View className="px-6 pt-4 pb-4">
         <View
           className="flex-row items-center border border-border rounded-lg px-4 py-3"
@@ -31,7 +31,8 @@ export default function CurrencySelectorScreen() {
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholder={t("currency.searchPlaceholder")}
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={colors.textSecondary}
+            style={{ color: colors.textPrimary }}
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -47,7 +48,10 @@ export default function CurrencySelectorScreen() {
             style={{ backgroundColor: colors.surface }}
             activeOpacity={0.7}
           >
-            <View className="w-10 h-10 rounded-full bg-surface-secondary items-center justify-center mr-3">
+            <View
+              className="w-10 h-10 rounded-full items-center justify-center mr-3"
+              style={{ backgroundColor: colors.surfaceSecondary }}
+            >
               <Typography variant="h3">{currency.flag}</Typography>
             </View>
             <View className="flex-1">

@@ -1,7 +1,7 @@
 import { BaseDialog } from "@components/ui/BaseDialog";
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { type SupportedApp } from "@stores/useNotificationStore";
 import { type Href } from "expo-router";
@@ -17,6 +17,7 @@ import {
 import { useNotificationSettings } from "./useNotificationSettings";
 
 export default function NotificationSettingsScreen() {
+  const colors = useColors();
   const router = useProtectedRouter();
   const {
     t,
@@ -39,7 +40,11 @@ export default function NotificationSettingsScreen() {
   } = useNotificationSettings();
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+      edges={["bottom"]}
+    >
       <ScrollView className="flex-1 px-6 pt-4">
         <Typography
           variant="body"
