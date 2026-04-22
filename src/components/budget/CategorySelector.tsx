@@ -1,5 +1,6 @@
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { type Category } from "@types";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
@@ -14,12 +15,13 @@ export function CategorySelector({
   selectedCategoryId,
   onSelectCategory
 }: CategorySelectorProps) {
+  const colors = useColors();
   return (
     <View style={{ marginTop: spacing[5] }}>
       <Typography
         variant="label"
         weight="medium"
-        color="#6B7280"
+        color={colors.textSecondary}
         style={{ marginBottom: spacing[2] }}
       >
         Kategori
@@ -33,9 +35,15 @@ export function CategorySelector({
               className={`items-center justify-center px-4 py-3 rounded-lg border-2 ${
                 selectedCategoryId === category.id
                   ? "border-primary bg-primary-light"
-                  : "border-transparent bg-white"
+                  : "border-transparent"
               }`}
-              style={{ minWidth: 80 }}
+              style={{
+                minWidth: 80,
+                backgroundColor:
+                  selectedCategoryId === category.id
+                    ? undefined
+                    : colors.surface
+              }}
             >
               <View
                 className="w-10 h-10 rounded-full items-center justify-center mb-2"

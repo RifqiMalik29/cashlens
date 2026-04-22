@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { Calendar } from "lucide-react-native";
 import { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -14,6 +15,7 @@ export function BudgetDateInput({
   startDate,
   setStartDate
 }: BudgetDateInputProps) {
+  const colors = useColors();
   const [showPicker, setShowPicker] = useState(false);
 
   const dateObj = new Date(startDate);
@@ -51,12 +53,17 @@ export function BudgetDateInput({
         minDate={minDate}
       />
       <TouchableOpacity
-        className="flex-row items-center justify-between bg-white border border-border rounded-lg px-4 py-3"
+        className="flex-row items-center justify-between border border-border rounded-lg px-4 py-3"
+        style={{ backgroundColor: colors.surface }}
         activeOpacity={0.7}
         onPress={handleOpenPicker}
       >
         <View className="flex-row items-center">
-          <Calendar size={20} color="#6B7280" style={{ marginRight: 12 }} />
+          <Calendar
+            size={20}
+            color={colors.textSecondary}
+            style={{ marginRight: 12 }}
+          />
           <Typography variant="body" weight="medium">
             {displayDate}
           </Typography>
