@@ -1,10 +1,12 @@
+import { useColors } from "@hooks/useColors";
 import { Stack } from "expo-router";
 
 export default function BudgetStack() {
+  const colors = useColors();
   return (
     <Stack
       screenOptions={{
-        contentStyle: { backgroundColor: "#F7FAF8" }
+        contentStyle: { backgroundColor: colors.background }
       }}
     >
       <Stack.Screen

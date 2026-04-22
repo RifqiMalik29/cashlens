@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { ChevronLeft } from "lucide-react-native";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -19,12 +19,17 @@ export function CustomHeader({
   onBack,
   rightElement
 }: CustomHeaderProps) {
+  const colors = useColors();
   const insets = useSafeAreaInsets();
 
   return (
     <View
-      className="bg-white border-b border-border"
-      style={{ paddingTop: insets.top }}
+      style={{
+        paddingTop: insets.top,
+        backgroundColor: colors.surface,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border
+      }}
     >
       <View className="flex-row items-center h-[52px] px-4">
         <View className="w-10 items-start">

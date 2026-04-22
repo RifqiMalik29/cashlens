@@ -3,6 +3,7 @@ import {
   setStatusBarBackgroundColor,
   setStatusBarStyle
 } from "expo-status-bar";
+import { useColorScheme } from "nativewind";
 import type React from "react";
 import { useLayoutEffect } from "react";
 import { type ColorValue } from "react-native";
@@ -18,14 +19,17 @@ interface HeaderOptions {
 export function useHeader({
   title,
   rightElement,
-  statusBarStyle = "dark",
+  statusBarStyle,
   statusBarColor,
   showHeader = true
 }: HeaderOptions) {
   const navigation = useNavigation();
+  const { colorScheme } = useColorScheme();
+  const resolvedStatusBarStyle =
+    statusBarStyle ?? (colorScheme === "dark" ? "light" : "dark");
 
   useLayoutEffect(() => {
-    setStatusBarStyle(statusBarStyle);
+    setStatusBarStyle(resolvedStatusBarStyle);
     if (statusBarColor) {
       setStatusBarBackgroundColor(statusBarColor);
     }
@@ -41,7 +45,7 @@ export function useHeader({
     navigation,
     title,
     rightElement,
-    statusBarStyle,
+    resolvedStatusBarStyle,
     statusBarColor,
     showHeader
   ]);
