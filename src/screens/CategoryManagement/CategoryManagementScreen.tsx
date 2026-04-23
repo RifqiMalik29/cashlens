@@ -1,5 +1,6 @@
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useHeader } from "@hooks/useHeader";
 import { Plus } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
@@ -39,24 +40,33 @@ export default function CategoryManagementScreen() {
     scrollViewRef
   } = useCategoryManagementScreen();
 
+  const colors = useColors();
   useHeader({ statusBarStyle: "dark", title: t("categories.title") });
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <View className="px-6 pt-4 pb-4">
-        <View className="flex-row rounded-lg bg-surface-secondary p-1">
+        <View
+          className="flex-row rounded-lg p-1"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
           {filterTypes.map((type) => (
             <TouchableOpacity
               key={type.value}
               onPress={() => handleFilterSelect(type.value)}
-              className={`flex-1 items-center justify-center py-2 rounded-md ${
-                selectedType === type.value ? "bg-white" : ""
-              }`}
+              className={`flex-1 items-center justify-center py-2 rounded-md`}
+              style={
+                selectedType === type.value
+                  ? { backgroundColor: colors.surface }
+                  : undefined
+              }
             >
               <Typography
                 variant="caption"
                 weight={selectedType === type.value ? "semibold" : "regular"}
-                color={selectedType === type.value ? "#4CAF82" : "#6B7280"}
+                color={
+                  selectedType === type.value ? "#4CAF82" : colors.textSecondary
+                }
               >
                 {type.label}
               </Typography>
@@ -136,11 +146,11 @@ export default function CategoryManagementScreen() {
             className="flex-row items-center justify-center border-2 border-dashed border-border rounded-lg py-4 mb-8"
             activeOpacity={0.7}
           >
-            <Plus size={20} color="#9CA3AF" />
+            <Plus size={20} color={colors.textSecondary} />
             <Typography
               variant="body"
               weight="medium"
-              color="#9CA3AF"
+              color={colors.textSecondary}
               style={{ marginLeft: 8 }}
             >
               {t("categories.addCustom")}

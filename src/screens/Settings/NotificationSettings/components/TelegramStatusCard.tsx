@@ -1,7 +1,7 @@
 import { Button } from "@components/ui/Button";
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Send } from "lucide-react-native";
 import { ActivityIndicator, View } from "react-native";
 
@@ -26,6 +26,7 @@ export function TelegramStatusCard({
   onConnect,
   onDisconnect
 }: TelegramStatusCardProps) {
+  const colors = useColors();
   return (
     <Card className="p-4 mb-6">
       <Typography

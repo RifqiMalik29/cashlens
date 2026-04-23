@@ -1,6 +1,6 @@
 import { AuthFooter } from "@components/auth/AuthFooter";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -10,6 +10,7 @@ import { CheckEmailForm } from "./components/CheckEmailForm";
 import { useCheckEmailConfirmation } from "./useCheckEmailConfirmation";
 
 export default function CheckEmailConfirmationScreen() {
+  const colors = useColors();
   const { t } = useTranslation();
   const { email } = useLocalSearchParams<{ email: string }>();
 
@@ -26,7 +27,10 @@ export default function CheckEmailConfirmationScreen() {
   } = useCheckEmailConfirmation(email);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+    >
       <View className="flex-1 justify-center px-6">
         <View className="mt-8">
           <Typography

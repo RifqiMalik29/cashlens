@@ -1,5 +1,5 @@
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Brain, Cpu, Eye, Sparkles } from "lucide-react-native";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -13,6 +13,7 @@ export function AIProcessingIndicator({
   status,
   method
 }: AIProcessingIndicatorProps) {
+  const colors = useColors();
   const getIcon = () => {
     switch (method) {
       case "local_ocr":
@@ -28,8 +29,16 @@ export function AIProcessingIndicator({
 
   return (
     <View className="absolute inset-0 items-center justify-center bg-black/60 z-50">
-      <View className="bg-white p-6 rounded-2xl items-center shadow-lg w-[80%]">
-        <View className="mb-4 p-3 rounded-full bg-gray-50">{getIcon()}</View>
+      <View
+        className="p-6 rounded-2xl items-center shadow-lg w-[80%]"
+        style={{ backgroundColor: colors.surface }}
+      >
+        <View
+          className="mb-4 p-3 rounded-full"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
+          {getIcon()}
+        </View>
         <ActivityIndicator
           color={colors.primary}
           size="large"

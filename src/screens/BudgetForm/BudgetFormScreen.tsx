@@ -8,6 +8,7 @@ import { DateInput } from "@components/transaction/DateInput";
 import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useTranslation } from "react-i18next";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,6 +17,7 @@ import { useBudgetForm } from "./useBudgetForm";
 
 export default function BudgetFormScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
   const {
     displayAmount,
     handleAmountChange,
@@ -34,7 +36,11 @@ export default function BudgetFormScreen() {
   } = useBudgetForm();
 
   return (
-    <SafeAreaView edges={[]} className="flex-1 bg-background">
+    <SafeAreaView
+      edges={[]}
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+    >
       <BudgetFormHeader isEditMode={isEditMode} />
       <KeyboardAvoidingView
         className="flex-1"
@@ -49,7 +55,7 @@ export default function BudgetFormScreen() {
             <Typography
               variant="label"
               weight="medium"
-              color="#6B7280"
+              color={colors.textSecondary}
               style={{ marginBottom: spacing[2] }}
             >
               {t("budget.budgetAmount")}
@@ -76,7 +82,7 @@ export default function BudgetFormScreen() {
               <Typography
                 variant="label"
                 weight="medium"
-                color="#6B7280"
+                color={colors.textSecondary}
                 style={{ marginBottom: spacing[2] }}
               >
                 {t("budget.startDate")}

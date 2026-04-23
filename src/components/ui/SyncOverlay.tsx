@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -14,6 +14,7 @@ export function SyncOverlay({
   isVisible,
   message = "Menyinkronkan data Anda..."
 }: SyncOverlayProps) {
+  const colors = useColors();
   if (!isVisible) return null;
 
   return (
@@ -23,7 +24,10 @@ export function SyncOverlay({
       style={StyleSheet.absoluteFill}
       className="z-[9999] flex-1 items-center justify-center bg-black/60"
     >
-      <View className="items-center justify-center p-8 bg-white rounded-3xl shadow-lg">
+      <View
+        className="items-center justify-center p-8 rounded-3xl shadow-lg"
+        style={{ backgroundColor: colors.surface }}
+      >
         <ActivityIndicator size="large" color={colors.primary} />
         <Typography
           variant="bodyLarge"

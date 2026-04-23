@@ -6,6 +6,7 @@ import { BaseDialog } from "@components/ui/BaseDialog";
 import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useHeader } from "@hooks/useHeader";
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useTranslation } from "react-i18next";
@@ -14,6 +15,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { useTransactionForm } from "./useTransactionForm";
 
 export default function TransactionFormScreen() {
+  const colors = useColors();
   const { t } = useTranslation();
   const router = useProtectedRouter();
   const {
@@ -45,7 +47,7 @@ export default function TransactionFormScreen() {
   });
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1" style={{ backgroundColor: colors.background }}>
       <KeyboardAvoidingView
         className="flex-1"
         behavior="padding"
@@ -54,6 +56,7 @@ export default function TransactionFormScreen() {
         <ScrollView
           className="flex-1 px-6"
           keyboardShouldPersistTaps="handled"
+          style={{ backgroundColor: colors.background }}
           contentContainerStyle={{ paddingBottom: spacing[8] }}
         >
           <View className="mt-6">

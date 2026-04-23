@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import { Text, type TextStyle } from "react-native";
 
@@ -44,16 +44,17 @@ const weightClasses: Record<Weight, string> = {
 export function Typography({
   variant = "body",
   weight = "regular",
-  color = colors.textPrimary,
+  color,
   style,
   children,
   numberOfLines,
   className
 }: TypographyProps) {
+  const colors = useColors();
   return (
     <Text
       className={`${variantClasses[variant]} ${weightClasses[weight]} ${className}`}
-      style={[{ color }, style]}
+      style={[{ color: color ?? colors.textPrimary }, style]}
       numberOfLines={numberOfLines}
     >
       {children}

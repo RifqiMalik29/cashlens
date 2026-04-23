@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { type Category } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import { TouchableOpacity, View } from "react-native";
@@ -23,6 +24,7 @@ export function BudgetCard({
   period,
   onPress
 }: BudgetCardProps) {
+  const colors = useColors();
   const progress = budgetAmount > 0 ? (spentAmount / budgetAmount) * 100 : 0;
   const remaining = budgetAmount - spentAmount;
   const isExceeded = remaining < 0;
@@ -44,7 +46,7 @@ export function BudgetCard({
             <Typography variant="body" weight="semibold" numberOfLines={1}>
               {category.name}
             </Typography>
-            <Typography variant="caption" color="#6B7280">
+            <Typography variant="caption" color={colors.textSecondary}>
               {period}
             </Typography>
           </View>
@@ -62,20 +64,20 @@ export function BudgetCard({
 
         <View className="flex-row justify-between mt-3">
           <View>
-            <Typography variant="caption" color="#6B7280">
+            <Typography variant="caption" color={colors.textSecondary}>
               Terpakai
             </Typography>
             <Typography
               variant="body"
               weight="semibold"
-              color={isExceeded ? "#EF4444" : "#1A1A2E"}
+              color={isExceeded ? "#EF4444" : colors.textPrimary}
             >
               {formatCurrency(spentAmount, currency)}
             </Typography>
           </View>
 
           <View className="items-end">
-            <Typography variant="caption" color="#6B7280">
+            <Typography variant="caption" color={colors.textSecondary}>
               Sisa
             </Typography>
             <Typography
@@ -91,10 +93,10 @@ export function BudgetCard({
         </View>
 
         <View className="flex-row justify-between mt-2">
-          <Typography variant="caption" color="#9CA3AF">
+          <Typography variant="caption" color={colors.textSecondary}>
             {formatCurrency(budgetAmount, currency)}
           </Typography>
-          <Typography variant="caption" color="#9CA3AF">
+          <Typography variant="caption" color={colors.textSecondary}>
             {Math.round(progress)}%
           </Typography>
         </View>

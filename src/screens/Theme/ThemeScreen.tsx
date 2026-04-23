@@ -1,22 +1,22 @@
 import { SettingsItem, SettingsSection } from "@components/settings";
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Check, Monitor, Moon, Sun } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useThemeScreen } from "./useThemeScreen";
 
-const themeIcons: Record<string, React.ReactNode> = {
-  light: <Sun size={20} color={colors.primary} />,
-  dark: <Moon size={20} color={colors.primary} />,
-  system: <Monitor size={20} color={colors.primary} />
-};
-
 export default function ThemeScreen() {
+  const colors = useColors();
   const { t, themes, currentTheme, handleThemeSelect } = useThemeScreen();
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+      edges={["bottom"]}
+    >
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingBottom: spacing[8] }}
@@ -28,7 +28,15 @@ export default function ThemeScreen() {
               style={{ marginTop: index > 0 ? spacing[3] : 0 }}
             >
               <SettingsItem
-                icon={themeIcons[theme.id]}
+                icon={
+                  theme.id === "light" ? (
+                    <Sun size={20} color={colors.primary} />
+                  ) : theme.id === "dark" ? (
+                    <Moon size={20} color={colors.primary} />
+                  ) : (
+                    <Monitor size={20} color={colors.primary} />
+                  )
+                }
                 label={theme.label}
                 onPress={() => handleThemeSelect(theme.id)}
                 value={

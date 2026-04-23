@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import { View, type ViewStyle } from "react-native";
 
@@ -18,33 +18,37 @@ interface BadgeProps {
   style?: ViewStyle;
 }
 
-const variantConfig: Record<
-  BadgeVariant,
-  { containerClass: string; textColor: string }
-> = {
-  default: {
-    containerClass: "bg-surface-secondary",
-    textColor: colors.textSecondary
-  },
-  success: { containerClass: "bg-green-100", textColor: "#065F46" },
-  warning: { containerClass: "bg-yellow-100", textColor: "#92400E" },
-  error: { containerClass: "bg-red-100", textColor: "#991B1B" },
-  primary: { containerClass: "bg-primary-light", textColor: colors.primary },
-  secondary: {
-    containerClass: "bg-surface-secondary",
-    textColor: colors.textSecondary
-  }
-};
-
 export function Badge({ label, variant = "default", style }: BadgeProps) {
-  const cfg = variantConfig[variant];
+  const colors = useColors();
+
+  const bgColor =
+    variant === "success"
+      ? "#D1FAE5"
+      : variant === "warning"
+        ? "#FEF3C7"
+        : variant === "error"
+          ? "#FEE2E2"
+          : variant === "primary"
+            ? colors.primaryLight
+            : colors.surfaceSecondary;
+
+  const textColor =
+    variant === "success"
+      ? "#065F46"
+      : variant === "warning"
+        ? "#92400E"
+        : variant === "error"
+          ? "#991B1B"
+          : variant === "primary"
+            ? colors.primary
+            : colors.textSecondary;
 
   return (
     <View
-      className={`flex-row items-center px-2 py-1 rounded-full self-start ${cfg.containerClass}`}
-      style={style}
+      className="flex-row items-center px-2 py-1 rounded-full self-start"
+      style={[{ backgroundColor: bgColor }, style]}
     >
-      <Typography variant="caption" weight="medium" color={cfg.textColor}>
+      <Typography variant="caption" weight="medium" color={textColor}>
         {label}
       </Typography>
     </View>

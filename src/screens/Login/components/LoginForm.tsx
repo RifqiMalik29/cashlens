@@ -3,6 +3,7 @@ import { Button } from "@components/ui/Button";
 import { Input } from "@components/ui/Input";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
@@ -35,6 +36,7 @@ export function LoginForm({
   onGoogleSignIn
 }: LoginFormProps) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <View className="mt-8">
@@ -57,9 +59,9 @@ export function LoginForm({
           rightElement={
             <TouchableOpacity onPress={onTogglePassword}>
               {showPassword ? (
-                <EyeOff size={20} color="#6B7280" />
+                <EyeOff size={20} color={colors.textSecondary} />
               ) : (
-                <Eye size={20} color="#6B7280" />
+                <Eye size={20} color={colors.textSecondary} />
               )}
             </TouchableOpacity>
           }
@@ -89,7 +91,7 @@ export function LoginForm({
         style={{ marginTop: spacing[4], gap: 8 }}
       >
         <View className="flex-1 h-px bg-border" />
-        <Typography variant="caption" color="#9CA3AF">
+        <Typography variant="caption" color={colors.textSecondary}>
           {t("auth.orContinueWith")}
         </Typography>
         <View className="flex-1 h-px bg-border" />

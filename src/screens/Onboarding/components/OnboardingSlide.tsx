@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { ScanLine, Target, Wallet } from "lucide-react-native";
 import { ScrollView, Text, View } from "react-native";
 
@@ -25,6 +26,7 @@ export function OnboardingSlide({
   iconSize,
   screenWidth
 }: OnboardingSlideProps) {
+  const colors = useColors();
   const IconComponent = ICON_MAP[iconName];
 
   return (
@@ -42,7 +44,7 @@ export function OnboardingSlide({
         <Text
           className="text-2xl font-bold text-center"
           style={{
-            color: "#1A1A2E",
+            color: colors.textPrimary,
             marginTop: spacing[6]
           }}
         >
@@ -51,7 +53,7 @@ export function OnboardingSlide({
         <Text
           className="text-base text-center"
           style={{
-            color: "#6B7280",
+            color: colors.textSecondary,
             marginTop: spacing[3]
           }}
         >

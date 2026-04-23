@@ -1,4 +1,5 @@
-import { colors, heights } from "@constants/theme";
+import { heights } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import {
   ActivityIndicator,
   TouchableOpacity,
@@ -20,6 +21,7 @@ export function GoogleSignInButton({
   label,
   style
 }: GoogleSignInButtonProps) {
+  const colors = useColors();
   return (
     <TouchableOpacity
       onPress={onPress}

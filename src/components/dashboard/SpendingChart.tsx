@@ -1,4 +1,5 @@
 import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useMemo } from "react";
 import { View } from "react-native";
@@ -29,6 +30,7 @@ export function SpendingChart({
   dailyData,
   currency
 }: SpendingChartProps) {
+  const colors = useColors();
   const totalExpense = useMemo(() => {
     return categoryData.reduce((sum, item) => sum + item.amount, 0);
   }, [categoryData]);
@@ -43,7 +45,7 @@ export function SpendingChart({
           <View className="items-center justify-center py-8">
             <Typography
               variant="body"
-              color="#6B7280"
+              color={colors.textSecondary}
               style={{ textAlign: "center" }}
             >
               Belum ada data pengeluaran untuk bulan ini
@@ -64,7 +66,7 @@ export function SpendingChart({
           <Typography
             variant="caption"
             weight="medium"
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
             Berdasarkan Kategori
@@ -79,19 +81,22 @@ export function SpendingChart({
                     <Typography
                       variant="caption"
                       weight="medium"
-                      color="#1A1A2E"
+                      color={colors.textPrimary}
                     >
                       {item.categoryName}
                     </Typography>
                     <Typography
                       variant="caption"
                       weight="semibold"
-                      color="#6B7280"
+                      color={colors.textSecondary}
                     >
                       {formatCompactCurrency(item.amount, currency)}
                     </Typography>
                   </View>
-                  <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <View
+                    className="h-2 rounded-full overflow-hidden"
+                    style={{ backgroundColor: colors.border }}
+                  >
                     <View
                       className="h-full rounded-full"
                       style={{
@@ -110,7 +115,7 @@ export function SpendingChart({
           <Typography
             variant="caption"
             weight="medium"
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
             Tren Harian (7 Hari Terakhir)
@@ -128,12 +133,15 @@ export function SpendingChart({
                 >
                   <Typography
                     variant="caption"
-                    color="#6B7280"
+                    color={colors.textSecondary}
                     style={{ width: 50 }}
                   >
                     {day.day}
                   </Typography>
-                  <View className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden">
+                  <View
+                    className="flex-1 h-4 rounded-full overflow-hidden"
+                    style={{ backgroundColor: colors.border }}
+                  >
                     <View
                       className="h-full bg-primary rounded-full"
                       style={{ width: `${barWidth}%` }}

@@ -77,6 +77,7 @@ export function useBudgetForm() {
     }
 
     setIsLoading(true);
+    let navigated = false;
 
     try {
       // Calculate end date based on period
@@ -124,11 +125,12 @@ export function useBudgetForm() {
         });
       }
 
+      navigated = true;
       router.back();
     } catch (err) {
       setError((err as Error).message || "Terjadi kesalahan");
     } finally {
-      setIsLoading(false);
+      if (!navigated) setIsLoading(false);
     }
   }, [
     rawAmount,
@@ -147,15 +149,17 @@ export function useBudgetForm() {
     if (!id || !existingBudget) return;
 
     setIsLoading(true);
+    let navigated = false;
 
     try {
       await budgetService.deleteBudget(id);
       deleteBudget(id);
+      navigated = true;
       router.back();
     } catch (err) {
       setError((err as Error).message || "Gagal menghapus anggaran");
     } finally {
-      setIsLoading(false);
+      if (!navigated) setIsLoading(false);
     }
   }, [id, existingBudget, deleteBudget, router]);
 

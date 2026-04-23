@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { useMemo, useState } from "react";
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 
@@ -85,6 +86,7 @@ export function DatePicker({
   minDate,
   maxDate
 }: DatePickerProps) {
+  const colors = useColors();
   const today = useMemo(() => new Date(), []);
   const [year, setYear] = useState(selectedDate.getFullYear());
   const [month, setMonth] = useState(selectedDate.getMonth());
@@ -132,8 +134,8 @@ export function DatePicker({
         onPress={onClose}
       >
         <View
-          className="bg-white rounded-2xl p-6 w-full"
-          style={{ maxHeight: 400 }}
+          className="rounded-2xl p-6 w-full"
+          style={{ backgroundColor: colors.surface, maxHeight: 400 }}
         >
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-lg font-semibold text-gray-900">

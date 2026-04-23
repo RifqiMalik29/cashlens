@@ -1,4 +1,5 @@
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useCallback, useEffect } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -23,6 +24,7 @@ export function DatePickerModal({
   onDateSelect,
   onClose
 }: DatePickerModalProps) {
+  const colors = useColors();
   const translateY = useSharedValue(1000);
   const backdropOpacity = useSharedValue(0);
 
@@ -68,7 +70,13 @@ export function DatePickerModal({
       onRequestClose={handleClose}
     >
       <View style={styles.container}>
-        <Animated.View style={[styles.backdrop, backdropAnimatedStyle]} />
+        <Animated.View
+          style={[
+            styles.backdrop,
+            { backgroundColor: colors.overlay },
+            backdropAnimatedStyle
+          ]}
+        />
 
         <TouchableOpacity
           style={styles.backdrop}
@@ -77,7 +85,11 @@ export function DatePickerModal({
         />
 
         <Animated.View
-          style={[styles.modalContent, modalAnimatedStyle]}
+          style={[
+            styles.modalContent,
+            { backgroundColor: colors.background },
+            modalAnimatedStyle
+          ]}
           pointerEvents="box-none"
         >
           <View style={styles.handleContainer}>
@@ -100,15 +112,13 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.overlay
+    ...StyleSheet.absoluteFillObject
   },
   modalContent: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: spacing[8]

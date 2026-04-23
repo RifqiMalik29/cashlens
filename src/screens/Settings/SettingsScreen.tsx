@@ -6,7 +6,8 @@ import {
 import { BaseDialog } from "@components/ui/BaseDialog";
 import { SyncStatusButton } from "@components/ui/SyncIndicator";
 import { Typography } from "@components/ui/Typography";
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import Constants from "expo-constants";
 import {
   Bell,
@@ -27,6 +28,7 @@ import { ProfileSection } from "./components/ProfileSection";
 import { useSettingsScreen } from "./useSettingsScreen";
 
 export default function SettingsScreen() {
+  const colors = useColors();
   const {
     t,
     userEmail,
@@ -149,11 +151,14 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         <SettingsSection title={t("settings.about")}>
-          <View className="bg-white border border-border rounded-lg px-4 py-3">
-            <Typography variant="body" weight="medium" color="#1A1A2E">
+          <View
+            className="border border-border rounded-lg px-4 py-3"
+            style={{ backgroundColor: colors.surface }}
+          >
+            <Typography variant="body" weight="medium">
               {t("common.appName")}
             </Typography>
-            <Typography variant="caption" color="#6B7280">
+            <Typography variant="caption" color={colors.textSecondary}>
               {t("settings.version")} {Constants.expoConfig?.version ?? "1.0.0"}
             </Typography>
           </View>

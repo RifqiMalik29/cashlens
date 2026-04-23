@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { useBudgetScreen } from "@screens/Budget/useBudgetScreen";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useTranslation } from "react-i18next";
@@ -20,6 +21,7 @@ function getProgressColor(percentage: number): string {
 export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
   const { t } = useTranslation();
   const { budgetsWithProgress } = useBudgetScreen();
+  const colors = useColors();
 
   const hasBudgets = budgetsWithProgress.length > 0;
   if (!hasBudgets) return null;
@@ -33,7 +35,11 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
   return (
     <Card className="mb-4" style={{ shadowOpacity: 0.08 }}>
       <View className="flex-row items-center justify-between mb-3">
-        <Typography variant="label" weight="medium" color="#6B7280">
+        <Typography
+          variant="label"
+          weight="medium"
+          color={colors.textSecondary}
+        >
           {t("budget.activeBudgets")}
         </Typography>
         {onPressBudget && (
@@ -70,7 +76,10 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
                 </Typography>
               </View>
 
-              <View className="h-2 rounded-full bg-gray-200 mb-1">
+              <View
+                className="h-2 rounded-full mb-1"
+                style={{ backgroundColor: colors.border }}
+              >
                 <View
                   className="h-2 rounded-full"
                   style={{
@@ -81,13 +90,13 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
               </View>
 
               <View className="flex-row justify-between">
-                <Typography variant="caption" color="#6B7280">
+                <Typography variant="caption" color={colors.textSecondary}>
                   {formatCompactCurrency(budget.spentAmount, currency)}{" "}
                   {periodLabels[budget.period] || "/bulan"}
                 </Typography>
                 <Typography
                   variant="caption"
-                  color={budget.isExceeded ? "#EF4444" : "#6B7280"}
+                  color={budget.isExceeded ? "#EF4444" : colors.textSecondary}
                   weight={budget.isExceeded ? "medium" : "regular"}
                 >
                   {budget.isExceeded
@@ -108,7 +117,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
         {budgetsWithProgress.length > 3 && (
           <Typography
             variant="caption"
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ textAlign: "center" }}
           >
             +{budgetsWithProgress.length - 3} anggaran lainnya

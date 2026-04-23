@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useRouter } from "expo-router";
@@ -19,6 +20,7 @@ export function RecentTransactions({
 }: RecentTransactionsProps) {
   const { t } = useTranslation();
   const router = useRouter();
+  const colors = useColors();
 
   const handleSeeAll = () => {
     router.push("/(tabs)/transactions");
@@ -45,7 +47,10 @@ export function RecentTransactions({
         </TouchableOpacity>
       </View>
 
-      <View className="bg-white rounded-lg overflow-hidden">
+      <View
+        className="rounded-lg overflow-hidden"
+        style={{ backgroundColor: colors.surface }}
+      >
         {transactions.slice(0, 5).map((transaction, index) => {
           const category = getCategory(transaction.categoryId);
           const amountColor =
@@ -72,7 +77,11 @@ export function RecentTransactions({
                 <Typography variant="body" weight="medium" numberOfLines={1}>
                   {category?.name || t("transactions.title")}
                 </Typography>
-                <Typography variant="caption" color="#6B7280" numberOfLines={1}>
+                <Typography
+                  variant="caption"
+                  color={colors.textSecondary}
+                  numberOfLines={1}
+                >
                   {new Date(transaction.date).toLocaleDateString("id-ID", {
                     day: "numeric",
                     month: "short"

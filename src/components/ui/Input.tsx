@@ -1,4 +1,5 @@
-import { colors, fontSizes, heights } from "@constants/theme";
+import { fontSizes, heights } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React, { useState } from "react";
 import { TextInput, View, type ViewStyle } from "react-native";
 
@@ -37,6 +38,7 @@ export function Input({
   style,
   editable = true
 }: InputProps) {
+  const colors = useColors();
   const [focused, setFocused] = useState(false);
   const [inputHeight, setInputHeight] = useState<number | undefined>(undefined);
 
@@ -58,10 +60,9 @@ export function Input({
         </Typography>
       )}
       <View
-        className={`flex-row items-center px-3 rounded-md bg-white border ${borderClass} ${
-          !editable ? "bg-surface-secondary" : ""
-        }`}
+        className={`flex-row items-center px-3 rounded-md border ${borderClass}`}
         style={{
+          backgroundColor: editable ? colors.surface : colors.surfaceSecondary,
           minHeight: heights.input,
           height: multiline ? inputHeight : heights.input,
           paddingVertical: multiline ? 8 : 0

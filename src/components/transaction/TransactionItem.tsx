@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { type Category, type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import { TouchableOpacity, View } from "react-native";
@@ -17,13 +18,15 @@ export function TransactionItem({
   onPress,
   baseCurrency
 }: TransactionItemProps) {
+  const colors = useColors();
   const amountColor = transaction.type === "expense" ? "#EF4444" : "#10B981";
   const amountPrefix = transaction.type === "expense" ? "-" : "+";
 
   return (
     <TouchableOpacity
       onPress={onPress}
-      className="flex-row items-center px-4 py-3 bg-white"
+      className="flex-row items-center px-4 py-3"
+      style={{ backgroundColor: colors.surface }}
       activeOpacity={0.7}
     >
       <View
@@ -46,7 +49,7 @@ export function TransactionItem({
         {transaction.note ? (
           <Typography
             variant="caption"
-            color="#6B7280"
+            color={colors.textSecondary}
             numberOfLines={1}
             style={{ marginTop: 2 }}
           >
@@ -63,7 +66,11 @@ export function TransactionItem({
             baseCurrency
           )}
         </Typography>
-        <Typography variant="caption" color="#9CA3AF" style={{ marginTop: 2 }}>
+        <Typography
+          variant="caption"
+          color={colors.textSecondary}
+          style={{ marginTop: 2 }}
+        >
           {new Date(transaction.date).toLocaleDateString("id-ID", {
             day: "numeric",
             month: "short",

@@ -1,4 +1,5 @@
-import { colors, heights } from "@constants/theme";
+import { heights } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import {
   ActivityIndicator,
@@ -22,19 +23,6 @@ interface ButtonProps {
   children: React.ReactNode;
 }
 
-const variantConfig: Record<
-  ButtonVariant,
-  { containerClass: string; textColor: string }
-> = {
-  primary: { containerClass: "bg-primary", textColor: colors.white },
-  secondary: {
-    containerClass: "bg-primary-light",
-    textColor: colors.primary
-  },
-  ghost: { containerClass: "bg-transparent", textColor: colors.textPrimary },
-  danger: { containerClass: "bg-red-100", textColor: colors.error }
-};
-
 const sizeConfig: Record<
   ButtonSize,
   { containerClass: string; fontSize: number; height: number }
@@ -54,8 +42,23 @@ export function Button({
   style,
   children
 }: ButtonProps) {
-  const varCfg = variantConfig[variant];
+  const colors = useColors();
   const sizeCfg = sizeConfig[size];
+
+  const variantConfig: Record<
+    ButtonVariant,
+    { containerClass: string; textColor: string }
+  > = {
+    primary: { containerClass: "bg-primary", textColor: colors.white },
+    secondary: {
+      containerClass: "bg-primary-light",
+      textColor: colors.primary
+    },
+    ghost: { containerClass: "bg-transparent", textColor: colors.textPrimary },
+    danger: { containerClass: "bg-red-100", textColor: colors.error }
+  };
+
+  const varCfg = variantConfig[variant];
 
   return (
     <TouchableOpacity

@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -8,6 +9,7 @@ import { SkipButton } from "./components/SkipButton";
 import { useOnboarding } from "./useOnboarding";
 
 export default function OnboardingScreen() {
+  const colors = useColors();
   const {
     activeIndex,
     flatListRef,
@@ -30,7 +32,10 @@ export default function OnboardingScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+    >
       {activeIndex < 2 && <SkipButton onPress={handleSkip} />}
 
       <FlatList

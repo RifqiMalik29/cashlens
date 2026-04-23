@@ -1,9 +1,22 @@
 import { Button, Card, Typography } from "@components/ui";
+import { useColors } from "@hooks/useColors";
 import * as Sentry from "@sentry/react-native";
 import { AlertTriangle } from "lucide-react-native";
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+const ErrorBackground = ({ children }: { children: ReactNode }) => {
+  const colors = useColors();
+  return (
+    <SafeAreaView
+      className="flex-1 justify-center px-6"
+      style={{ backgroundColor: colors.background }}
+    >
+      {children}
+    </SafeAreaView>
+  );
+};
 
 interface Props {
   children: ReactNode;
@@ -53,9 +66,12 @@ export class ErrorBoundary extends Component<Props, State> {
 
       // Render default error UI
       return (
-        <SafeAreaView className="flex-1 bg-background justify-center px-6">
+        <ErrorBackground>
           <Card className="items-center py-8">
-            <View className="w-20 h-20 rounded-full bg-orange-100 items-center justify-center mb-6">
+            <View
+              className="w-20 h-20 rounded-full items-center justify-center mb-6"
+              style={{ backgroundColor: "#FED7AA" }}
+            >
               <AlertTriangle size={40} color="#f97316" />
             </View>
             <Typography variant="h3" weight="bold" className="text-center mb-2">
@@ -63,7 +79,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </Typography>
             <Typography
               variant="body"
-              color="secondary"
+              color="#9CA3AF"
               className="text-center mb-6"
             >
               Maaf, terjadi masalah yang tidak terduga. Jangan khawatir, data
@@ -71,10 +87,13 @@ export class ErrorBoundary extends Component<Props, State> {
             </Typography>
 
             {__DEV__ && this.state.error && (
-              <View className="bg-red-50 p-4 rounded-lg mb-6 w-full">
+              <View
+                className="p-4 rounded-lg mb-6 w-full"
+                style={{ backgroundColor: "#FEE2E2" }}
+              >
                 <Typography
                   variant="body"
-                  color="error"
+                  color="#EF4444"
                   className="font-mono text-xs"
                 >
                   {this.state.error.message}
@@ -108,13 +127,13 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <Typography
               variant="body"
-              color="secondary"
+              color="#9CA3AF"
               className="text-center mt-6 text-xs"
             >
               Jika masalah terus berlanjut, hubungi dukungan pelanggan.
             </Typography>
           </Card>
-        </SafeAreaView>
+        </ErrorBackground>
       );
     }
 

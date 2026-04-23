@@ -1,7 +1,9 @@
 import { CustomHeader } from "@components/ui";
+import { useColors } from "@hooks/useColors";
 import { Stack } from "expo-router";
 
 export default function SettingsStack() {
+  const colors = useColors();
   return (
     <Stack
       screenOptions={{
@@ -13,7 +15,7 @@ export default function SettingsStack() {
             rightElement={options.headerRight?.({ canGoBack: !!back })}
           />
         ),
-        contentStyle: { backgroundColor: "#F7FAF8" }
+        contentStyle: { backgroundColor: colors.background }
       }}
     >
       <Stack.Screen

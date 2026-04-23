@@ -2,7 +2,8 @@ import { BudgetCard } from "@components/budget/BudgetCard";
 import { EmptyState } from "@components/transaction/EmptyState";
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useTranslation } from "react-i18next";
 import { ScrollView, TouchableOpacity, View } from "react-native";
@@ -12,6 +13,7 @@ import { useBudgetScreen } from "./useBudgetScreen";
 
 export default function BudgetScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
   const {
     activeBudgets,
     exceededBudgets,
@@ -30,7 +32,7 @@ export default function BudgetScreen() {
         edges={["top"]}
         style={{ backgroundColor: colors.primary }}
       >
-        <View className="flex-1 bg-background">
+        <View className="flex-1" style={{ backgroundColor: colors.background }}>
           <View
             className="px-6 pt-6 pb-4"
             style={{ backgroundColor: colors.primary }}
@@ -92,7 +94,7 @@ export default function BudgetScreen() {
         <Card className="mx-4 mb-4">
           <Typography
             variant="caption"
-            color="#6B7280"
+            color={colors.textSecondary}
             style={{ marginBottom: 8 }}
           >
             {t("budget.totalBudget")}
@@ -102,7 +104,7 @@ export default function BudgetScreen() {
           </Typography>
           <View className="flex-row justify-between mt-4">
             <View>
-              <Typography variant="caption" color="#6B7280">
+              <Typography variant="caption" color={colors.textSecondary}>
                 {t("budget.spent")}
               </Typography>
               <Typography variant="body" weight="semibold" color="#EF4444">
@@ -110,7 +112,7 @@ export default function BudgetScreen() {
               </Typography>
             </View>
             <View className="items-end">
-              <Typography variant="caption" color="#6B7280">
+              <Typography variant="caption" color={colors.textSecondary}>
                 {t("budget.remaining")}
               </Typography>
               <Typography variant="body" weight="semibold" color="#10B981">
@@ -149,7 +151,7 @@ export default function BudgetScreen() {
             <Typography
               variant="body"
               weight="semibold"
-              color="#1A1A2E"
+              color={colors.textPrimary}
               style={{ marginLeft: 20, marginBottom: 8 }}
             >
               {t("budget.activeBudgets")} ({activeBudgets.length})

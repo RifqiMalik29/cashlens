@@ -1,5 +1,5 @@
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
@@ -9,6 +9,7 @@ interface BudgetFormHeaderProps {
 
 export function BudgetFormHeader({ isEditMode }: BudgetFormHeaderProps) {
   const { t } = useTranslation();
+  const colors = useColors();
 
   return (
     <View

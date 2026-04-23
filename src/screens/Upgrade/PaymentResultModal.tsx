@@ -1,6 +1,6 @@
 import { Button } from "@components/ui/Button";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { CheckCircle, XCircle } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { Modal, View } from "react-native";
@@ -19,6 +19,7 @@ export const PaymentResultModal = ({
   onDismiss
 }: PaymentResultModalProps) => {
   const { t } = useTranslation();
+  const colors = useColors();
   usePaymentResultModal(status, onDismiss);
 
   return (
@@ -34,7 +35,7 @@ export const PaymentResultModal = ({
       >
         <View
           className="w-full rounded-2xl items-center"
-          style={{ backgroundColor: "#fff", padding: 32, gap: 16 }}
+          style={{ backgroundColor: colors.surface, padding: 32, gap: 16 }}
         >
           {status === "success" ? (
             <>

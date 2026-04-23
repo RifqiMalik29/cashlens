@@ -1,3 +1,4 @@
+import { useColors } from "@hooks/useColors";
 import { View } from "react-native";
 
 interface ProgressBarProps {
@@ -6,6 +7,7 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ progress, color }: ProgressBarProps) {
+  const colors = useColors();
   const clampedProgress = Math.min(Math.max(progress, 0), 100);
 
   const getProgressColor = () => {
@@ -16,7 +18,10 @@ export function ProgressBar({ progress, color }: ProgressBarProps) {
   };
 
   return (
-    <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+    <View
+      className="h-2 rounded-full overflow-hidden"
+      style={{ backgroundColor: colors.border }}
+    >
       <View
         className="h-full rounded-full"
         style={{

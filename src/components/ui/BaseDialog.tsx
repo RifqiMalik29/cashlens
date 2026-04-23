@@ -1,4 +1,4 @@
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import React from "react";
 import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
@@ -31,6 +31,7 @@ export function BaseDialog({
   onSecondaryButtonPress,
   type = "info"
 }: BaseDialogProps) {
+  const colors = useColors();
   if (!isVisible) return null;
 
   return (
@@ -46,7 +47,10 @@ export function BaseDialog({
         style={StyleSheet.absoluteFill}
         className="flex-1 items-center justify-center bg-black/60 px-6"
       >
-        <View className="w-full max-w-sm items-center justify-center p-6 bg-white rounded-3xl shadow-lg">
+        <View
+          className="w-full max-w-sm items-center justify-center p-6 rounded-3xl shadow-lg"
+          style={{ backgroundColor: colors.surface }}
+        >
           {isLoading && (
             <View className="mb-4">
               <ActivityIndicator size="large" color={colors.primary} />

@@ -1,4 +1,5 @@
 import { useSyncStatus } from "@hooks/useSyncStatus";
+import { revenueCatService } from "@services/subscriptionService";
 import { pullAll } from "@services/syncService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useBudgetStore } from "@stores/useBudgetStore";
@@ -125,6 +126,14 @@ export function useCloudSync() {
   useEffect(() => {
     modulePullData = pullData;
   }, [pullData]);
+
+  // Listen for RevenueCat CustomerInfo updates to keep tier in sync
+  useEffect(() => {
+    if (!userId) return;
+    revenueCatService.addCustomerInfoUpdateListener(() => {
+      fetchSubscriptionRef.current();
+    });
+  }, [userId]);
 
   // Reset on logout
   useEffect(() => {

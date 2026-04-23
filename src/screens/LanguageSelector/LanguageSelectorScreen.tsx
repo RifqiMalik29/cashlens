@@ -1,5 +1,6 @@
 import { Typography } from "@components/ui/Typography";
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { Check } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { ScrollView, TouchableOpacity, View } from "react-native";
@@ -9,11 +10,15 @@ import { useLanguageSelector } from "./useLanguageSelector";
 
 export default function LanguageSelectorScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
   const { languages, currentLanguage, handleSelectLanguage } =
     useLanguageSelector();
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+    >
       <ScrollView className="flex-1 px-6 pt-4">
         <View className="gap-3">
           {languages.map((lang) => {
@@ -23,11 +28,14 @@ export default function LanguageSelectorScreen() {
               <TouchableOpacity
                 key={lang.code}
                 onPress={() => handleSelectLanguage(lang.code)}
-                className={`flex-row items-center bg-white border rounded-xl px-4 py-4 ${
+                className={`flex-row items-center border rounded-xl px-4 py-4 ${
                   isSelected
                     ? "border-primary bg-primary-light"
                     : "border-border"
                 }`}
+                style={
+                  !isSelected ? { backgroundColor: colors.surface } : undefined
+                }
                 activeOpacity={0.7}
               >
                 <View className="mr-4">
@@ -60,7 +68,10 @@ export default function LanguageSelectorScreen() {
           })}
         </View>
 
-        <View className="mt-6 p-4 bg-surface-secondary rounded-xl">
+        <View
+          className="mt-6 p-4 rounded-xl"
+          style={{ backgroundColor: colors.surfaceSecondary }}
+        >
           <Typography variant="caption" color={colors.textSecondary}>
             {t("language.changeInfo")}
           </Typography>

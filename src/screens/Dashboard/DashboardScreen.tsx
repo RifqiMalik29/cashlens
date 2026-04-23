@@ -7,7 +7,8 @@ import {
 } from "@components/dashboard";
 import { EmptyState } from "@components/transaction/EmptyState";
 import { BaseDialog } from "@components/ui";
-import { colors, spacing } from "@constants/theme";
+import { spacing } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useHeader } from "@hooks/useHeader";
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { notificationService } from "@services/notificationService";
@@ -47,6 +48,7 @@ export default function DashboardScreen() {
   } = useDashboardScreen();
 
   const router = useProtectedRouter();
+  const colors = useColors();
 
   useHeader({
     showHeader: false,
@@ -56,7 +58,10 @@ export default function DashboardScreen() {
   // Show loading indicator during initial data pull
   if (isInitialPull) {
     return (
-      <SafeAreaView className="flex-1 bg-background justify-center items-center">
+      <SafeAreaView
+        className="flex-1 justify-center items-center"
+        style={{ backgroundColor: colors.background }}
+      >
         <ActivityIndicator size="large" color={colors.success} />
       </SafeAreaView>
     );
@@ -79,7 +84,6 @@ export default function DashboardScreen() {
         <EmptyState
           title={t("dashboard.noTransactions")}
           description={t("dashboard.noTransactionsDesc")}
-          customContainerStyle={{ backgroundColor: colors.background }}
         />
       </SafeAreaView>
     );

@@ -4,6 +4,7 @@ import { ErrorBoundary } from "@components/ErrorBoundary";
 import { OfflineBanner } from "@components/OfflineBanner";
 import { CustomHeader, SyncOverlay, SyncProgressBar } from "@components/ui";
 import { useCloudSync } from "@hooks/useCloudSync";
+import { useColors } from "@hooks/useColors";
 import { useEmailConfirmation } from "@hooks/useEmailConfirmation";
 import { useNetworkStatus } from "@hooks/useNetworkStatus";
 import { useSessionRestore } from "@hooks/useSessionRestore";
@@ -15,6 +16,7 @@ import { revenueCatService } from "@services/subscriptionService";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { Stack, useRouter, useSegments } from "expo-router";
+import { useColorScheme } from "nativewind";
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -47,6 +49,8 @@ function RootLayout() {
   const { isInitialPull, isSyncing, isLogoutSyncing, isManualSyncing } =
     useSyncStatus();
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const { setColorScheme } = useColorScheme();
+  const colors = useColors();
 
   // Network status monitoring
   const { isOnline } = useNetworkStatus();
@@ -89,6 +93,11 @@ function RootLayout() {
     }
   }, [preferences.language]);
 
+  // Sync theme preference from store
+  useEffect(() => {
+    setColorScheme(preferences.theme ?? "system");
+  }, [preferences.theme, setColorScheme]);
+
   useEffect(() => {
     setIsLayoutReady(true);
   }, []);
@@ -117,8 +126,14 @@ function RootLayout() {
   const showProgressBar = isSyncing && !showOverlay;
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView className="flex-1" edges={["bottom"]}>
+    <GestureHandlerRootView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
+      <SafeAreaView
+        className="flex-1"
+        edges={["bottom"]}
+        style={{ backgroundColor: colors.background }}
+      >
         {isAuthenticated && showProgressBar && (
           <SyncProgressBar isVisible={true} />
         )}

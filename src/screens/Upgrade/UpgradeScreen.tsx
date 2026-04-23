@@ -1,18 +1,8 @@
 import { Button } from "@components/ui/Button";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useHeader } from "@hooks/useHeader";
-import {
-  AlertCircle,
-  BadgeCheck,
-  Bell,
-  Crown,
-  FolderOpen,
-  Headphones,
-  ScanLine,
-  Sparkles,
-  X
-} from "lucide-react-native";
+import { AlertCircle, Crown, Sparkles, X } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -22,20 +12,15 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { getFeatureIcons } from "./featureIcons";
 import { PaymentResultModal } from "./PaymentResultModal";
 import { PlanCard } from "./PlanCard";
 import { useUpgradeScreen } from "./useUpgradeScreen";
 
-const FEATURE_ICONS = [
-  <BadgeCheck key="badge-check" size={18} color={colors.primary} />,
-  <ScanLine key="scan-line" size={18} color={colors.primary} />,
-  <Bell key="bell" size={18} color={colors.primary} />,
-  <FolderOpen key="folder-open" size={18} color={colors.primary} />,
-  <Headphones key="headphones" size={18} color={colors.primary} />
-];
-
 export default function UpgradeScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
+  const featureIcons = getFeatureIcons(colors.primary);
   const {
     isLoading,
     error,
@@ -58,7 +43,11 @@ export default function UpgradeScreen() {
   useHeader({ title: t("upgrade.title") });
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+      edges={["bottom"]}
+    >
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
@@ -103,7 +92,7 @@ export default function UpgradeScreen() {
               className="flex-row items-center"
               style={{ gap: 10, paddingVertical: 6 }}
             >
-              {FEATURE_ICONS[i]}
+              {featureIcons[i]}
               <Typography variant="body" color={colors.textPrimary}>
                 {feat}
               </Typography>

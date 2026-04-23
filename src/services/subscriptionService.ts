@@ -11,7 +11,7 @@ export const ENTITLEMENT_ID = "CashLens Premium";
 
 const REVENUECAT_API_KEYS = {
   apple: "",
-  google: "test_UlHisLjyJbMNxkEBAniQgbGHiPO"
+  google: "goog_HsuIDiSIjSnAStUMxMajIKkdcJd"
 };
 
 class RevenueCatService {
@@ -53,7 +53,10 @@ class RevenueCatService {
 
   public logout = async (): Promise<void> => {
     try {
-      await Purchases.logOut();
+      const customerInfo = await Purchases.getCustomerInfo();
+      if (!customerInfo.originalAppUserId.startsWith("$RCAnonymousID")) {
+        await Purchases.logOut();
+      }
     } catch (error) {
       logger.error("RevenueCat logout failed", error as Error);
     }
