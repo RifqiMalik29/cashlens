@@ -36,7 +36,7 @@ interface AuthState {
 
 const defaultPreferences: UserPreferences = {
   baseCurrency: "IDR",
-  theme: "system",
+  theme: "light",
   language: "id",
   createdAt: new Date().toISOString()
 };

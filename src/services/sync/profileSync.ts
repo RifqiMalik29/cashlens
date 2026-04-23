@@ -22,7 +22,7 @@ export async function pullProfile(
 
     const preferences: UserPreferences = {
       baseCurrency: data.base_currency || "IDR",
-      theme: "system",
+      theme: "light",
       language: data.language || "id",
       createdAt: data.created_at || new Date().toISOString()
     };
