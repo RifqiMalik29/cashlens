@@ -54,6 +54,14 @@ export default {
       "./plugins/withNotificationListener",
       "expo-router",
       [
+        "expo-build-properties",
+        {
+          ios: {
+            deploymentTarget: "15.5"
+          }
+        }
+      ],
+      [
         "expo-camera",
         {
           cameraPermission: "Allow CashLens to access your camera to scan receipts.",
