@@ -28,14 +28,13 @@ export default function LanguageSelectorScreen() {
               <TouchableOpacity
                 key={lang.code}
                 onPress={() => handleSelectLanguage(lang.code)}
-                className={`flex-row items-center border rounded-xl px-4 py-4 ${
-                  isSelected
-                    ? "border-primary bg-primary-light"
-                    : "border-border"
-                }`}
-                style={
-                  !isSelected ? { backgroundColor: colors.surface } : undefined
-                }
+                className="flex-row items-center border rounded-xl px-4 py-4"
+                style={{
+                  backgroundColor: isSelected
+                    ? colors.primaryLight
+                    : colors.surface,
+                  borderColor: isSelected ? colors.primary : colors.border
+                }}
                 activeOpacity={0.7}
               >
                 <View className="mr-4">
@@ -59,7 +58,10 @@ export default function LanguageSelectorScreen() {
                 </View>
 
                 {isSelected && (
-                  <View className="w-6 h-6 rounded-full bg-primary items-center justify-center">
+                  <View
+                    className="w-6 h-6 rounded-full items-center justify-center"
+                    style={{ backgroundColor: colors.primary }}
+                  >
                     <Check size={14} color="#FFFFFF" />
                   </View>
                 )}

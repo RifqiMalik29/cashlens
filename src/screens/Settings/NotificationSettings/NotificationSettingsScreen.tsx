@@ -76,7 +76,13 @@ export default function NotificationSettingsScreen() {
 
         {/* Notification History Link */}
         {isFeatureEnabled && (
-          <Card className="p-4 mb-4">
+          <Card
+            className="p-4 mb-4"
+            style={{
+              backgroundColor: colors.surface,
+              borderColor: colors.border
+            }}
+          >
             <TouchableOpacity
               className="flex-row items-center justify-between"
               onPress={() =>

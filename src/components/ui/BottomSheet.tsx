@@ -3,6 +3,7 @@ import GorhomBottomSheet, {
   type BottomSheetBackdropProps,
   BottomSheetView
 } from "@gorhom/bottom-sheet";
+import { useColors } from "@hooks/useColors";
 import React, {
   forwardRef,
   useCallback,
@@ -25,6 +26,7 @@ interface BottomSheetProps {
 
 export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
   ({ snapPoints, onClose, children, enableDynamicSizing = true }, ref) => {
+    const colors = useColors();
     const sheetRef = useRef<GorhomBottomSheet>(null);
 
     useImperativeHandle(ref, () => ({
@@ -53,8 +55,11 @@ export const BottomSheet = forwardRef<BottomSheetHandle, BottomSheetProps>(
         enablePanDownToClose
         backdropComponent={renderBackdrop}
         onClose={onClose}
-        handleIndicatorStyle={{ backgroundColor: "#E5E7EB", width: 40 }}
-        backgroundStyle={{ backgroundColor: "#FFFFFF", borderRadius: 24 }}
+        handleIndicatorStyle={{ backgroundColor: colors.border, width: 40 }}
+        backgroundStyle={{
+          backgroundColor: colors.background,
+          borderRadius: 24
+        }}
         keyboardBehavior="interactive"
         keyboardBlurBehavior="restore"
       >

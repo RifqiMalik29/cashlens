@@ -1,6 +1,6 @@
 import { Card } from "@components/ui/Card";
 import { Typography } from "@components/ui/Typography";
-import { colors } from "@constants/theme";
+import { useColors } from "@hooks/useColors";
 import { useHeader } from "@hooks/useHeader";
 import { useNotificationLogStore } from "@stores/useNotificationLogStore";
 import { format } from "date-fns";
@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function NotificationHistoryScreen() {
   const { t } = useTranslation();
+  const colors = useColors();
   const { logs, clearAll } = useNotificationLogStore();
 
   useHeader({
@@ -45,7 +46,11 @@ export default function NotificationHistoryScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["bottom"]}>
+    <SafeAreaView
+      className="flex-1"
+      style={{ backgroundColor: colors.background }}
+      edges={["bottom"]}
+    >
       <FlatList
         data={logs}
         keyExtractor={(item) => item.id}
@@ -69,11 +74,16 @@ export default function NotificationHistoryScreen() {
                 </Typography>
               </View>
               <View
-                className={`px-2 py-1 rounded-full ${item.isParsed ? "bg-green-100" : "bg-gray-100"}`}
+                className="px-2 py-1 rounded-full"
+                style={{
+                  backgroundColor: item.isParsed
+                    ? colors.success + "20"
+                    : colors.surfaceSecondary
+                }}
               >
                 <Typography
                   variant="caption"
-                  color={item.isParsed ? "#059669" : colors.textSecondary}
+                  color={item.isParsed ? colors.success : colors.textSecondary}
                 >
                   {item.isParsed
                     ? t("notificationSettings.parsed")
@@ -88,7 +98,8 @@ export default function NotificationHistoryScreen() {
 
             <TouchableOpacity
               onPress={() => copyToClipboard(item.text)}
-              className="flex-row items-center pt-2 border-t border-gray-100"
+              className="flex-row items-center pt-2 border-t"
+              style={{ borderColor: colors.border }}
             >
               <Copy size={14} color={colors.primary} />
               <Typography
