@@ -54,6 +54,12 @@ export default function SettingsStack() {
           title: "Pusat Bantuan"
         }}
       />
+      <Stack.Screen
+        name="privacy-policy"
+        options={{
+          title: "Kebijakan Privasi"
+        }}
+      />
     </Stack>
   );
 }

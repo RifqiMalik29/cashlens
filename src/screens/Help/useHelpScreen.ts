@@ -1,14 +1,14 @@
 import { useHeader } from "@hooks/useHeader";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import { useTranslation } from "react-i18next";
 
 const SUPPORT_EMAIL = "cashlens.app@gmail.com";
-const PRIVACY_POLICY_URL =
-  "https://github.com/RifqiMalik29/cashlens/blob/main/docs/PRIVACY_POLICY.md";
 
 export function useHelpScreen() {
   const { t } = useTranslation();
+  const router = useProtectedRouter();
 
   useHeader({
     title: t("settings.help.title"),
@@ -19,8 +19,7 @@ export function useHelpScreen() {
     await Haptics.selectionAsync();
     const url = `mailto:${SUPPORT_EMAIL}`;
     try {
-      const supported = await Linking.canOpenURL(url);
-      if (supported) await Linking.openURL(url);
+      await Linking.openURL(url);
     } catch {
       // Silently fail if the app can't be opened
     }
@@ -28,12 +27,7 @@ export function useHelpScreen() {
 
   const handlePrivacyPolicyPress = async () => {
     await Haptics.selectionAsync();
-    try {
-      const supported = await Linking.canOpenURL(PRIVACY_POLICY_URL);
-      if (supported) await Linking.openURL(PRIVACY_POLICY_URL);
-    } catch {
-      // Silently fail
-    }
+    router.push("/settings/privacy-policy");
   };
 
   return {
