@@ -66,7 +66,7 @@ export async function pullAll(userId: string): Promise<{
   transactions: Transaction[];
   budgets: Budget[];
   categories: Category[];
-  preferences: UserPreferences | null;
+  preferences: Partial<UserPreferences> | null;
 }> {
   const [transactions, budgets, categories, preferences] = await Promise.all([
     pullTransactions(userId),

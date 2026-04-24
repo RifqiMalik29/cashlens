@@ -20,13 +20,14 @@ import {
 let modulePullData: (() => Promise<void>) | null = null;
 
 export function useCloudSync() {
-  const { userId, isAuthenticated, setPreferences } = useAuthStore();
+  const { userId, isAuthenticated } = useAuthStore();
   const { setSyncing, setSynced, setError, setInitialPulling, lastSyncedAt } =
     useSyncStatus();
 
   const setTransactions = useTransactionStore((state) => state.setTransactions);
   const setBudgets = useBudgetStore((state) => state.setBudgets);
   const setCategories = useCategoryStore((state) => state.setCategories);
+  const updatePreferences = useAuthStore((state) => state.updatePreferences);
   const fetchSubscription = useSubscriptionStore(
     (state) => state.fetchSubscription
   );
@@ -39,7 +40,7 @@ export function useCloudSync() {
   const setTransactionsRef = useRef(setTransactions);
   const setBudgetsRef = useRef(setBudgets);
   const setCategoriesRef = useRef(setCategories);
-  const setPreferencesRef = useRef(setPreferences);
+  const updatePreferencesRef = useRef(updatePreferences);
   const fetchSubscriptionRef = useRef(fetchSubscription);
   const setSyncingRef = useRef(setSyncing);
   const setSyncedRef = useRef(setSynced);
@@ -59,8 +60,8 @@ export function useCloudSync() {
     setCategoriesRef.current = setCategories;
   }, [setCategories]);
   useEffect(() => {
-    setPreferencesRef.current = setPreferences;
-  }, [setPreferences]);
+    updatePreferencesRef.current = updatePreferences;
+  }, [updatePreferences]);
   useEffect(() => {
     fetchSubscriptionRef.current = fetchSubscription;
   }, [fetchSubscription]);
@@ -110,7 +111,7 @@ export function useCloudSync() {
         setBudgetsRef.current(data.budgets);
         if (data.categories.length > 0)
           setCategoriesRef.current(data.categories);
-        if (data.preferences) setPreferencesRef.current(data.preferences);
+        if (data.preferences) updatePreferencesRef.current(data.preferences);
       }
       await setSyncedRef.current();
     } catch (error) {

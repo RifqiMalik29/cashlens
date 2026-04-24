@@ -12,7 +12,7 @@ export async function pushProfile(
 
 export async function pullProfile(
   userId: string
-): Promise<UserPreferences | null> {
+): Promise<Partial<UserPreferences> | null> {
   if (!isValidUserId(userId)) {
     return null;
   }
@@ -20,9 +20,8 @@ export async function pullProfile(
   try {
     const data = await authService.getMe();
 
-    const preferences: UserPreferences = {
+    const preferences: Partial<UserPreferences> = {
       baseCurrency: data.base_currency || "IDR",
-      theme: "light",
       language: data.language || "id",
       createdAt: data.created_at || new Date().toISOString()
     };
