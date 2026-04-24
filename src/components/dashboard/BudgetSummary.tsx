@@ -83,7 +83,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
                 <View
                   className="h-2 rounded-full"
                   style={{
-                    width: `${budget.progress}%`,
+                    width: `${Math.min(budget.progress, 100)}%`,
                     backgroundColor: progressColor
                   }}
                 />

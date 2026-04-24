@@ -110,7 +110,7 @@ export function AddCategorySheet({
             <Typography
               variant="caption"
               weight={type === "expense" ? "semibold" : "regular"}
-              color={type === "expense" ? "#EF4444" : colors.textSecondary}
+              color={type === "expense" ? colors.error : colors.textSecondary}
             >
               {t("categories.expense")}
             </Typography>
@@ -127,7 +127,7 @@ export function AddCategorySheet({
             <Typography
               variant="caption"
               weight={type === "income" ? "semibold" : "regular"}
-              color={type === "income" ? "#10B981" : colors.textSecondary}
+              color={type === "income" ? colors.success : colors.textSecondary}
             >
               {t("categories.income")}
             </Typography>
