@@ -346,6 +346,29 @@
     "errorIOS": "Could not restore purchases. Please try again or contact support.",
     "errorAndroid": "Could not restore purchases. Please try again or contact support."
   },
+  "datePicker": {
+    "title": "Select Date",
+    "close": "Close",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ],
+    "today": "Today",
+    "change": "Change",
+    "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  },
   "onboarding": {
     "slide1Title": "Track Your Transactions",
     "slide1Subtitle": "Record daily income and expenses quickly and easily.",

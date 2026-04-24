@@ -348,6 +348,29 @@
     "errorIOS": "Tidak dapat memulihkan pembelian. Silakan coba lagi atau hubungi dukungan.",
     "errorAndroid": "Tidak dapat memulihkan pembelian. Silakan coba lagi atau hubungi dukungan."
   },
+  "datePicker": {
+    "title": "Pilih Tanggal",
+    "close": "Tutup",
+    "reset": "Reset",
+    "confirm": "Konfirmasi",
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "Mei",
+      "Jun",
+      "Jul",
+      "Agu",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Des"
+    ],
+    "today": "Hari Ini",
+    "change": "Ubah",
+    "weekdays": ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"]
+  },
   "onboarding": {
     "slide1Title": "Catat Transaksimu",
     "slide1Subtitle": "Rekam pemasukan dan pengeluaran harian dengan cepat dan mudah.",

@@ -1,6 +1,10 @@
 import { useColors } from "@hooks/useColors";
 import { useMemo, useState } from "react";
-import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { Modal, TouchableOpacity, View } from "react-native";
+
+import { PickerColumn } from "./PickerColumn";
+import { Typography } from "./Typography";
 
 interface DatePickerProps {
   visible: boolean;
@@ -26,58 +30,6 @@ const MONTHS = [
   "Des"
 ];
 
-const ITEM_HEIGHT = 44;
-
-function PickerColumn<T extends string | number>({
-  data,
-  value,
-  onChange,
-  renderLabel
-}: {
-  data: T[];
-  value: T;
-  onChange: (v: T) => void;
-  renderLabel: (v: T) => string;
-}) {
-  const index = data.indexOf(value);
-  return (
-    <View className="flex-1">
-      <View className="h-40">
-        <FlatList
-          data={data}
-          keyExtractor={(_, i) => String(i)}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => onChange(item)}
-              className="items-center py-3 rounded-lg"
-              style={{
-                backgroundColor: value === item ? "#E8F5EE" : "transparent"
-              }}
-            >
-              <Text
-                className="text-base"
-                style={{
-                  color: value === item ? "#4CAF82" : "#374151",
-                  fontWeight: value === item ? "600" : "400"
-                }}
-              >
-                {renderLabel(item)}
-              </Text>
-            </TouchableOpacity>
-          )}
-          getItemLayout={(_, i) => ({
-            length: ITEM_HEIGHT,
-            offset: ITEM_HEIGHT * i,
-            index: i
-          })}
-          initialScrollIndex={Math.max(0, index)}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </View>
-  );
-}
-
 export function DatePicker({
   visible,
   selectedDate,
@@ -86,11 +38,17 @@ export function DatePicker({
   minDate,
   maxDate
 }: DatePickerProps) {
+  const { t } = useTranslation();
   const colors = useColors();
   const today = useMemo(() => new Date(), []);
   const [year, setYear] = useState(selectedDate.getFullYear());
   const [month, setMonth] = useState(selectedDate.getMonth());
   const [day, setDay] = useState(selectedDate.getDate());
+
+  const monthsKeys = t("datePicker.months", {
+    returnObjects: true
+  }) as string[];
+  const translations = Array.isArray(monthsKeys) ? monthsKeys : MONTHS;
 
   const years = useMemo(() => {
     const start = minDate ? minDate.getFullYear() : today.getFullYear() - 10;
@@ -138,11 +96,17 @@ export function DatePicker({
           style={{ backgroundColor: colors.surface, maxHeight: 400 }}
         >
           <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-lg font-semibold text-gray-900">
-              Pilih Tanggal
-            </Text>
+            <Typography variant="h3" weight="semibold">
+              {t("datePicker.title")}
+            </Typography>
             <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
-              <Text className="text-base text-gray-500 font-medium">Tutup</Text>
+              <Typography
+                variant="body"
+                weight="medium"
+                color={colors.textSecondary}
+              >
+                {t("datePicker.close")}
+              </Typography>
             </TouchableOpacity>
           </View>
 
@@ -152,39 +116,48 @@ export function DatePicker({
               value={year}
               onChange={setYear}
               renderLabel={String}
+              colors={colors}
             />
             <PickerColumn<string>
               data={MONTHS}
               value={MONTHS[month]}
               onChange={(m) => setMonth(MONTHS.indexOf(m))}
-              renderLabel={(m) => m}
+              renderLabel={(m) => translations[MONTHS.indexOf(m)] || m}
+              colors={colors}
             />
             <PickerColumn
               data={days}
               value={day}
               onChange={setDay}
               renderLabel={String}
+              colors={colors}
             />
           </View>
 
           <View className="flex-row gap-3">
             <TouchableOpacity
-              className="flex-1 border border-primary py-3 rounded-xl items-center"
+              className="flex-1 py-3 rounded-xl items-center border"
+              style={{ borderColor: colors.primary }}
               onPress={handleReset}
               activeOpacity={0.8}
             >
-              <Text className="text-primary font-semibold text-base">
-                Reset
-              </Text>
+              <Typography
+                variant="body"
+                weight="semibold"
+                color={colors.primary}
+              >
+                {t("datePicker.reset")}
+              </Typography>
             </TouchableOpacity>
             <TouchableOpacity
-              className="flex-1 bg-primary py-3 rounded-xl items-center"
+              className="flex-1 py-3 rounded-xl items-center"
+              style={{ backgroundColor: colors.primary }}
               onPress={handleConfirm}
               activeOpacity={0.8}
             >
-              <Text className="text-white font-semibold text-base">
-                Konfirmasi
-              </Text>
+              <Typography variant="body" weight="semibold" color="#FFFFFF">
+                {t("datePicker.confirm")}
+              </Typography>
             </TouchableOpacity>
           </View>
         </View>
