@@ -12,7 +12,36 @@
           "package_name": "com.cashlens.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "229668836733-934ioiass4smnna2qspkb46dt28cfqnb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cashlens.app",
+            "certificate_hash": "847c2db9cac9992763f6b9bd01b1f6bd630ab2cb"
+          }
+        },
+        {
+          "client_id": "229668836733-d664j4v587gbt3qp2l074ecpcpeqp70c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cashlens.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "229668836733-f1i7i755ok062vvu492rkr882s8tbsq6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cashlens.app",
+            "certificate_hash": "c248d03cc1fc61bea21001ad18d66a827028631c"
+          }
+        },
+        {
+          "client_id": "229668836733-akdhlqrnvuklu9hsm0s29t0pos27runq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAVlSVZgk_2Md6Udy1fKE2y4EDUoRHU0Ss"
@@ -20,26 +49,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:229668836733:android:6f791719e468525c38e814",
-        "android_client_info": {
-          "package_name": "com.rifqi2173.cashlens"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAVlSVZgk_2Md6Udy1fKE2y4EDUoRHU0Ss"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229668836733-akdhlqrnvuklu9hsm0s29t0pos27runq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

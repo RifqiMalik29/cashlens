@@ -9,12 +9,13 @@ import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useSyncStore } from "@stores/useSyncStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
+import { logger } from "@utils/logger";
 import { useEffect, useState } from "react";
 
 import { useProtectedRouter } from "./useProtectedRouter";
 
 const WEB_CLIENT_ID =
-  "552315397645-eo82ht4qr87pqplh5g08nfhe7319kf3u.apps.googleusercontent.com";
+  "229668836733-akdhlqrnvuklu9hsm0s29t0pos27runq.apps.googleusercontent.com";
 
 export function useGoogleSignIn() {
   const router = useProtectedRouter();
@@ -71,6 +72,7 @@ export function useGoogleSignIn() {
       setAuthenticated(true);
       router.replace("/(tabs)");
     } catch (err) {
+      logger.error("Google sign-in error:", JSON.stringify(err));
       setError((err as Error).message || "Google sign-in failed");
     } finally {
       setIsLoading(false);
