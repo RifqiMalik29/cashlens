@@ -4,7 +4,8 @@ import { useBudgetStore } from "@stores/useBudgetStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
 import { type Budget, type Category } from "@types";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface BudgetWithProgress extends Budget {
   category: Category;
@@ -14,7 +15,7 @@ interface BudgetWithProgress extends Budget {
   isExceeded: boolean;
 }
 
-function getBudgetPeriodDates(budget: Budget) {
+function getBudgetPeriodDates(budget: Budget, t: (key: string) => string) {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -33,7 +34,7 @@ function getBudgetPeriodDates(budget: Budget) {
       endDate = new Date(startDate);
       endDate.setDate(startDate.getDate() + 6);
       endDate.setHours(23, 59, 59, 999);
-      periodLabel = "Mingguan";
+      periodLabel = t("budget.weekly");
       break;
     }
     case "monthly": {
@@ -42,7 +43,7 @@ function getBudgetPeriodDates(budget: Budget) {
 
       endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
       endDate.setHours(23, 59, 59, 999);
-      periodLabel = "Bulanan";
+      periodLabel = t("budget.monthly");
       break;
     }
     case "yearly": {
@@ -51,13 +52,13 @@ function getBudgetPeriodDates(budget: Budget) {
 
       endDate = new Date(now.getFullYear(), 11, 31);
       endDate.setHours(23, 59, 59, 999);
-      periodLabel = "Tahunan";
+      periodLabel = t("budget.yearly");
       break;
     }
     default:
       startDate = new Date(budget.startDate);
       endDate = now;
-      periodLabel = "Custom";
+      periodLabel = t("budget.custom");
   }
 
   return { startDate, endDate, periodLabel };
@@ -65,6 +66,7 @@ function getBudgetPeriodDates(budget: Budget) {
 
 export function useBudgetScreen() {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
   const { baseCurrency } = useAuthStore((state) => state.preferences);
   const budgets = useBudgetStore((state) => state.budgets);
   const categories = useCategoryStore((state) => state.categories);
@@ -73,7 +75,7 @@ export function useBudgetScreen() {
   const budgetsWithProgress = useMemo<BudgetWithProgress[]>(() => {
     return budgets.map((budget) => {
       const category = categories.find((c) => c.id === budget.categoryId);
-      const { startDate, endDate } = getBudgetPeriodDates(budget);
+      const { startDate, endDate } = getBudgetPeriodDates(budget, t);
 
       const spentAmount = transactions
         .filter((t) => {
@@ -96,7 +98,8 @@ export function useBudgetScreen() {
         ...budget,
         category: category || {
           id: "unknown",
-          name: "Tidak Diketahui",
+          name: "Unknown",
+          nameKey: null,
           icon: "MoreHorizontal",
           color: "#9CA3AF",
           isDefault: false,
@@ -109,7 +112,7 @@ export function useBudgetScreen() {
         isExceeded
       };
     });
-  }, [budgets, categories, transactions]);
+  }, [budgets, categories, transactions, t]);
 
   const activeBudgets = useMemo(() => {
     return budgetsWithProgress.filter((b) => !b.isExceeded);
@@ -127,9 +130,15 @@ export function useBudgetScreen() {
     return budgetsWithProgress.reduce((sum, b) => sum + b.spentAmount, 0);
   }, [budgetsWithProgress]);
 
+  const [showNoCategoryDialog, setShowNoCategoryDialog] = useState(false);
+
   const handleAddBudget = useCallback(() => {
+    if (categories.length === 0) {
+      setShowNoCategoryDialog(true);
+      return;
+    }
     router.push("/(forms)/budget-add");
-  }, [router]);
+  }, [router, categories]);
 
   const handleEditBudget = useCallback(
     (budgetId: string) => {
@@ -147,6 +156,8 @@ export function useBudgetScreen() {
     baseCurrency,
     hasBudgets: budgets.length > 0,
     handleAddBudget,
-    handleEditBudget
+    handleEditBudget,
+    showNoCategoryDialog,
+    setShowNoCategoryDialog
   };
 }

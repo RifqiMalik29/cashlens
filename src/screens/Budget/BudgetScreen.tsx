@@ -1,10 +1,12 @@
 import { BudgetCard } from "@components/budget/BudgetCard";
 import { EmptyState } from "@components/transaction/EmptyState";
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { Card } from "@components/ui/Card";
 import { FAB } from "@components/ui/FAB";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
+import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
@@ -15,6 +17,7 @@ import { useBudgetScreen } from "./useBudgetScreen";
 export default function BudgetScreen() {
   const { t } = useTranslation();
   const colors = useColors();
+  const router = useProtectedRouter();
   const {
     activeBudgets,
     exceededBudgets,
@@ -23,7 +26,9 @@ export default function BudgetScreen() {
     baseCurrency,
     hasBudgets,
     handleAddBudget,
-    handleEditBudget
+    handleEditBudget,
+    showNoCategoryDialog,
+    setShowNoCategoryDialog
   } = useBudgetScreen();
 
   if (!hasBudgets) {
@@ -52,6 +57,20 @@ export default function BudgetScreen() {
             onAction={handleAddBudget}
           />
         </View>
+        <BaseDialog
+          isVisible={showNoCategoryDialog}
+          title={t("transactions.noCategoryTitle")}
+          message={t("transactions.noCategoryDesc")}
+          type="warning"
+          primaryButtonText={t("transactions.goToCategories")}
+          onPrimaryButtonPress={() => {
+            setShowNoCategoryDialog(false);
+            router.push("/(tabs)/settings/categories");
+          }}
+          secondaryButtonText={t("common.cancel")}
+          onSecondaryButtonPress={() => setShowNoCategoryDialog(false)}
+          onClose={() => setShowNoCategoryDialog(false)}
+        />
       </SafeAreaView>
     );
   }
@@ -162,6 +181,20 @@ export default function BudgetScreen() {
         </ScrollView>
         <FAB onPress={handleAddBudget} />
       </View>
+      <BaseDialog
+        isVisible={showNoCategoryDialog}
+        title={t("transactions.noCategoryTitle")}
+        message={t("transactions.noCategoryDesc")}
+        type="warning"
+        primaryButtonText={t("transactions.goToCategories")}
+        onPrimaryButtonPress={() => {
+          setShowNoCategoryDialog(false);
+          router.push("/(tabs)/settings/categories");
+        }}
+        secondaryButtonText={t("common.cancel")}
+        onSecondaryButtonPress={() => setShowNoCategoryDialog(false)}
+        onClose={() => setShowNoCategoryDialog(false)}
+      />
     </SafeAreaView>
   );
 }
