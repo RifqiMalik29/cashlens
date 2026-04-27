@@ -43,18 +43,35 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🔐 Create .env
+        env:
+          SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+          GEMINI_API_KEY: ${{ secrets.EXPO_PUBLIC_GEMINI_API_KEY }}
         run: |
-          echo "EXPO_PUBLIC_SUPABASE_URL=${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}" >> .env
-          echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}" >> .env
-          echo "EXPO_PUBLIC_GEMINI_API_KEY=${{ secrets.EXPO_PUBLIC_GEMINI_API_KEY }}" >> .env
+          echo "EXPO_PUBLIC_SUPABASE_URL=$SUPABASE_URL" >> .env
+          echo "EXPO_PUBLIC_SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> .env
+          echo "EXPO_PUBLIC_GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
+
+      - name: 🔑 Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.CASHLENS_UPLOAD_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/cashlens-upload.keystore
 
       - name: 🏗 Build Android APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
+          ./gradlew assembleRelease --no-daemon \
+            -PCASHLENS_UPLOAD_STORE_FILE=cashlens-upload.keystore \
+            -PCASHLENS_UPLOAD_STORE_PASSWORD="$CASHLENS_UPLOAD_STORE_PASSWORD" \
+            -PCASHLENS_UPLOAD_KEY_ALIAS="$CASHLENS_UPLOAD_KEY_ALIAS" \
+            -PCASHLENS_UPLOAD_KEY_PASSWORD="$CASHLENS_UPLOAD_KEY_PASSWORD"
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
+          CASHLENS_UPLOAD_STORE_PASSWORD: ${{ secrets.CASHLENS_UPLOAD_STORE_PASSWORD }}
+          CASHLENS_UPLOAD_KEY_ALIAS: ${{ secrets.CASHLENS_UPLOAD_KEY_ALIAS }}
+          CASHLENS_UPLOAD_KEY_PASSWORD: ${{ secrets.CASHLENS_UPLOAD_KEY_PASSWORD }}
 
       - name: 🚀 Create GitHub Release
         uses: softprops/action-gh-release@v2
