@@ -6,9 +6,11 @@ import { useCategoryStore } from "@stores/useCategoryStore";
 import { type Budget, type BudgetPeriod } from "@types";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function useBudgetForm() {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id?: string }>();
 
   const { baseCurrency } = useAuthStore((state) => state.preferences);
@@ -62,17 +64,17 @@ export function useBudgetForm() {
     setError(null);
 
     if (!rawAmount || parseFloat(rawAmount) <= 0) {
-      setError("Jumlah anggaran harus diisi dan lebih dari 0");
+      setError(t("form.budgetAmountRequired"));
       return;
     }
 
     if (!selectedCategoryId) {
-      setError("Kategori harus dipilih");
+      setError(t("form.categoryRequired"));
       return;
     }
 
     if (isEditMode && !existingBudget?.id) {
-      setError("Data anggaran tidak ditemukan");
+      setError(t("form.budgetNotFound"));
       return;
     }
 
@@ -128,7 +130,7 @@ export function useBudgetForm() {
       navigated = true;
       router.back();
     } catch (err) {
-      setError((err as Error).message || "Terjadi kesalahan");
+      setError((err as Error).message || t("form.genericError"));
     } finally {
       if (!navigated) setIsLoading(false);
     }
@@ -142,7 +144,8 @@ export function useBudgetForm() {
     isEditMode,
     addBudget,
     updateBudget,
-    router
+    router,
+    t
   ]);
 
   const handleDelete = useCallback(async () => {

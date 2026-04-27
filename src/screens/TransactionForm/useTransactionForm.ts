@@ -7,6 +7,7 @@ import { useTransactionStore } from "@stores/useTransactionStore";
 import { type TransactionType } from "@types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { handleDelete, handleSave, handleTypeChange } from "./handlers";
 
@@ -14,6 +15,7 @@ const DEFAULT_AMOUNT = "";
 
 export function useTransactionForm() {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
   const {
     id,
     amount: scannedAmount,
@@ -150,7 +152,13 @@ export function useTransactionForm() {
       updateTransaction,
       confirmDraft,
       resetForm,
-      routerBack: () => router.back()
+      routerBack: () => router.back(),
+      errorMessages: {
+        transactionLimit: t("form.transactionLimitError"),
+        amountRequired: t("form.amountRequired"),
+        categoryRequired: t("form.categoryRequired"),
+        genericError: t("form.genericError")
+      }
     });
   };
 

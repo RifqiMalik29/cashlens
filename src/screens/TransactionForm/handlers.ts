@@ -52,6 +52,12 @@ interface SaveDeps {
   confirmDraft: (id: string) => void;
   resetForm: () => void;
   routerBack: () => void;
+  errorMessages: {
+    transactionLimit: string;
+    amountRequired: string;
+    categoryRequired: string;
+    genericError: string;
+  };
 }
 
 export async function handleSave(d: SaveDeps) {
@@ -74,20 +80,21 @@ export async function handleSave(d: SaveDeps) {
     updateTransaction,
     confirmDraft,
     routerBack,
-    resetForm
+    resetForm,
+    errorMessages
   } = d;
 
   setError(null);
   if (!isEditMode && !canAddTransaction) {
-    setError("Limit transaksi gratis tercapai (50/bulan). Silakan upgrade.");
+    setError(errorMessages.transactionLimit);
     return;
   }
   if (!amount || parseFloat(amount) <= 0) {
-    setError("Jumlah harus diisi dan lebih dari 0");
+    setError(errorMessages.amountRequired);
     return;
   }
   if (!selectedCategoryId) {
-    setError("Kategori harus dipilih");
+    setError(errorMessages.categoryRequired);
     return;
   }
 
@@ -150,7 +157,7 @@ export async function handleSave(d: SaveDeps) {
     navigated = true;
     routerBack();
   } catch (err) {
-    setError((err as Error).message || "Terjadi kesalahan");
+    setError((err as Error).message || errorMessages.genericError);
   } finally {
     if (!navigated) setIsLoading(false);
   }
