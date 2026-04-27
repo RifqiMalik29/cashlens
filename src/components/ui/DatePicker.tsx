@@ -15,21 +15,6 @@ interface DatePickerProps {
   maxDate?: Date;
 }
 
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "Mei",
-  "Jun",
-  "Jul",
-  "Agu",
-  "Sep",
-  "Okt",
-  "Nov",
-  "Des"
-];
-
 export function DatePicker({
   visible,
   selectedDate,
@@ -45,10 +30,7 @@ export function DatePicker({
   const [month, setMonth] = useState(selectedDate.getMonth());
   const [day, setDay] = useState(selectedDate.getDate());
 
-  const monthsKeys = t("datePicker.months", {
-    returnObjects: true
-  }) as string[];
-  const translations = Array.isArray(monthsKeys) ? monthsKeys : MONTHS;
+  const months = t("datePicker.months", { returnObjects: true }) as string[];
 
   const years = useMemo(() => {
     const start = minDate ? minDate.getFullYear() : today.getFullYear() - 10;
@@ -119,10 +101,10 @@ export function DatePicker({
               colors={colors}
             />
             <PickerColumn<string>
-              data={MONTHS}
-              value={MONTHS[month]}
-              onChange={(m) => setMonth(MONTHS.indexOf(m))}
-              renderLabel={(m) => translations[MONTHS.indexOf(m)] || m}
+              data={months}
+              value={months[month]}
+              onChange={(m) => setMonth(months.indexOf(m))}
+              renderLabel={(m) => m}
               colors={colors}
             />
             <PickerColumn
