@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "229668836733-vsube1229rdgguovi7suravn3mnv7p0j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cashlens.app",
+            "certificate_hash": "b881300565ff70093e52b688492a8e3df6e8b071"
+          }
+        },
+        {
           "client_id": "229668836733-akdhlqrnvuklu9hsm0s29t0pos27runq.apps.googleusercontent.com",
           "client_type": 3
         }
