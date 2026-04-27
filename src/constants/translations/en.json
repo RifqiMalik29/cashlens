@@ -320,7 +320,11 @@
     "save": "Save",
     "delete": "Delete",
     "amountRequired": "Amount must be filled and greater than 0",
+    "budgetAmountRequired": "Budget amount must be filled and greater than 0",
+    "budgetNotFound": "Budget data not found",
     "categoryRequired": "Category must be selected",
+    "transactionLimitError": "Free transaction limit reached (50/month). Please upgrade.",
+    "genericError": "An error occurred",
     "passwordMin": "Password minimum 6 characters",
     "passwordMismatch": "Passwords do not match"
   },

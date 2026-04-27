@@ -322,7 +322,11 @@
     "save": "Simpan",
     "delete": "Hapus",
     "amountRequired": "Jumlah harus diisi dan lebih dari 0",
+    "budgetAmountRequired": "Jumlah anggaran harus diisi dan lebih dari 0",
+    "budgetNotFound": "Data anggaran tidak ditemukan",
     "categoryRequired": "Kategori harus dipilih",
+    "transactionLimitError": "Batas transaksi gratis tercapai (50/bulan). Silakan upgrade.",
+    "genericError": "Terjadi kesalahan",
     "passwordMin": "Kata sandi minimal 6 karakter",
     "passwordMismatch": "Kata sandi tidak cocok"
   },
