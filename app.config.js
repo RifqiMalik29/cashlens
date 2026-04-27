@@ -4,7 +4,7 @@ export default {
   expo: {
     name: IS_DEV ? "CashLens (Dev)" : "CashLens",
     slug: "cashlens",
-    version: "1.0.2",
+    version: "1.0.3",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
     scheme: IS_DEV ? "cashlens-dev" : "cashlens",
