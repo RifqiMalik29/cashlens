@@ -81,8 +81,10 @@ export async function parseReceiptImage(
     const errorMessage = (error as Error).message;
     if (
       errorMessage.includes("429") ||
+      errorMessage.includes("403") ||
       errorMessage.includes("rate limit") ||
-      errorMessage.includes("quota")
+      errorMessage.includes("quota") ||
+      errorMessage.includes("limit")
     ) {
       throw new GeminiRateLimitError("AI rate limit exceeded.");
     }
@@ -92,10 +94,28 @@ export async function parseReceiptImage(
 
 async function compressImage(imageUri: string): Promise<string> {
   try {
-    const result = await ImageManipulator.manipulateAsync(
+    let quality = 0.8;
+    let result = await ImageManipulator.manipulateAsync(
       imageUri,
-      [{ resize: { width: 1200 } }],
-      { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      [{ resize: { width: 1024 } }],
+      { compress: quality, format: ImageManipulator.SaveFormat.JPEG }
+    );
+
+    const file = new File(result.uri);
+    let info = await file.info();
+
+    while (info.exists && (info.size ?? 0) > 1024 * 1024 && quality > 0.3) {
+      quality = parseFloat((quality - 0.1).toFixed(1));
+      result = await ImageManipulator.manipulateAsync(
+        imageUri,
+        [{ resize: { width: 1024 } }],
+        { compress: quality, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      info = await new File(result.uri).info();
+    }
+
+    logger.debug(
+      `Compressed image: quality=${quality}, size=${info.exists ? info.size : "unknown"}`
     );
     return result.uri;
   } catch (error) {

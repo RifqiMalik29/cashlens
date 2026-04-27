@@ -122,8 +122,8 @@ export function useScannerProcessor({
           message.toLowerCase().includes("limit") ||
           message.toLowerCase().includes("quota")
         ) {
-          // Re-fetch subscription to make sure the UI is up to date
           await fetchSubscription();
+          setError(message || "Gagal memproses struk");
         } else {
           setError(message || "Gagal memproses struk");
         }

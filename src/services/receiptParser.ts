@@ -4,7 +4,11 @@ import { useSubscriptionStore } from "@stores/useSubscriptionStore";
 import { createLogger } from "@utils/logger";
 
 import { type Transaction } from "../types";
-import { isGeminiAvailable, parseReceiptImage } from "./gemini";
+import {
+  GeminiRateLimitError,
+  isGeminiAvailable,
+  parseReceiptImage
+} from "./gemini";
 import { recognizeText } from "./ocr";
 
 const logger = createLogger("[ReceiptParser]");
@@ -171,6 +175,7 @@ export async function processReceiptIntelligence(
         confidence: result.confidence
       };
     } catch (e) {
+      if (e instanceof GeminiRateLimitError) throw e;
       logger.warn("Vision AI failed, falling back to OCR cascade", e);
     }
   }
@@ -215,6 +220,7 @@ export async function processReceiptIntelligence(
         confidence: result.confidence
       };
     } catch (e) {
+      if (e instanceof GeminiRateLimitError) throw e;
       logger.warn("Vision AI failed, using local OCR as final fallback", e);
       // STAGE 5: Absolute Fallback - use whatever local OCR extracted
       return {
@@ -240,7 +246,7 @@ export async function processReceiptIntelligence(
       categoryId: localResult.categoryId || "cat_other_expense",
       date: localResult.date || new Date().toISOString(),
       note: localResult.note,
-    isFromScan: true
+      isFromScan: true
     },
     method: "local_ocr",
     confidence: localResult.amount ? 50 : 10
