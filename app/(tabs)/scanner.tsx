@@ -1,1 +1,5 @@
-export { default } from "@screens/Scanner/ScannerScreen";
+import { View } from "react-native";
+
+export default function ScannerPlaceholder() {
+  return <View />;
+}

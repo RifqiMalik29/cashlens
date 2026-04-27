@@ -154,6 +154,7 @@ function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(forms)" options={{ headerShown: false }} />
+          <Stack.Screen name="(scanner)" options={{ headerShown: false }} />
           <Stack.Screen name="drafts" options={{ headerShown: false }} />
         </Stack>
       </SafeAreaView>

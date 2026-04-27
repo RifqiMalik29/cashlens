@@ -1,7 +1,8 @@
 import { CustomHeader } from "@components/ui";
 import { heights, spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
-import { Tabs } from "expo-router";
+import type { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
+import { Tabs, useRouter } from "expo-router";
 import {
   ArrowLeftRight,
   Home,
@@ -10,10 +11,12 @@ import {
   Settings
 } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
+import { TouchableOpacity } from "react-native";
 
 export default function TabsLayout() {
   const colors = useColors();
   const { t } = useTranslation();
+  const router = useRouter();
 
   return (
     <Tabs
@@ -64,6 +67,15 @@ export default function TabsLayout() {
           tabBarLabel: t("tabs.scan"),
           tabBarIcon: ({ color, size }) => (
             <ScanLine size={size} color={color} />
+          ),
+          tabBarButton: ({
+            onPress: _onPress,
+            ...props
+          }: BottomTabBarButtonProps) => (
+            <TouchableOpacity
+              {...(props as React.ComponentProps<typeof TouchableOpacity>)}
+              onPress={() => router.push("/(scanner)")}
+            />
           )
         }}
       />
