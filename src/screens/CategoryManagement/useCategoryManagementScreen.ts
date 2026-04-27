@@ -11,32 +11,30 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type ScrollView } from "react-native";
 
+import { useAddCategorySheet } from "./useAddCategorySheet";
+
 type FilterType = "all" | "expense" | "income";
 
 export function useCategoryManagementScreen() {
   const { t } = useTranslation();
   const scrollViewRef = useRef<ScrollView>(null);
-  const categories = useCategoryStore((state) => state.categories);
-  const addCategory = useCategoryStore((state) => state.addCategory);
-  const updateCategory = useCategoryStore((state) => state.updateCategory);
-  const deleteCategory = useCategoryStore((state) => state.deleteCategory);
-  const syncCategories = useCategoryStore((state) => state.syncCategories);
-  const transactions = useTransactionStore((state) => state.transactions);
+  const categories = useCategoryStore((s) => s.categories);
+  const updateCategory = useCategoryStore((s) => s.updateCategory);
+  const deleteCategory = useCategoryStore((s) => s.deleteCategory);
+  const syncCategories = useCategoryStore((s) => s.syncCategories);
+  const transactions = useTransactionStore((s) => s.transactions);
 
   const [selectedType, setSelectedType] = useState<FilterType>("all");
   const [errorDialog, setErrorDialog] = useState<string | null>(null);
-  const [isSheetVisible, setIsSheetVisible] = useState(false);
-  const [newCategoryName, setNewCategoryName] = useState("");
-  const [newCategoryType, setNewCategoryType] = useState<"expense" | "income">(
-    "expense"
-  );
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const [sheetError, setSheetError] = useState<string | null>(null);
+
+  const sheet = useAddCategorySheet();
+
   const filterTypes = [
     { value: "all" as const, label: t("categories.all") },
     { value: "expense" as const, label: t("categories.expense") },
     { value: "income" as const, label: t("categories.income") }
   ];
+
   const transformCategory = useCallback(
     (cat: CategoryResponse): Category => {
       const nameKey = cat?.name_key ?? null;
@@ -61,28 +59,30 @@ export function useCategoryManagementScreen() {
     },
     [t]
   );
+
   const syncWithBackend = useCallback(async () => {
     try {
-      const categories = await categoryService.getCategories();
-      if (categories && Array.isArray(categories)) {
-        const transformed = categories.map(transformCategory);
-        syncCategories(transformed);
-      }
+      const data = await categoryService.getCategories();
+      if (data && Array.isArray(data))
+        syncCategories(data.map(transformCategory));
     } catch (err) {
       setErrorDialog((err as Error).message || t("form.genericError"));
     }
   }, [syncCategories, transformCategory, t]);
+
   useFocusEffect(
     useCallback(() => {
       syncWithBackend();
     }, [syncWithBackend])
   );
+
   const filteredCategories = useMemo(() => {
     if (selectedType === "all") return categories;
     return categories.filter(
       (c) => c.type === selectedType || c.type === "both"
     );
   }, [categories, selectedType]);
+
   const { expenseCategories, incomeCategories } = useMemo(
     () => ({
       expenseCategories: filteredCategories.filter(
@@ -94,6 +94,7 @@ export function useCategoryManagementScreen() {
     }),
     [filteredCategories]
   );
+
   const handleDeleteCategory = useCallback(
     async (id: string, isDefault: boolean) => {
       if (isDefault) {
@@ -120,43 +121,7 @@ export function useCategoryManagementScreen() {
     },
     [deleteCategory, transactions, t]
   );
-  const handleAddCategory = useCallback(async () => {
-    setNewCategoryName("");
-    setNewCategoryType("expense");
-    setSheetError(null);
-    setIsSheetVisible(true);
-    await Haptics.selectionAsync();
-  }, []);
-  const handleSubmitNewCategory = useCallback(async () => {
-    const trimmed = newCategoryName.trim();
-    if (!trimmed) return setSheetError(t("categories.nameRequired"));
-    await Haptics.selectionAsync();
-    setIsAddingCategory(true);
-    setSheetError(null);
-    try {
-      const saved = await categoryService.createCategory({
-        name: trimmed,
-        icon: "MoreHorizontal",
-        color: "#9CA3AF",
-        type: newCategoryType
-      });
-      addCategory({
-        id: saved.id,
-        name: saved.name,
-        nameKey: saved.name_key ?? null,
-        icon: saved.icon,
-        color: saved.color,
-        isDefault: saved.is_default,
-        isCustom: !saved.is_default,
-        type: saved.type
-      });
-      setIsSheetVisible(false);
-    } catch (err) {
-      setSheetError((err as Error).message || t("categories.addFailed"));
-    } finally {
-      setIsAddingCategory(false);
-    }
-  }, [addCategory, newCategoryName, newCategoryType, t]);
+
   const handleUpdateCategory = useCallback(
     async (id: string, newName: string, newColor: string, newIcon: string) => {
       await Haptics.selectionAsync();
@@ -171,10 +136,12 @@ export function useCategoryManagementScreen() {
     },
     [updateCategory, t]
   );
+
   const handleFilterSelect = useCallback((type: FilterType) => {
     Haptics.selectionAsync();
     setSelectedType(type);
   }, []);
+
   return {
     filterTypes,
     selectedType,
@@ -182,21 +149,12 @@ export function useCategoryManagementScreen() {
     expenseCategories,
     incomeCategories,
     handleDeleteCategory,
-    handleAddCategory,
     handleUpdateCategory,
     handleFilterSelect,
     syncWithBackend,
     errorDialog,
     setErrorDialog,
-    isSheetVisible,
-    newCategoryName,
-    newCategoryType,
-    isAddingCategory,
-    sheetError,
-    setNewCategoryName,
-    setNewCategoryType,
-    handleSubmitNewCategory,
-    handleCloseSheet: () => setIsSheetVisible(false),
-    scrollViewRef
+    scrollViewRef,
+    ...sheet
   };
 }

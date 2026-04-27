@@ -33,10 +33,14 @@ export default function CategoryManagementScreen() {
     isSheetVisible,
     newCategoryName,
     newCategoryType,
+    newCategoryColor,
+    newCategoryIcon,
     isAddingCategory,
     sheetError,
     setNewCategoryName,
     setNewCategoryType,
+    setNewCategoryColor,
+    setNewCategoryIcon,
     handleSubmitNewCategory,
     handleCloseSheet,
     scrollViewRef
@@ -155,10 +159,14 @@ export default function CategoryManagementScreen() {
         isVisible={isSheetVisible}
         name={newCategoryName}
         type={newCategoryType}
+        color={newCategoryColor}
+        icon={newCategoryIcon}
         isLoading={isAddingCategory}
         error={sheetError}
         onNameChange={setNewCategoryName}
         onTypeChange={setNewCategoryType}
+        onColorChange={setNewCategoryColor}
+        onIconChange={setNewCategoryIcon}
         onSubmit={handleSubmitNewCategory}
         onClose={handleCloseSheet}
       />

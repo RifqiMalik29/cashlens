@@ -3,6 +3,8 @@ import {
   type BottomSheetHandle
 } from "@components/ui/BottomSheet";
 import { Button } from "@components/ui/Button";
+import { ColorPicker } from "@components/ui/ColorPicker";
+import { IconPicker } from "@components/ui/IconPicker";
 import { Typography } from "@components/ui/Typography";
 import { fontSizes, heights, spacing } from "@constants/theme";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
@@ -15,10 +17,14 @@ interface AddCategorySheetProps {
   isVisible: boolean;
   name: string;
   type: "expense" | "income";
+  color: string;
+  icon: string;
   isLoading: boolean;
   error: string | null;
   onNameChange: (value: string) => void;
   onTypeChange: (value: "expense" | "income") => void;
+  onColorChange: (value: string) => void;
+  onIconChange: (value: string) => void;
   onSubmit: () => void;
   onClose: () => void;
 }
@@ -27,10 +33,14 @@ export function AddCategorySheet({
   isVisible,
   name,
   type,
+  color,
+  icon,
   isLoading,
   error,
   onNameChange,
   onTypeChange,
+  onColorChange,
+  onIconChange,
   onSubmit,
   onClose
 }: AddCategorySheetProps) {
@@ -85,7 +95,7 @@ export function AddCategorySheet({
         </View>
       </View>
 
-      <View style={{ marginBottom: spacing[2] }}>
+      <View style={{ marginBottom: spacing[4] }}>
         <Typography
           variant="label"
           weight="medium"
@@ -133,6 +143,30 @@ export function AddCategorySheet({
             </Typography>
           </TouchableOpacity>
         </View>
+      </View>
+
+      <View style={{ marginBottom: spacing[4] }}>
+        <Typography
+          variant="label"
+          weight="medium"
+          color={colors.textSecondary}
+          style={{ marginBottom: spacing[2] }}
+        >
+          Warna
+        </Typography>
+        <ColorPicker value={color} onChange={onColorChange} />
+      </View>
+
+      <View style={{ marginBottom: spacing[4] }}>
+        <Typography
+          variant="label"
+          weight="medium"
+          color={colors.textSecondary}
+          style={{ marginBottom: spacing[2] }}
+        >
+          Ikon
+        </Typography>
+        <IconPicker value={icon} color={color} onChange={onIconChange} />
       </View>
 
       {error && (
