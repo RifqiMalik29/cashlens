@@ -2,6 +2,7 @@ import { useColors } from "@hooks/useColors";
 import { type Transaction } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
 import { useRouter } from "expo-router";
+import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
@@ -26,7 +27,8 @@ export function RecentTransactions({
     router.push("/(tabs)/transactions");
   };
 
-  const getCategory = (categoryId: string) => {
+  const getCategory = (categoryId: string | null) => {
+    if (!categoryId) return undefined;
     return categories.find((c) => c.id === categoryId);
   };
 
@@ -69,23 +71,23 @@ export function RecentTransactions({
                 style={{ backgroundColor: category?.color || "#E5E7EB" }}
               >
                 <Typography variant="caption" color="#FFFFFF" weight="medium">
-                  {category?.name.charAt(0) || "T"}
+                  {category?.name.charAt(0) || "?"}
                 </Typography>
               </View>
 
               <View className="flex-1">
                 <Typography variant="body" weight="medium" numberOfLines={1}>
-                  {category?.name || t("transactions.title")}
+                  {category?.name || t("transactions.uncategorized")}
                 </Typography>
                 <Typography
                   variant="caption"
                   color={colors.textSecondary}
                   numberOfLines={1}
                 >
-                  {new Date(transaction.date).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short"
-                  })}
+                  {new Date(transaction.date).toLocaleDateString(
+                    i18n.language === "id" ? "id-ID" : "en-US",
+                    { day: "numeric", month: "short" }
+                  )}
                 </Typography>
               </View>
 

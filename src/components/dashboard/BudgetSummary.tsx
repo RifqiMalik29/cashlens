@@ -120,7 +120,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
             color={colors.textSecondary}
             style={{ textAlign: "center" }}
           >
-            +{budgetsWithProgress.length - 3} anggaran lainnya
+            {t("budget.moreBudgets", { count: budgetsWithProgress.length - 3 })}
           </Typography>
         )}
       </View>
