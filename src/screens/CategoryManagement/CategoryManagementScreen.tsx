@@ -101,7 +101,7 @@ export default function CategoryManagementScreen() {
               >
                 {t("categories.expenseCategories")} ({expenseCategories.length})
               </Typography>
-              <View className="flex-row flex-wrap gap-2">
+              <View>
                 {expenseCategories.map((category) => (
                   <CategoryCard
                     key={category.id}
@@ -124,7 +124,7 @@ export default function CategoryManagementScreen() {
               >
                 {t("categories.incomeCategories")} ({incomeCategories.length})
               </Typography>
-              <View className="flex-row flex-wrap gap-2">
+              <View>
                 {incomeCategories.map((category) => (
                   <CategoryCard
                     key={category.id}
