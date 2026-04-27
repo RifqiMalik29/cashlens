@@ -94,7 +94,6 @@ export async function handleSave(d: SaveDeps) {
   }
 
   setIsLoading(true);
-  let navigated = false;
   try {
     const numericAmount = parseFloat(amount);
 
@@ -149,12 +148,11 @@ export async function handleSave(d: SaveDeps) {
       if (draftId) confirmDraft(draftId);
       resetForm();
     }
-    navigated = true;
     routerBack();
   } catch (err) {
     setError((err as Error).message || errorMessages.genericError);
   } finally {
-    if (!navigated) setIsLoading(false);
+    setIsLoading(false);
   }
 }
 
@@ -178,15 +176,13 @@ export async function handleDelete(d: DeleteDeps) {
   } = d;
   if (!id || !existingTransaction) return;
   setIsLoading(true);
-  let navigated = false;
   try {
     await transactionService.deleteTransaction(id);
     deleteTransaction(id);
-    navigated = true;
     routerBack();
   } catch (err) {
     setError((err as Error).message || "Gagal menghapus transaksi");
   } finally {
-    if (!navigated) setIsLoading(false);
+    setIsLoading(false);
   }
 }
