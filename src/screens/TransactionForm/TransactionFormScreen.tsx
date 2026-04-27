@@ -37,7 +37,10 @@ export default function TransactionFormScreen() {
     handleSave,
     handleDelete,
     showPaywall,
-    setShowPaywall
+    setShowPaywall,
+    showUncategorizedDialog,
+    setShowUncategorizedDialog,
+    handleConfirmUncategorized
   } = useTransactionForm();
 
   useHeader({
@@ -131,6 +134,20 @@ export default function TransactionFormScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <BaseDialog
+        isVisible={showUncategorizedDialog}
+        title={t("form.uncategorizedTitle")}
+        message={t("form.uncategorizedDesc")}
+        type="warning"
+        primaryButtonText={t("form.addUncategorized")}
+        onPrimaryButtonPress={() => {
+          setShowUncategorizedDialog(false);
+          handleConfirmUncategorized();
+        }}
+        secondaryButtonText={t("common.cancel")}
+        onSecondaryButtonPress={() => setShowUncategorizedDialog(false)}
+        onClose={() => setShowUncategorizedDialog(false)}
+      />
       <BaseDialog
         isVisible={showPaywall}
         title={t("transactions.transactionLimitTitle")}

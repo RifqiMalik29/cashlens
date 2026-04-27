@@ -61,24 +61,21 @@ export function useTransactionForm() {
   const tx = existingTransaction;
   const draft = existingDraft;
   const [amount, setAmount] = useState(
-    tx
-      ? tx.amount.toString()
-      : draft
-        ? draft.amount.toString()
-        : scannedAmount || DEFAULT_AMOUNT
+    tx?.amount.toString() ||
+      draft?.amount.toString() ||
+      scannedAmount ||
+      DEFAULT_AMOUNT
   );
   const [type, setType] = useState<TransactionType>(
-    tx ? tx.type : draft ? draft.type : "expense"
+    tx?.type || draft?.type || "expense"
   );
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    tx ? tx.categoryId : null
+    tx?.categoryId || null
   );
   const [date, setDate] = useState(
-    tx ? tx.date : draft ? draft.date : scannedDate || new Date().toISOString()
+    tx?.date || draft?.date || scannedDate || new Date().toISOString()
   );
-  const [note, setNote] = useState(
-    tx ? tx.note : draft ? draft.description : ""
-  );
+  const [note, setNote] = useState(tx?.note || draft?.description || "");
   const [receiptUri, setReceiptUri] = useState<string | undefined>(
     receiptImageUri || tx?.receiptImageUri
   );
@@ -122,11 +119,21 @@ export function useTransactionForm() {
     setError(null);
   };
 
+  const [showUncategorizedDialog, setShowUncategorizedDialog] = useState(false);
+
   const onSave = async () => {
     if (!isEditMode && !canAddTransaction) {
       setShowPaywall(true);
       return;
     }
+    if (!selectedCategoryId) {
+      setShowUncategorizedDialog(true);
+      return;
+    }
+    await executeSave();
+  };
+
+  const executeSave = async () => {
     await handleSave({
       setAmount,
       setType,
@@ -156,7 +163,6 @@ export function useTransactionForm() {
       errorMessages: {
         transactionLimit: t("form.transactionLimitError"),
         amountRequired: t("form.amountRequired"),
-        categoryRequired: t("form.categoryRequired"),
         genericError: t("form.genericError")
       }
     });
@@ -203,6 +209,9 @@ export function useTransactionForm() {
     handleSave: onSave,
     handleDelete: onDelete,
     showPaywall,
-    setShowPaywall
+    setShowPaywall,
+    showUncategorizedDialog,
+    setShowUncategorizedDialog,
+    handleConfirmUncategorized: executeSave
   };
 }

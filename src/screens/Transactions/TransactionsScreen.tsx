@@ -1,5 +1,6 @@
 import { EmptyState } from "@components/transaction/EmptyState";
 import { TransactionList } from "@components/transaction/TransactionList";
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { FAB } from "@components/ui/FAB";
 import { Typography } from "@components/ui/Typography";
 import { useColors } from "@hooks/useColors";
@@ -19,7 +20,10 @@ export default function TransactionsScreen() {
     baseCurrency,
     hasTransactions,
     handleTransactionPress,
-    handleAddTransaction
+    handleAddTransaction,
+    showNoCategoryDialog,
+    setShowNoCategoryDialog,
+    handleGoToCategories
   } = useTransactionsScreen();
 
   useHeader({
@@ -64,6 +68,18 @@ export default function TransactionsScreen() {
         )}
         <FAB onPress={handleAddTransaction} />
       </View>
+
+      <BaseDialog
+        isVisible={showNoCategoryDialog}
+        title={t("transactions.noCategoryTitle")}
+        message={t("transactions.noCategoryDesc")}
+        type="warning"
+        primaryButtonText={t("transactions.goToCategories")}
+        onPrimaryButtonPress={handleGoToCategories}
+        secondaryButtonText={t("common.cancel")}
+        onSecondaryButtonPress={() => setShowNoCategoryDialog(false)}
+        onClose={() => setShowNoCategoryDialog(false)}
+      />
     </SafeAreaView>
   );
 }

@@ -55,7 +55,6 @@ interface SaveDeps {
   errorMessages: {
     transactionLimit: string;
     amountRequired: string;
-    categoryRequired: string;
     genericError: string;
   };
 }
@@ -91,10 +90,6 @@ export async function handleSave(d: SaveDeps) {
   }
   if (!amount || parseFloat(amount) <= 0) {
     setError(errorMessages.amountRequired);
-    return;
-  }
-  if (!selectedCategoryId) {
-    setError(errorMessages.categoryRequired);
     return;
   }
 

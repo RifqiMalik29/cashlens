@@ -1,6 +1,9 @@
 import { type Transaction } from "@types";
 
-import { type TransactionResponse, transactionService } from "../transactionService";
+import {
+  type TransactionResponse,
+  transactionService
+} from "../transactionService";
 import { isValidUserId, type SyncResult } from "./syncUtils";
 
 export async function pushTransactions(
@@ -25,7 +28,7 @@ export async function pullTransactions(userId: string): Promise<Transaction[]> {
       amountInBaseCurrency: item.amount,
       exchangeRate: 1,
       type: (item.category?.type ?? "expense") as Transaction["type"],
-      categoryId: item.category_id || "",
+      categoryId: item.category_id ?? null,
       note: item.description,
       date: item.date ?? item.transaction_date,
       receiptImageUri: undefined,
