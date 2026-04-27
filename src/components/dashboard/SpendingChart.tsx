@@ -145,14 +145,17 @@ export function SpendingChart({
                     style={{ backgroundColor: colors.border }}
                   >
                     <View
-                      className="h-full bg-primary rounded-full"
-                      style={{ width: `${barWidth}%` }}
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${barWidth}%`,
+                        backgroundColor: colors.error
+                      }}
                     />
                   </View>
                   <Typography
                     variant="caption"
                     weight="semibold"
-                    color="#4CAF82"
+                    color={colors.error}
                     style={{ width: 60, textAlign: "right" }}
                   >
                     {formatCompactCurrency(day.amount, currency)}
