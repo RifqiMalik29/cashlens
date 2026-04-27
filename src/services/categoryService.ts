@@ -6,6 +6,7 @@ export interface CategoryResponse {
   id: string;
   user_id: string;
   name: string;
+  name_key: string | null;
   icon: string;
   color: string;
   type: "income" | "expense";
