@@ -6,6 +6,8 @@ import { createLogger } from "@utils/logger";
 import * as ImagePicker from "expo-image-picker";
 import { useCallback, useState } from "react";
 
+import i18n from "../../../services/i18n";
+
 const logger = createLogger("[ScannerProcessor]");
 
 interface UseScannerProcessorResult {
@@ -52,7 +54,7 @@ export function useScannerProcessor({
       setIsScanning(true);
       setError(null);
       setIsOffline(false);
-      setProcessingStatus("AI sedang memproses...");
+      setProcessingStatus(i18n.t("scanner.aiProcessing"));
 
       try {
         const result = await processReceiptIntelligence(imageUri, (status) =>
@@ -97,7 +99,7 @@ export function useScannerProcessor({
           amount: result.data.amount?.toString() || "0",
           categoryId: fallbackCategory?.id || "",
           date: result.data.date || new Date().toISOString(),
-          note: result.data.note || "Transaksi dari AI Scan",
+          note: result.data.note || i18n.t("scanner.scanDefaultNote"),
           receiptImageUri: imageUri,
           isFromScan: "true"
         });

@@ -140,6 +140,7 @@ export default function NotificationSettingsScreen() {
         {isFeatureEnabled && (
           <PermissionStatusCard
             hasPermission={hasPermission}
+            title={t("notificationSettings.permissionStatus")}
             permissionGrantedText={t("notificationSettings.permissionGranted")}
             permissionDeniedText={t("notificationSettings.permissionDenied")}
             fixPermissionButtonText={t("notificationSettings.fixPermission")}

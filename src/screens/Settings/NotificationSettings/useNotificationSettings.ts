@@ -108,7 +108,10 @@ export function useNotificationSettings() {
       if (canOpen) {
         await Linking.openURL(url);
       } else {
-        Alert.alert("Error", "Telegram is not installed");
+        Alert.alert(
+          t("common.error"),
+          t("notificationSettings.telegramNotInstalled")
+        );
       }
     } catch (error) {
       logger.error(

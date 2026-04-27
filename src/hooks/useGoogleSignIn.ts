@@ -44,7 +44,7 @@ export function useGoogleSignIn() {
       const idToken = response.data.idToken;
 
       if (!idToken) {
-        setError("Google sign-in failed: no ID token");
+        setError(i18n.t("auth.googleSignInNoToken"));
         return;
       }
 
@@ -73,7 +73,7 @@ export function useGoogleSignIn() {
       router.replace("/(tabs)");
     } catch (err) {
       logger.error("Google sign-in error:", JSON.stringify(err));
-      setError((err as Error).message || "Google sign-in failed");
+      setError((err as Error).message || i18n.t("auth.googleSignInFailed"));
     } finally {
       setIsLoading(false);
     }

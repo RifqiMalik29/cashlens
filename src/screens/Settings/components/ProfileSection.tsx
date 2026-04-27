@@ -37,13 +37,13 @@ export function ProfileSection({
             </View>
             <View>
               <Typography variant="body" weight="bold">
-                {userEmail || "User"}
+                {userEmail || t("settings.notLoggedIn")}
               </Typography>
               {subscriptionTier === "premium" && expiresAt && (
                 <View className="mt-1">
                   <Typography variant="caption" color="secondary">
                     {t("settings.validUntil")}{" "}
-                    {new Date(expiresAt).toLocaleDateString("id-ID")}
+                    {new Date(expiresAt).toLocaleDateString()}
                   </Typography>
                 </View>
               )}
@@ -56,17 +56,20 @@ export function ProfileSection({
             >
               <Zap size={16} color="#D97706" className="mr-1" />
               <Typography variant="caption" weight="bold" color="#D97706">
-                UPGRADE
+                {t("settings.upgrade").toUpperCase()}
               </Typography>
             </TouchableOpacity>
           ) : (
-            <Badge label="PREMIUM ✓" variant="success" />
+            <Badge
+              label={`${t("settings.premium").toUpperCase()} ✓`}
+              variant="success"
+            />
           )}
         </View>
         <SettingsItem
           icon={<Mail size={20} color="#4CAF82" />}
           label={t("settings.email")}
-          value={userEmail || "Not logged in"}
+          value={userEmail || t("settings.notLoggedIn")}
         />
       </View>
     </SettingsSection>
