@@ -1,14 +1,17 @@
+import { ColorPicker } from "@components/ui/ColorPicker";
+import { IconPicker } from "@components/ui/IconPicker";
 import { Typography } from "@components/ui/Typography";
 import { useColors } from "@hooks/useColors";
 import type { Category } from "@types";
+import * as Icons from "lucide-react-native";
 import { Check, Pencil, Trash2, X } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
-import { Dimensions, TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 
 interface CategoryCardProps {
   category: Category;
   onDelete: (id: string, isDefault: boolean) => void;
-  onUpdate: (id: string, newName: string) => void;
+  onUpdate: (id: string, name: string, color: string, icon: string) => void;
 }
 
 export function CategoryCard({
@@ -18,125 +21,138 @@ export function CategoryCard({
 }: CategoryCardProps) {
   const colors = useColors();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(category?.name || "");
-  const [inputWidth, setInputWidth] = useState(100);
+  const [editedName, setEditedName] = useState(category.name);
+  const [editedColor, setEditedColor] = useState(category.color);
+  const [editedIcon, setEditedIcon] = useState(category.icon);
 
   useEffect(() => {
-    if (category?.name) {
-      setEditedName(category.name);
-    }
-  }, [category?.name]);
+    setEditedName(category.name);
+    setEditedColor(category.color);
+    setEditedIcon(category.icon);
+  }, [category.name, category.color, category.icon]);
 
-  useEffect(() => {
-    if (isEditing) {
-      const estimatedWidth = Math.max(editedName.length * 8 + 32, 60);
-      setInputWidth(estimatedWidth);
-    }
-  }, [isEditing, editedName]);
+  const handleConfirm = useCallback(() => {
+    onUpdate(category.id, editedName.trim(), editedColor, editedIcon);
+    setIsEditing(false);
+  }, [category.id, editedName, editedColor, editedIcon, onUpdate]);
 
-  const handleTextChange = useCallback((text: string) => {
-    setEditedName(text);
-    const estimatedWidth = Math.max(text.length * 8 + 32, 60);
-    setInputWidth(estimatedWidth);
-  }, []);
+  const handleCancel = useCallback(() => {
+    setEditedName(category.name);
+    setEditedColor(category.color);
+    setEditedIcon(category.icon);
+    setIsEditing(false);
+  }, [category.name, category.color, category.icon]);
 
-  if (!category) {
-    return null;
-  }
+  const Icon =
+    (
+      Icons as unknown as Record<
+        string,
+        React.ComponentType<{ size: number; color: string }>
+      >
+    )[category.icon] ?? Icons.MoreHorizontal;
+
+  if (!category) return null;
 
   return (
     <View
-      className="flex-row items-center border border-border rounded-lg pl-3 pr-2 py-2"
-      style={{ backgroundColor: colors.surface }}
+      className="rounded-xl mb-2 overflow-hidden"
+      style={{
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border
+      }}
     >
-      <View
-        className="w-8 h-8 rounded-full items-center justify-center mr-2"
-        style={{ backgroundColor: category.color }}
-      >
-        <Typography variant="caption" weight="bold" color="#FFFFFF">
-          {category.name.charAt(0)}
-        </Typography>
-      </View>
-
-      {isEditing ? (
+      <View className="flex-row items-center px-4 py-3">
         <View
-          style={{
-            minWidth: 60,
-            maxWidth: Dimensions.get("window").width - 160
-          }}
+          className="w-9 h-9 rounded-full items-center justify-center mr-3"
+          style={{ backgroundColor: category.color }}
         >
+          <Icon size={16} color="#FFFFFF" />
+        </View>
+
+        {isEditing ? (
           <TextInput
             value={editedName}
-            onChangeText={handleTextChange}
-            onBlur={() => {
-              if (editedName.trim() !== category.name) {
-                onUpdate(category.id, editedName.trim());
-              }
-              setIsEditing(false);
-            }}
+            onChangeText={setEditedName}
             style={{
-              width: inputWidth,
-              fontSize: 12,
+              flex: 1,
+              fontSize: 14,
               fontWeight: "500",
               color: colors.textPrimary,
               paddingVertical: 4,
               paddingHorizontal: 8,
               backgroundColor: colors.surfaceSecondary,
+              borderRadius: 6,
               borderWidth: 1,
-              borderColor: "#D1D5DB",
-              borderRadius: 6
+              borderColor: colors.border
             }}
             autoFocus
           />
-        </View>
-      ) : (
-        <Typography variant="caption" weight="medium" numberOfLines={1}>
-          {category.name}
-        </Typography>
-      )}
+        ) : (
+          <Typography variant="body" weight="medium" style={{ flex: 1 }}>
+            {category.name}
+          </Typography>
+        )}
 
-      {isEditing ? (
-        <>
-          <TouchableOpacity
-            onPress={() => {
-              if (editedName.trim() !== category.name) {
-                onUpdate(category.id, editedName.trim());
-              }
-              setIsEditing(false);
-            }}
-            className="ml-2 p-1"
-          >
-            <Check size={14} color="#4CAF82" />
-          </TouchableOpacity>
+        {isEditing ? (
+          <View className="flex-row gap-1 ml-2">
+            <TouchableOpacity onPress={handleConfirm} className="p-2">
+              <Check size={16} color="#4CAF82" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCancel} className="p-2">
+              <X size={16} color="#EF4444" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View className="flex-row gap-1 ml-2">
+            <TouchableOpacity
+              onPress={() => setIsEditing(true)}
+              className="p-2"
+            >
+              <Pencil size={16} color={colors.textSecondary} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onDelete(category.id, category.isDefault)}
+              className="p-2"
+            >
+              <Trash2 size={16} color="#EF4444" />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
 
-          <TouchableOpacity
-            onPress={() => {
-              setEditedName(category.name);
-              setIsEditing(false);
-            }}
-            className="p-1"
-          >
-            <X size={14} color="#EF4444" />
-          </TouchableOpacity>
-        </>
-      ) : (
-        !category.isDefault && (
-          <TouchableOpacity
-            onPress={() => setIsEditing(true)}
-            className="ml-2 p-1"
-          >
-            <Pencil size={14} color={colors.textSecondary} />
-          </TouchableOpacity>
-        )
-      )}
-
-      {!category.isDefault && (
-        <TouchableOpacity
-          onPress={() => onDelete(category.id, category.isDefault)}
-          className="p-1"
+      {isEditing && (
+        <View
+          className="px-4 pb-4 gap-3"
+          style={{ borderTopWidth: 1, borderTopColor: colors.border }}
         >
-          <Trash2 size={14} color="#EF4444" />
-        </TouchableOpacity>
+          <View className="pt-3">
+            <Typography
+              variant="caption"
+              weight="medium"
+              color={colors.textSecondary}
+              style={{ marginBottom: 8 }}
+            >
+              Warna
+            </Typography>
+            <ColorPicker value={editedColor} onChange={setEditedColor} />
+          </View>
+          <View>
+            <Typography
+              variant="caption"
+              weight="medium"
+              color={colors.textSecondary}
+              style={{ marginBottom: 8 }}
+            >
+              Ikon
+            </Typography>
+            <IconPicker
+              value={editedIcon}
+              color={editedColor}
+              onChange={setEditedIcon}
+            />
+          </View>
+        </View>
       )}
     </View>
   );
