@@ -69,7 +69,7 @@ export function useSettingsScreen() {
     setDialogState({
       isVisible: true,
       title: t("auth.logoutConfirm"),
-      message: "Apakah Anda yakin ingin keluar?",
+      message: t("settings.logoutMessage"),
       type: "warning",
       primaryButtonText: t("settings.logout"),
       onPrimaryButtonPress: async () => {
@@ -192,11 +192,10 @@ export function useSettingsScreen() {
 
     setDialogState({
       isVisible: true,
-      title: "Hapus Akun",
-      message:
-        "Akun dan semua data Anda akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.",
+      title: t("settings.deleteAccount"),
+      message: t("settings.deleteAccountDesc"),
       type: "error",
-      primaryButtonText: "Hapus Akun",
+      primaryButtonText: t("settings.deleteAccount"),
       onPrimaryButtonPress: async () => {
         setDialogState((prev) => ({ ...prev, isVisible: false }));
         try {

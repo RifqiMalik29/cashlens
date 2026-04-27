@@ -83,7 +83,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
                 <View
                   className="h-2 rounded-full"
                   style={{
-                    width: `${budget.progress}%`,
+                    width: `${Math.min(budget.progress, 100)}%`,
                     backgroundColor: progressColor
                   }}
                 />
@@ -120,7 +120,7 @@ export function BudgetSummary({ currency, onPressBudget }: BudgetSummaryProps) {
             color={colors.textSecondary}
             style={{ textAlign: "center" }}
           >
-            +{budgetsWithProgress.length - 3} anggaran lainnya
+            {t("budget.moreBudgets", { count: budgetsWithProgress.length - 3 })}
           </Typography>
         )}
       </View>

@@ -94,8 +94,18 @@ android {
         applicationId 'com.cashlens.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.0.2"
+def getVersionCode = { ->
+    return new Date().getTime() / 100000 // Generate a unique, increasing version code based on timestamp
+}
+
+def getVersionName = { ->
+    def packageJson = file('../../package.json') // Correctly resolves path from android/app/build.gradle
+    def json = new groovy.json.JsonSlurper().parseText(packageJson.text)
+    return json.version
+}
+
+        versionCode 1776913850
+        versionName getVersionName()
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }

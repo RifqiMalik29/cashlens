@@ -7,6 +7,7 @@ import { View } from "react-native";
 
 interface PermissionStatusCardProps {
   hasPermission: boolean;
+  title: string;
   permissionGrantedText: string;
   permissionDeniedText: string;
   fixPermissionButtonText: string;
@@ -15,6 +16,7 @@ interface PermissionStatusCardProps {
 
 export function PermissionStatusCard({
   hasPermission,
+  title,
   permissionGrantedText,
   permissionDeniedText,
   fixPermissionButtonText,
@@ -29,7 +31,7 @@ export function PermissionStatusCard({
         color={colors.textSecondary}
         className="mb-3 uppercase tracking-wider"
       >
-        Permission Status
+        {title}
       </Typography>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center">

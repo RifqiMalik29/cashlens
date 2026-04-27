@@ -2,6 +2,7 @@ import { spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
 import { Calendar } from "lucide-react-native";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import { DatePicker } from "../ui/DatePicker";
@@ -14,6 +15,7 @@ interface DateInputProps {
 
 export function DateInput({ date, setDate }: DateInputProps) {
   const colors = useColors();
+  const { t } = useTranslation();
   const [showPicker, setShowPicker] = useState(false);
 
   const dateObj = new Date(date);
@@ -63,7 +65,7 @@ export function DateInput({ date, setDate }: DateInputProps) {
           </Typography>
         </View>
         <Typography variant="caption" color="#4CAF82" weight="medium">
-          Ubah
+          {t("datePicker.change")}
         </Typography>
       </TouchableOpacity>
     </View>

@@ -1,6 +1,7 @@
 import { useColors } from "@hooks/useColors";
 import { type Category } from "@types";
 import { formatCurrency } from "@utils/formatCurrency";
+import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import { Card } from "../ui/Card";
@@ -24,6 +25,7 @@ export function BudgetCard({
   period,
   onPress
 }: BudgetCardProps) {
+  const { t } = useTranslation();
   const colors = useColors();
   const progress = budgetAmount > 0 ? (spentAmount / budgetAmount) * 100 : 0;
   const remaining = budgetAmount - spentAmount;
@@ -54,7 +56,7 @@ export function BudgetCard({
           {isExceeded && (
             <View className="bg-red-100 px-2 py-1 rounded-full">
               <Typography variant="caption" weight="semibold" color="#EF4444">
-                Lewat
+                {t("budget.exceeded")}
               </Typography>
             </View>
           )}
@@ -65,7 +67,7 @@ export function BudgetCard({
         <View className="flex-row justify-between mt-3">
           <View>
             <Typography variant="caption" color={colors.textSecondary}>
-              Terpakai
+              {t("budget.spent")}
             </Typography>
             <Typography
               variant="body"
@@ -78,7 +80,7 @@ export function BudgetCard({
 
           <View className="items-end">
             <Typography variant="caption" color={colors.textSecondary}>
-              Sisa
+              {isExceeded ? t("budget.exceeded") : t("budget.remaining")}
             </Typography>
             <Typography
               variant="body"

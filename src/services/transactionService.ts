@@ -5,6 +5,8 @@ import { api } from "./apiClient";
 interface TransactionCategory {
   id: string;
   name: string;
+  name_key: string | null;
+  is_default: boolean;
   type: "income" | "expense";
   icon: string;
   color: string;
@@ -23,7 +25,7 @@ export interface TransactionResponse {
   transaction_date?: string;
   created_at: string;
   updated_at: string;
-  category?: TransactionCategory;
+  category?: TransactionCategory | null;
 }
 
 interface PaginatedTransactionResponse {
@@ -62,11 +64,13 @@ export const transactionService = {
   createTransaction: async (
     data: Partial<Transaction>
   ): Promise<TransactionResponse> => {
-    const isValidUuid = /^[0-9a-f-]{36}$/i.test(data.categoryId || "");
-    if (!isValidUuid) {
-      throw new Error(
-        `Invalid category ID: ${data.categoryId}. Please log out and back in to refresh categories.`
-      );
+    if (data.categoryId !== null && data.categoryId !== undefined) {
+      const isValidUuid = /^[0-9a-f-]{36}$/i.test(data.categoryId);
+      if (!isValidUuid) {
+        throw new Error(
+          `Invalid category ID: ${data.categoryId}. Please log out and back in to refresh categories.`
+        );
+      }
     }
     const payload = {
       category_id: data.categoryId,

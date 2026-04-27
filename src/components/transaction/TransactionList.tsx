@@ -2,6 +2,7 @@ import { spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
 import { type Category, type Transaction } from "@types";
 import { formatCompactCurrency } from "@utils/formatCurrency";
+import { useTranslation } from "react-i18next";
 import { SectionList, Text, View } from "react-native";
 
 import { TransactionItem } from "./TransactionItem";
@@ -20,7 +21,12 @@ interface TransactionListProps {
   onTransactionPress?: (transaction: Transaction) => void;
 }
 
-function getSectionTitle(date: Date): string {
+function getSectionTitle(
+  date: Date,
+  todayLabel: string,
+  yesterdayLabel: string,
+  locale: string
+): string {
   const now = new Date();
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
@@ -35,10 +41,10 @@ function getSectionTitle(date: Date): string {
     date.getMonth() === yesterday.getMonth() &&
     date.getFullYear() === yesterday.getFullYear();
 
-  if (isToday) return "Hari Ini";
-  if (isYesterday) return "Kemarin";
+  if (isToday) return todayLabel;
+  if (isYesterday) return yesterdayLabel;
 
-  return date.toLocaleDateString("id-ID", {
+  return date.toLocaleDateString(locale, {
     day: "numeric",
     month: "short",
     year: "numeric"
@@ -46,7 +52,10 @@ function getSectionTitle(date: Date): string {
 }
 
 function groupTransactionsByDate(
-  transactions: Transaction[]
+  transactions: Transaction[],
+  todayLabel: string,
+  yesterdayLabel: string,
+  locale: string
 ): TransactionSection[] {
   const grouped: Record<string, Transaction[]> = {};
 
@@ -58,7 +67,7 @@ function groupTransactionsByDate(
     grouped[dateKey].push(transaction);
   });
 
-  const sections: TransactionSection[] = Object.keys(grouped)
+  return Object.keys(grouped)
     .sort((a, b) => b.localeCompare(a))
     .map((dateKey) => {
       const dateTransactions = grouped[dateKey];
@@ -68,10 +77,13 @@ function groupTransactionsByDate(
           : sum - t.amountInBaseCurrency;
       }, 0);
 
-      const date = new Date(dateKey);
-
       return {
-        title: getSectionTitle(date),
+        title: getSectionTitle(
+          new Date(dateKey),
+          todayLabel,
+          yesterdayLabel,
+          locale
+        ),
         date: dateKey,
         data: dateTransactions.sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -79,8 +91,6 @@ function groupTransactionsByDate(
         netBalance
       };
     });
-
-  return sections;
 }
 
 export function TransactionList({
@@ -89,8 +99,14 @@ export function TransactionList({
   baseCurrency,
   onTransactionPress
 }: TransactionListProps) {
+  const { t, i18n } = useTranslation();
   const colors = useColors();
-  const sections = groupTransactionsByDate(transactions);
+  const sections = groupTransactionsByDate(
+    transactions,
+    t("transactions.today"),
+    t("transactions.yesterday"),
+    i18n.language === "id" ? "id-ID" : "en-US"
+  );
 
   const renderSectionHeader = ({
     section

@@ -14,7 +14,7 @@ export interface PullDataResult {
   transactions: Transaction[];
   budgets: Budget[];
   categories: Category[];
-  preferences: UserPreferences | null;
+  preferences: Partial<UserPreferences> | null;
 }
 
 export interface SyncVersions {

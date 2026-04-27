@@ -46,8 +46,12 @@
     "verifyEmail": "Verifikasi Email",
     "notReceivedCode": "Belum terima kode?",
     "resend": "Kirim ulang",
+    "resendSuccess": "Kode baru telah dikirim ke email kamu.",
+    "resendFailed": "Gagal mengirim ulang kode",
     "orContinueWith": "atau lanjutkan dengan",
-    "continueWithGoogle": "Lanjutkan dengan Google"
+    "continueWithGoogle": "Lanjutkan dengan Google",
+    "googleSignInNoToken": "Gagal masuk Google: tidak ada token",
+    "googleSignInFailed": "Gagal masuk dengan Google"
   },
   "tabs": {
     "home": "Beranda",
@@ -70,7 +74,11 @@
     "transactionQuotaDesc": "{{count}} / {{limit}} transaksi",
     "upgradeToUnlimited": "Upgrade untuk tanpa batas",
     "lastSync": "Tersinkron",
-    "localDataOnly": "Data lokal · belum disinkron"
+    "localDataOnly": "Data lokal · belum disinkron",
+    "spendingThisMonth": "Pengeluaran Bulan Ini",
+    "noSpendingData": "Belum ada data pengeluaran untuk bulan ini",
+    "byCategory": "Berdasarkan Kategori",
+    "dailyTrend": "Tren Harian (7 Hari Terakhir)"
   },
   "transactions": {
     "title": "Transaksi",
@@ -86,6 +94,10 @@
     "later": "Nanti Saja",
     "noTransactions": "Belum Ada Transaksi",
     "noTransactionsDesc": "Mulai catat transaksi keuanganmu untuk melihat riwayat transaksi di sini.",
+    "noCategoryTitle": "Tidak Ada Kategori",
+    "noCategoryDesc": "Kamu perlu minimal satu kategori sebelum menambah transaksi.",
+    "goToCategories": "Kelola Kategori",
+    "uncategorized": "Tidak Berkategori",
     "today": "Hari Ini",
     "yesterday": "Kemarin"
   },
@@ -103,6 +115,8 @@
     "cameraErrorSimulator": "Kamera tidak tersedia di simulator. Gunakan perangkat asli atau pilih dari galeri.",
     "refreshCamera": "Refresh Kamera",
     "processingReceipt": "Memproses Struk...",
+    "aiProcessing": "AI sedang memproses...",
+    "scanDefaultNote": "Transaksi dari AI Scan",
     "readingData": "Membaca informasi transaksi",
     "improvingWithAI": "Meningkatkan pembacaan dengan AI...",
     "analyzingWithVision": "Menganalisis dengan Vision AI Pro...",
@@ -118,7 +132,12 @@
     "stageCapturing": "Mengambil foto struk",
     "stageAnalyzing": "Menganalisis dengan AI",
     "stageExtracting": "Mengekstrak data",
-    "processingWait": "Ini mungkin membutuhkan beberapa detik"
+    "processingWait": "Ini mungkin membutuhkan beberapa detik",
+    "scanFailedTitle": "Scan Gagal",
+    "scanFailedDesc": "AI tidak dapat membaca struk. Coba lagi atau masukkan transaksi secara manual.",
+    "retry": "Coba Lagi",
+    "enterManually": "Masukkan Manual",
+    "premiumAI": "✨ Premium AI ({{remainingScans}}/{{scanLimit}})"
   },
   "budget": {
     "title": "Anggaran",
@@ -136,6 +155,7 @@
     "weekly": "Mingguan",
     "monthly": "Bulanan",
     "yearly": "Tahunan",
+    "custom": "Kustom",
     "createBudget": "Buat Anggaran",
     "saveChanges": "Simpan Perubahan",
     "deleteBudget": "Hapus Anggaran",
@@ -150,7 +170,8 @@
     "editBudgetDesc": "Sesuaikan jumlah dan periode anggaran",
     "addBudgetDesc": "Tentukan batas pengeluaran untuk kategori ini",
     "budgetSaved": "Anggaran berhasil disimpan",
-    "budgetDeleted": "Anggaran berhasil dihapus"
+    "budgetDeleted": "Anggaran berhasil dihapus",
+    "moreBudgets": "+{{count}} anggaran lainnya"
   },
   "settings": {
     "title": "Pengaturan",
@@ -192,12 +213,18 @@
     "logout": "Keluar dari Akun",
     "logoutDesc": "Anda akan keluar dari akun dan kembali ke layar login.",
     "deleteAccount": "Hapus Akun",
+    "deleteAccountDesc": "Akun dan semua data Anda akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.",
+    "logoutMessage": "Apakah Anda yakin ingin keluar?",
+    "notLoggedIn": "Belum masuk",
     "validUntil": "Berlaku s/d:",
     "about": "Tentang",
     "version": "Versi",
     "developer": "Developer",
     "restorePurchases": "Pulihkan Pembelian",
-    "manageSubscription": "Kelola Langganan"
+    "manageSubscription": "Kelola Langganan",
+    "premium": "Premium",
+    "free": "Gratis",
+    "upgrade": "Upgrade"
   },
   "notifications": {
     "permissionTitle": "Izin Diperlukan",
@@ -235,7 +262,8 @@
     "copyText": "Salin Teks Asli",
     "parsed": "Terdeteksi",
     "ignored": "Diabaikan",
-    "textCopied": "Teks disalin ke papan klip"
+    "textCopied": "Teks disalin ke papan klip",
+    "telegramNotInstalled": "Telegram tidak terinstal"
   },
   "paywall": {
     "title": "Limit AI Tercapai",
@@ -308,7 +336,35 @@
     "addCustom": "Tambah Kategori Custom",
     "expenseCategories": "Kategori Pengeluaran",
     "incomeCategories": "Kategori Pemasukan",
-    "newCategory": "Kategori Baru"
+    "newCategory": "Kategori Baru",
+    "names": {
+      "food_drink": "Makanan & Minuman",
+      "transport": "Transportasi",
+      "shopping": "Belanja",
+      "bills_utilities": "Tagihan & Utilitas",
+      "health": "Kesehatan",
+      "entertainment": "Hiburan",
+      "education": "Pendidikan",
+      "travel": "Perjalanan",
+      "housing": "Rumah",
+      "personal_care": "Perawatan Diri",
+      "gifts": "Hadiah",
+      "investment": "Investasi",
+      "savings": "Tabungan",
+      "business": "Bisnis",
+      "other_expense": "Lainnya",
+      "salary": "Gaji",
+      "freelance": "Freelance",
+      "investment_return": "Return Investasi",
+      "gift_income": "Hadiah",
+      "other_income": "Pendapatan Lainnya"
+    },
+    "cannotDeleteDefault": "Tidak bisa menghapus kategori default.",
+    "cannotDeleteWithTransactions": "Tidak bisa menghapus kategori dengan {{count}} transaksi. Hapus transaksinya terlebih dahulu.",
+    "deleteFailed": "Gagal menghapus kategori",
+    "nameRequired": "Nama kategori tidak boleh kosong",
+    "addFailed": "Gagal menambah kategori",
+    "updateFailed": "Gagal memperbarui kategori"
   },
   "form": {
     "amount": "Jumlah",
@@ -322,7 +378,14 @@
     "save": "Simpan",
     "delete": "Hapus",
     "amountRequired": "Jumlah harus diisi dan lebih dari 0",
+    "uncategorizedTitle": "Kategori Belum Dipilih",
+    "uncategorizedDesc": "Apakah kamu yakin ingin menambah transaksi ini tanpa kategori? Kamu bisa mengaturnya nanti.",
+    "addUncategorized": "Tambah Saja",
+    "budgetAmountRequired": "Jumlah anggaran harus diisi dan lebih dari 0",
+    "budgetNotFound": "Data anggaran tidak ditemukan",
     "categoryRequired": "Kategori harus dipilih",
+    "transactionLimitError": "Batas transaksi gratis tercapai (50/bulan). Silakan upgrade.",
+    "genericError": "Terjadi kesalahan",
     "passwordMin": "Kata sandi minimal 6 karakter",
     "passwordMismatch": "Kata sandi tidak cocok"
   },
@@ -348,6 +411,29 @@
     "errorIOS": "Tidak dapat memulihkan pembelian. Silakan coba lagi atau hubungi dukungan.",
     "errorAndroid": "Tidak dapat memulihkan pembelian. Silakan coba lagi atau hubungi dukungan."
   },
+  "datePicker": {
+    "title": "Pilih Tanggal",
+    "close": "Tutup",
+    "reset": "Reset",
+    "confirm": "Konfirmasi",
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "Mei",
+      "Jun",
+      "Jul",
+      "Agu",
+      "Sep",
+      "Okt",
+      "Nov",
+      "Des"
+    ],
+    "today": "Hari Ini",
+    "change": "Ubah",
+    "weekdays": ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"]
+  },
   "onboarding": {
     "slide1Title": "Catat Transaksimu",
     "slide1Subtitle": "Rekam pemasukan dan pengeluaran harian dengan cepat dan mudah.",
@@ -355,6 +441,7 @@
     "slide2Subtitle": "Foto struk belanja dan biarkan CashLens membaca datanya untukmu.",
     "slide3Title": "Kelola Anggaranmu",
     "slide3Subtitle": "Buat budget per kategori dan pantau pengeluaranmu setiap bulan.",
-    "startNow": "Mulai Sekarang"
+    "startNow": "Mulai Sekarang",
+    "skip": "Lewati"
   }
 }

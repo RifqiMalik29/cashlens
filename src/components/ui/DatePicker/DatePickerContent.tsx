@@ -2,6 +2,7 @@ import { spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { Typography } from "../Typography";
@@ -17,6 +18,7 @@ export function DatePickerContent({
   onDateSelect
 }: DatePickerContentProps) {
   const colors = useColors();
+  const { t } = useTranslation();
   const [currentMonth, setCurrentMonth] = useState(
     new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
   );
@@ -65,22 +67,24 @@ export function DatePickerContent({
         style={[styles.todayButton, { backgroundColor: colors.primaryLight }]}
       >
         <Typography variant="caption" weight="semibold" color={colors.primary}>
-          Hari Ini
+          {t("datePicker.today")}
         </Typography>
       </TouchableOpacity>
 
       <View style={styles.weekdays}>
-        {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map((day) => (
-          <View key={day} style={styles.weekdayCell}>
-            <Typography
-              variant="caption"
-              weight="medium"
-              color={colors.textSecondary}
-            >
-              {day}
-            </Typography>
-          </View>
-        ))}
+        {(t("datePicker.weekdays", { returnObjects: true }) as string[]).map(
+          (day) => (
+            <View key={day} style={styles.weekdayCell}>
+              <Typography
+                variant="caption"
+                weight="medium"
+                color={colors.textSecondary}
+              >
+                {day}
+              </Typography>
+            </View>
+          )
+        )}
       </View>
 
       <DatePickerGrid

@@ -40,7 +40,7 @@ export function SummaryCard({
             {formatCurrency(balance, currency)}
           </Typography>
         </View>
-        {isPremium && <Badge label="Premium" variant="success" />}
+        {isPremium && <Badge label={t("settings.premium")} variant="success" />}
       </View>
 
       <View className="flex-row gap-4 mb-6">

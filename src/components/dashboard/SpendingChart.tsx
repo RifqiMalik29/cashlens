@@ -2,6 +2,7 @@ import { spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
 import { formatCompactCurrency } from "@utils/formatCurrency";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import { Card } from "../ui/Card";
@@ -30,6 +31,7 @@ export function SpendingChart({
   dailyData,
   currency
 }: SpendingChartProps) {
+  const { t } = useTranslation();
   const colors = useColors();
   const totalExpense = useMemo(() => {
     return categoryData.reduce((sum, item) => sum + item.amount, 0);
@@ -39,7 +41,7 @@ export function SpendingChart({
     return (
       <>
         <Typography variant="h4" weight="semibold" className="mx-4 mb-4">
-          Pengeluaran Bulan Ini
+          {t("dashboard.spendingThisMonth")}
         </Typography>
         <Card className="mx-4 mb-4">
           <View className="items-center justify-center py-8">
@@ -48,7 +50,7 @@ export function SpendingChart({
               color={colors.textSecondary}
               style={{ textAlign: "center" }}
             >
-              Belum ada data pengeluaran untuk bulan ini
+              {t("dashboard.noSpendingData")}
             </Typography>
           </View>
         </Card>
@@ -59,7 +61,7 @@ export function SpendingChart({
   return (
     <>
       <Typography variant="h4" weight="semibold" className="mx-4 mb-4">
-        Pengeluaran Bulan Ini
+        {t("dashboard.spendingThisMonth")}
       </Typography>
       <Card className="mx-4 mb-4">
         <View className="mb-6">
@@ -69,7 +71,7 @@ export function SpendingChart({
             color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
-            Berdasarkan Kategori
+            {t("dashboard.byCategory")}
           </Typography>
           <View className="gap-3">
             {categoryData.map((item) => {
@@ -118,7 +120,7 @@ export function SpendingChart({
             color={colors.textSecondary}
             style={{ marginBottom: spacing[2] }}
           >
-            Tren Harian (7 Hari Terakhir)
+            {t("dashboard.dailyTrend")}
           </Typography>
           <View className="items-center">
             {dailyData.map((day, index) => {

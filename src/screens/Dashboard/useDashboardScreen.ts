@@ -107,7 +107,10 @@ export function useDashboardScreen() {
       .filter((t) => t.type === "expense")
       .reduce(
         (acc, t) => {
-          acc[t.categoryId] = (acc[t.categoryId] || 0) + t.amountInBaseCurrency;
+          if (t.categoryId) {
+            acc[t.categoryId] =
+              (acc[t.categoryId] || 0) + t.amountInBaseCurrency;
+          }
           return acc;
         },
         {} as Record<string, number>
@@ -118,13 +121,13 @@ export function useDashboardScreen() {
         const category = categories.find((c) => c.id === categoryId);
         return {
           categoryId,
-          categoryName: category?.name || "Lainnya",
+          categoryName: category?.name || t("transactions.uncategorized"),
           color: category?.color || "#9CA3AF",
           amount
         };
       })
       .sort((a, b) => b.amount - a.amount);
-  }, [currentMonthTransactions, categories]);
+  }, [currentMonthTransactions, categories, t]);
 
   const dailySpending = useMemo(() => {
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();

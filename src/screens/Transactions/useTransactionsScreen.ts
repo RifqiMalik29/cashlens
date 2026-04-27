@@ -2,7 +2,7 @@ import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCategoryStore } from "@stores/useCategoryStore";
 import { useTransactionStore } from "@stores/useTransactionStore";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export function useTransactionsScreen() {
   const router = useProtectedRouter();
@@ -15,8 +15,19 @@ export function useTransactionsScreen() {
     [transactions]
   );
 
+  const [showNoCategoryDialog, setShowNoCategoryDialog] = useState(false);
+
   const handleAddTransaction = () => {
+    if (categories.length === 0) {
+      setShowNoCategoryDialog(true);
+      return;
+    }
     router.push("/(tabs)/transactions/add");
+  };
+
+  const handleGoToCategories = () => {
+    setShowNoCategoryDialog(false);
+    router.push("/(tabs)/settings/categories");
   };
 
   const handleTransactionPress = (transaction: (typeof transactions)[0]) => {
@@ -29,6 +40,9 @@ export function useTransactionsScreen() {
     baseCurrency,
     hasTransactions,
     handleTransactionPress,
-    handleAddTransaction
+    handleAddTransaction,
+    showNoCategoryDialog,
+    setShowNoCategoryDialog,
+    handleGoToCategories
   };
 }

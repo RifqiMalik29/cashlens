@@ -1,3 +1,4 @@
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { Typography } from "@components/ui/Typography";
 import { spacing } from "@constants/theme";
 import { useColors } from "@hooks/useColors";
@@ -27,7 +28,8 @@ export default function CategoryManagementScreen() {
     handleAddCategory,
     handleUpdateCategory,
     handleFilterSelect,
-    error,
+    errorDialog,
+    setErrorDialog,
     isSheetVisible,
     newCategoryName,
     newCategoryType,
@@ -73,16 +75,6 @@ export default function CategoryManagementScreen() {
             </TouchableOpacity>
           ))}
         </View>
-
-        {error && (
-          <Typography
-            variant="caption"
-            color="#EF4444"
-            style={{ marginTop: spacing[2], textAlign: "center" }}
-          >
-            {error}
-          </Typography>
-        )}
       </View>
 
       <KeyboardAvoidingView
@@ -169,6 +161,16 @@ export default function CategoryManagementScreen() {
         onTypeChange={setNewCategoryType}
         onSubmit={handleSubmitNewCategory}
         onClose={handleCloseSheet}
+      />
+
+      <BaseDialog
+        isVisible={!!errorDialog}
+        title={t("common.error")}
+        message={errorDialog ?? ""}
+        type="error"
+        primaryButtonText={t("common.confirm")}
+        onPrimaryButtonPress={() => setErrorDialog(null)}
+        onClose={() => setErrorDialog(null)}
       />
     </View>
   );

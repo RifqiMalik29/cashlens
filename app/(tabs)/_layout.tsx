@@ -9,9 +9,11 @@ import {
   ScanLine,
   Settings
 } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 
 export default function TabsLayout() {
   const colors = useColors();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -41,7 +43,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: t("tabs.home"),
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />
         }}
       />
@@ -49,7 +51,7 @@ export default function TabsLayout() {
         name="transactions"
         options={{
           headerShown: false,
-          tabBarLabel: "Transactions",
+          tabBarLabel: t("tabs.transactions"),
           tabBarIcon: ({ color, size }) => (
             <ArrowLeftRight size={size} color={color} />
           )
@@ -59,7 +61,7 @@ export default function TabsLayout() {
         name="scanner"
         options={{
           headerShown: false,
-          tabBarLabel: "Scan",
+          tabBarLabel: t("tabs.scan"),
           tabBarIcon: ({ color, size }) => (
             <ScanLine size={size} color={color} />
           )
@@ -69,7 +71,7 @@ export default function TabsLayout() {
         name="budget"
         options={{
           headerShown: false,
-          tabBarLabel: "Budget",
+          tabBarLabel: t("tabs.budget"),
           tabBarIcon: ({ color, size }) => (
             <PieChart size={size} color={color} />
           )
@@ -79,7 +81,7 @@ export default function TabsLayout() {
         name="settings"
         options={{
           headerShown: false,
-          tabBarLabel: "Settings",
+          tabBarLabel: t("tabs.settings"),
           tabBarIcon: ({ color, size }) => (
             <Settings size={size} color={color} />
           )

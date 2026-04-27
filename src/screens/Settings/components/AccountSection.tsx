@@ -25,7 +25,11 @@ export function AccountSection({
           label={t("settings.profile")}
           value={
             <Badge
-              label={subscriptionTier === "premium" ? "PREMIUM" : "FREE"}
+              label={
+                subscriptionTier === "premium"
+                  ? t("settings.premium").toUpperCase()
+                  : t("settings.free").toUpperCase()
+              }
               variant={subscriptionTier === "premium" ? "primary" : "secondary"}
             />
           }
@@ -35,7 +39,7 @@ export function AccountSection({
         <SettingsItem
           icon={<Mail size={20} color="#4CAF82" />}
           label={t("settings.email")}
-          value={userEmail || "Not logged in"}
+          value={userEmail || t("settings.notLoggedIn")}
         />
       </View>
       <View style={{ marginTop: spacing[3] }}>

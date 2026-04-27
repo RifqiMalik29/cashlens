@@ -27,9 +27,9 @@ export function SettingsItem({
   return (
     <TouchableOpacity
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || !onPress}
       className="flex-row items-center border border-border rounded-lg px-4 py-3"
-      activeOpacity={0.7}
+      activeOpacity={!disabled && onPress ? 0.7 : 1}
       style={{ opacity: disabled ? 0.5 : 1, backgroundColor: colors.surface }}
     >
       <View className="mr-3">{icon}</View>
@@ -51,12 +51,13 @@ export function SettingsItem({
           {value}
         </Typography>
       )}
-      {accessory ?? (
-        <ChevronRight
-          size={20}
-          color={danger ? colors.error : colors.textSecondary}
-        />
-      )}
+      {accessory ??
+        (onPress && (
+          <ChevronRight
+            size={20}
+            color={danger ? colors.error : colors.textSecondary}
+          />
+        ))}
     </TouchableOpacity>
   );
 }

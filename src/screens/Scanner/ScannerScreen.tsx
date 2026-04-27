@@ -1,8 +1,10 @@
 import { ScannerOverlay } from "@components/scanner/ScannerOverlay";
 import { Typography } from "@components/ui";
+import { BaseDialog } from "@components/ui/BaseDialog";
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { CameraView } from "expo-camera";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StatusBar, StyleSheet, View } from "react-native";
 
 import {
@@ -10,7 +12,6 @@ import {
   CameraErrorView,
   CameraInactiveView,
   CameraLoadingView,
-  ErrorMessage,
   LimitReachedView,
   PermissionDeniedView,
   ScannerControls
@@ -19,6 +20,7 @@ import { useScannerScreen } from "./useScannerScreen";
 
 export default function ScannerScreen() {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
   const {
     cameraRef,
     permission,
@@ -93,7 +95,7 @@ export default function ScannerScreen() {
         {!isPremium && (
           <View className="bg-amber-500/90 px-4 py-1.5 rounded-full mb-6 flex-row items-center border border-amber-300">
             <Typography variant="body" weight="bold" color="white">
-              ✨ Premium AI ({remainingScans}/{scanLimit})
+              {t("scanner.premiumAI", { remainingScans, scanLimit })}
             </Typography>
           </View>
         )}
@@ -107,11 +109,23 @@ export default function ScannerScreen() {
         />
       </View>
 
-      {/* 4. Feedback Layer (Top Toast) */}
-      <ErrorMessage
-        error={error}
-        onDismiss={dismissError}
-        onRetry={retryScan}
+      {/* 4. Scan Error Dialog */}
+      <BaseDialog
+        isVisible={!!error}
+        title={t("scanner.scanFailedTitle")}
+        message={error ?? ""}
+        type="error"
+        primaryButtonText={t("scanner.retry")}
+        onPrimaryButtonPress={() => {
+          dismissError();
+          retryScan();
+        }}
+        secondaryButtonText={t("scanner.enterManually")}
+        onSecondaryButtonPress={() => {
+          dismissError();
+          router.push("/(tabs)/transactions/add");
+        }}
+        onClose={dismissError}
       />
 
       {/* 5. Modals / Overlays */}

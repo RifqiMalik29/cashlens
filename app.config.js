@@ -24,7 +24,7 @@ export default {
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       package: IS_DEV ? "com.cashlens.app.dev" : "com.cashlens.app",
-      versionCode: 3,
+      versionCode: Math.floor(Date.now() / 1000), // Dynamically generate version code based on timestamp
       permissions: [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
@@ -53,6 +53,14 @@ export default {
     plugins: [
       "./plugins/withNotificationListener",
       "expo-router",
+      [
+        "expo-build-properties",
+        {
+          ios: {
+            deploymentTarget: "15.5"
+          }
+        }
+      ],
       [
         "expo-camera",
         {

@@ -11,7 +11,6 @@ import { useColors } from "@hooks/useColors";
 import Constants from "expo-constants";
 import {
   Bell,
-  CreditCard,
   Globe,
   HelpCircle,
   LayoutGrid,
@@ -32,7 +31,6 @@ export default function SettingsScreen() {
   const {
     t,
     userEmail,
-    currentCurrency,
     languageDisplay,
     themeDisplay,
     dialogState,
@@ -40,7 +38,6 @@ export default function SettingsScreen() {
     handleSignOut,
     handleDeleteAccount,
     handleForceSync,
-    handleCurrencyPress,
     handleCategoriesPress,
     handleLanguagePress,
     handleThemePress,
@@ -79,12 +76,13 @@ export default function SettingsScreen() {
         />
 
         <SettingsSection title={t("settings.finance")}>
-          <SettingsItem
+          {/* DISABLED FOR EARLY ACCESS */}
+          {/* <SettingsItem
             icon={<CreditCard size={20} color="#4CAF82" />}
             label={t("settings.baseCurrency")}
             value={currentCurrency?.code || "IDR"}
             onPress={handleCurrencyPress}
-          />
+          /> */}
           <View style={{ marginTop: spacing[3] }}>
             <SettingsItem
               icon={<LayoutGrid size={20} color="#4CAF82" />}

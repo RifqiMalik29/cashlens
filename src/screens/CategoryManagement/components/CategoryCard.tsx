@@ -120,12 +120,14 @@ export function CategoryCard({
           </TouchableOpacity>
         </>
       ) : (
-        <TouchableOpacity
-          onPress={() => setIsEditing(true)}
-          className="ml-2 p-1"
-        >
-          <Pencil size={14} color={colors.textSecondary} />
-        </TouchableOpacity>
+        !category.isDefault && (
+          <TouchableOpacity
+            onPress={() => setIsEditing(true)}
+            className="ml-2 p-1"
+          >
+            <Pencil size={14} color={colors.textSecondary} />
+          </TouchableOpacity>
+        )
       )}
 
       {!category.isDefault && (

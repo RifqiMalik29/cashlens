@@ -1,6 +1,7 @@
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { useAuthStore } from "@stores/useAuthStore";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type {
   FlatList,
   NativeScrollEvent,
@@ -8,12 +9,14 @@ import type {
 } from "react-native";
 import { useWindowDimensions } from "react-native";
 
-import { ONBOARDING_SLIDES } from "./onboardingSlides";
+import { getOnboardingSlides } from "./onboardingSlides";
 
 export function useOnboarding() {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
   const { setOnboarded } = useAuthStore();
   const { height, width } = useWindowDimensions();
+  const slides = useMemo(() => getOnboardingSlides(t), [t]);
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
@@ -50,7 +53,7 @@ export function useOnboarding() {
     handleNext,
     handleSkip,
     handleScroll,
-    slides: ONBOARDING_SLIDES,
+    slides,
     iconSize,
     screenWidth: width
   };

@@ -9,7 +9,7 @@ export interface Transaction {
   amountInBaseCurrency: number;
   exchangeRate: number;
   type: TransactionType;
-  categoryId: string;
+  categoryId: string | null;
   note: string;
   date: string;
   receiptImageUri?: string;
@@ -21,6 +21,7 @@ export interface Transaction {
 export interface Category {
   id: string;
   name: string;
+  nameKey: string | null;
   icon: string;
   color: string;
   isDefault: boolean;

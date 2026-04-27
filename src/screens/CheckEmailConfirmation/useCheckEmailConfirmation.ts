@@ -1,9 +1,11 @@
 import { useProtectedRouter } from "@hooks/useProtectedRouter";
 import { authService } from "@services/authService";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function useCheckEmailConfirmation(email?: string) {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
 
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -46,9 +48,9 @@ export function useCheckEmailConfirmation(email?: string) {
 
     try {
       await authService.resendConfirmation(email);
-      setSuccessMessage("Kode baru telah dikirim ke email kamu.");
+      setSuccessMessage(t("auth.resendSuccess"));
     } catch (err) {
-      setError((err as Error).message || "Gagal mengirim ulang kode");
+      setError((err as Error).message || t("auth.resendFailed"));
     } finally {
       setIsResending(false);
     }

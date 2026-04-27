@@ -7,6 +7,7 @@ import { useTransactionStore } from "@stores/useTransactionStore";
 import { type TransactionType } from "@types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { handleDelete, handleSave, handleTypeChange } from "./handlers";
 
@@ -14,6 +15,7 @@ const DEFAULT_AMOUNT = "";
 
 export function useTransactionForm() {
   const router = useProtectedRouter();
+  const { t } = useTranslation();
   const {
     id,
     amount: scannedAmount,
@@ -56,39 +58,26 @@ export function useTransactionForm() {
   const isScanTransaction = isFromScan === "true";
   const isEditMode = !!existingTransaction;
 
+  const tx = existingTransaction;
+  const draft = existingDraft;
   const [amount, setAmount] = useState(
-    existingTransaction
-      ? existingTransaction.amount.toString()
-      : existingDraft
-        ? existingDraft.amount.toString()
-        : scannedAmount || DEFAULT_AMOUNT
+    tx?.amount.toString() ||
+      draft?.amount.toString() ||
+      scannedAmount ||
+      DEFAULT_AMOUNT
   );
   const [type, setType] = useState<TransactionType>(
-    existingTransaction
-      ? existingTransaction.type
-      : existingDraft
-        ? existingDraft.type
-        : "expense"
+    tx?.type || draft?.type || "expense"
   );
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    existingTransaction ? existingTransaction.categoryId : null
+    tx?.categoryId || null
   );
   const [date, setDate] = useState(
-    existingTransaction
-      ? existingTransaction.date
-      : existingDraft
-        ? existingDraft.date
-        : scannedDate || new Date().toISOString()
+    tx?.date || draft?.date || scannedDate || new Date().toISOString()
   );
-  const [note, setNote] = useState(
-    existingTransaction
-      ? existingTransaction.note
-      : existingDraft
-        ? existingDraft.description
-        : ""
-  );
+  const [note, setNote] = useState(tx?.note || draft?.description || "");
   const [receiptUri, setReceiptUri] = useState<string | undefined>(
-    receiptImageUri || existingTransaction?.receiptImageUri
+    receiptImageUri || tx?.receiptImageUri
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -102,21 +91,12 @@ export function useTransactionForm() {
   }, [selectedCategoryId, categories, isEditMode]);
 
   useEffect(() => {
-    if (scannedAmount && !existingTransaction && !existingDraft) {
-      setAmount(scannedAmount);
-    }
-    if (scannedDate && !existingTransaction && !existingDraft) {
-      setDate(scannedDate);
-    }
-    if (scannedNote && !existingTransaction && !existingDraft) {
-      setNote(scannedNote);
-    }
-    if (receiptImageUri && !existingTransaction && !existingDraft) {
-      setReceiptUri(receiptImageUri);
-    }
-    if (scannedCategoryId && !existingTransaction && !existingDraft) {
-      setSelectedCategoryId(scannedCategoryId);
-    }
+    if (existingTransaction || existingDraft) return;
+    if (scannedAmount) setAmount(scannedAmount);
+    if (scannedDate) setDate(scannedDate);
+    if (scannedNote) setNote(scannedNote);
+    if (receiptImageUri) setReceiptUri(receiptImageUri);
+    if (scannedCategoryId) setSelectedCategoryId(scannedCategoryId);
   }, [
     scannedAmount,
     scannedDate,
@@ -129,11 +109,31 @@ export function useTransactionForm() {
 
   const [showPaywall, setShowPaywall] = useState(false);
 
+  const resetForm = () => {
+    setAmount(DEFAULT_AMOUNT);
+    setType("expense");
+    setSelectedCategoryId(null);
+    setDate(new Date().toISOString());
+    setNote("");
+    setReceiptUri(undefined);
+    setError(null);
+  };
+
+  const [showUncategorizedDialog, setShowUncategorizedDialog] = useState(false);
+
   const onSave = async () => {
     if (!isEditMode && !canAddTransaction) {
       setShowPaywall(true);
       return;
     }
+    if (!selectedCategoryId) {
+      setShowUncategorizedDialog(true);
+      return;
+    }
+    await executeSave();
+  };
+
+  const executeSave = async () => {
     await handleSave({
       setAmount,
       setType,
@@ -158,16 +158,13 @@ export function useTransactionForm() {
       addTransaction,
       updateTransaction,
       confirmDraft,
-      resetForm: () => {
-        setAmount(DEFAULT_AMOUNT);
-        setType("expense");
-        setSelectedCategoryId(null);
-        setDate(new Date().toISOString());
-        setNote("");
-        setReceiptUri(undefined);
-        setError(null);
-      },
-      routerBack: () => router.back()
+      resetForm,
+      routerBack: () => router.back(),
+      errorMessages: {
+        transactionLimit: t("form.transactionLimitError"),
+        amountRequired: t("form.amountRequired"),
+        genericError: t("form.genericError")
+      }
     });
   };
 
@@ -183,6 +180,7 @@ export function useTransactionForm() {
   };
 
   const handleTypeChangeFn = (newType: TransactionType) => {
+    setType(newType);
     handleTypeChange({
       newType,
       categories,
@@ -211,6 +209,9 @@ export function useTransactionForm() {
     handleSave: onSave,
     handleDelete: onDelete,
     showPaywall,
-    setShowPaywall
+    setShowPaywall,
+    showUncategorizedDialog,
+    setShowUncategorizedDialog,
+    handleConfirmUncategorized: executeSave
   };
 }
