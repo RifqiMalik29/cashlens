@@ -62,7 +62,7 @@ export function useScannerCamera({
 
       const photo = await cameraRef.current.takePictureAsync({
         quality: 0.8,
-        skipProcessing: false
+        skipProcessing: true
       });
 
       if (!photo) {
